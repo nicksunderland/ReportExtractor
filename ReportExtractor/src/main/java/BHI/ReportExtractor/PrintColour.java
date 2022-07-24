@@ -1,4 +1,4 @@
-package neoImage.v2;
+package BHI.ReportExtractor;
 
 /**
  * @author nicholassunderland

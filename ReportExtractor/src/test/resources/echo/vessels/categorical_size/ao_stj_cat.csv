@@ -1,0 +1,17 @@
+var_name,text,expected_value,expected_units
+ao_stj_cat,"STJ 4.1cm. Proximal ascending aorta 4.3cm, (neither dilated when related to BSA).",nondilated,
+ao_stj_cat,AORTA: Dilated aortic root from Sinus fo Valsalva to proximal ascending aorta for height.,dilated,
+ao_stj_cat," Sinus of Valsalva=  4.2cm, Sino tubular Junction =   3.6cm, upper limit of normal",nondilated,
+ao_stj_cat,Dilated aortic root at STJ. ,dilated,
+ao_stj_cat,Mild aortic sclerosis with at least eccentric mild AR. Dilated st junction.,dilated,
+ao_stj_cat,STJ: Non-dilated. CHAMB_AO_DESC_NORMAL: F,nondilated,
+ao_stj_cat,The sinotubular junction is normal in size.,nondilated,
+ao_stj_cat,ST junction dilated ? asymmetrical dilatation at NCC SoV. 4.1cm. Remaining root not clearly seen. ,dilated,
+ao_stj_cat,MM_SINOTUBULAR_JUNCTION: 2.9. MM_SINUS_OF_VALSALVA: 4. NORMAL_STUDY: F. ,,
+ao_stj_cat,HAMB_AO_ARCH_NORMAL: F. CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: STJ  3.5cm. This is not dilated indexed to BSA at 1.9cm/m_.. . . CHAMB_AO_DESC_NORMAL: F. CHAMB_AO_DESC_TEXT: Flow in descending aorta ~0.6m/s.. . ,nondilated,
+ao_stj_cat,"HAMB_AO_ASC_TEXT: SoV dilated, 54.8mm (31.2mm/m)
+STJ effaced, not measured
+Prox Asc Ao dilated, 66.0mm (37.5 mm/m)",,
+ao_stj_cat,Dilated aortic root at SoV and STJ. ,dilated,
+ao_stj_cat,The StJ and ascending aorta are non-dilated. Test. ,nondilated,
+ao_stj_cat,StJ / proximal ascending aorta normal in size.,nondilated,

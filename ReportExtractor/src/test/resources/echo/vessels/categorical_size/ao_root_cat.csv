@@ -1,0 +1,208 @@
+var_name,text,expected_value,expected_units
+ao_root_cat,Normal aortic root with a dilated asc ao (4.1cm).,nondilated,
+ao_root_cat,AORTA: Dilated aortic root from Sinus fo Valsalva to proximal ascending aorta for height.,dilated,
+ao_root_cat,Aorta No evidence of significant dilatation of the aortic root.  ,nondilated,
+ao_root_cat,Dilated aortic root at SoV. ,,
+ao_root_cat,HAMB_AO_ASC_TEXT: Normal aortic root size.,nondilated,
+ao_root_cat,Normal calibre to aortic root.  Sinus of Valsalva = 3.3cm.  Ascending aorta 3cm. ,nondilated,
+ao_root_cat,"Great Vessels
+Non dilated proximal aorta. Arch and abdominal aorta appear normal in dimension. Normal descending aortic flow velocity. ",,
+ao_root_cat,Aorta Visually no significant dilatation of the aortic root at sinus level.  ,,
+ao_root_cat,"Great Vessels
+Mildly dilated proximal aorta (3.9cm at sinus level extending through to the arch) with loss of ST geometry.",dilated,
+ao_root_cat,"Great Vessels
+Non dilated proximal aorta. The aortic arch appears mildly dilated (3.8cm). ",,
+ao_root_cat,"Great Vessels
+Non dilated proximal aorta. Poor arch views.
+
+",,
+ao_root_cat,"Great Vessels
+The aortic root is normal size. The aortic arch was not well seen on this scan.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+",nondilated,
+ao_root_cat,"Great Vessels
+Non dilated proximal aorta by dimension (3.4cm) but visually appears mildly dilated. The root appears mildly calcified at sinus level. Normal arch views and descending aortic flow velocity.
+",,
+ao_root_cat,"Great Vessels
+Non dilated proximal aorta to sinus level. Unable to visualise beyond this point on parasternal views. The arch views are suboptimal and the arch itself is not clearly seen but the impression is that it is dilated (~3.9cm) at the level of the innominate artery. The descending limb of the aorta is not dilated and flow is normal.
+
+
+
+",,
+ao_root_cat,"Great Vessels
+Non dilated proximal aorta. The arch appears mildly dilated at 3.4cm. Abdominal aorta appears non dilated and pulsatile.
+
+",,
+ao_root_cat,"Great Vessels
+Non dilated by dimension but appears mildly dilated. The proximal aorta appears very mildly calcified.The abdominal aorta does not appear dilated but regions of calcification can be seen on subcostal views. ",,
+ao_root_cat,"
+
+  LVIDd: 3.8 cm 
+
+LVIDs: 2.9 cm 
+
+LVPWd: 0.91 cm 
+
+  FS: 25.1 % 
+
+EDV(Teich): 62.8 ml 
+
+ESV(Teich): 31.2 ml 
+
+EF(Teich): 50.3 % 
+
+  SV(Teich): 31.6 ml 
+
+SV(cubed): 32.4 ml 
+
+  RA area: 13.7 cm2 
+
+  Sinus of valsalva: 2.7 cm 
+
+ 
+
+Doppler Measurements & Calculations
+
+ MV E max vel: 61.7 cm/sec 
+
+MV A max vel: 55.3 cm/sec 
+
+MV E/A: 1.1  
+
+  MV dec time: 0.15 sec 
+
+  Ao V2 max: 129.1 cm/sec 
+
+Ao max PG: 6.7 mmHg 
+
+  LV V1 max PG: 4.6 mmHg 
+
+LV V1 max: 107.1 cm/sec 
+
+  PA V2 max: 87.4 cm/sec 
+
+PA max PG: 3.1 mmHg 
+
+  Lat A' vel: 9.9 cm/sec 
+
+Lat Peak E' Vel: 10.0 cm/sec 
+
+Lat Peak S Vel: 13.4 cm/sec 
+
+  Med Peak A' Vel: 8.8 cm/sec 
+
+Med Peak E' Vel: 7.7 cm/sec 
+
+Med Peak S Vel: 8.8 cm/sec 
+
+  Doppler Velocity Index DVI: 0.83  
+
+  e/a lat ratio: 1.0  
+
+  e/a med ratio: 0.88  
+
+  e/e' average: 7.1  
+
+  e/e' Lat tdi: 6.2  
+
+  e/e' Med tdi: 8.0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+",,
+ao_root_cat,"Great Vessels
+Could not be visualised. No arch views available
+
+
+
+",,
+ao_root_cat,"Great Vessels
+From what can be seen of the aortic root there does not appear to be any significant dilatation. The aortic arch was not well seen. 
+
+",nondilated,
+ao_root_cat,"AORTA:
+ Normal dimension of the aortic root. Sinuses 2.8cm
+ Ascending aorta and arch if not well imaged",nondilated,
+ao_root_cat," Aorta:
+ Aortic root and proximal ascending aorta not visualised. 
+ Aortic arch is of normal dimensions. No abnormal flow detected in the descending aorta. 
+ Aortic Arch: 3.6cm.",,
+ao_root_cat,"Aorta:
+ Dilated ascending aorta. Ascending aorta = 4.6cm (LE-LE as per departmental protocol)
+ Could not clearly visualise aortic arch.",,
+ao_root_cat,"AORTA:
+ Normal dimension of the aortic root
+ Sinuses 3.5cm, Ascending aorta 3.3cm, LVOT 2.2cm
+ Aortic arch is not well imaged",nondilated,
+ao_root_cat,"AORTA:
+ Normal dimension of the aortic root
+ Sinuses 2.8cm, ST junction 2.4cm, Ascending aorta 3.0cm
+ Normal appearance of the aortic arch with no obvious evidence of co-arctation",nondilated,
+ao_root_cat,"Aorta:
+ Sinus of Valsalva=  3.5cm (inner-inner, end diastole)
+ No coarctation",,
+ao_root_cat,"Aorta:
+ Normal aortic root, proximal ascending aorta and aortic arch dimensions. ",nondilated,
+ao_root_cat,"Aorta:
+ Severely dilated with a loss of geometry",dilated,
+ao_root_cat,"Aorta:
+ Sinus of Valsalva= 3.8 cm, Sino tubular Junction = 2.8  cm, ascending aorta = 3.1  cm. The SoV is outside normal limits (2.5-3.4cm for gender and age range)
+ No coarctation",,
+ao_root_cat,"AORTA:
+ Aortic root dimensions; upper limits of normal.
+ Sinuses 3.9cm, ST junction 3.3cm, Ascending aorta 3.8cm
+ No suprasternal views.",nondilated,
+ao_root_cat,"Aorta:
+ Normal - Sinus of Valsalva=  2.4 cm, Sino tubular Junction = 2.1 cm, ascending aorta = 2.2 cm, LE to LE, end diastole
+ No coarctation",,
+ao_root_cat," Aorta:root dilated
+ Sinus of Valsalva=  4cm, Sino tubular Junction =   3.3cm, ascending aorta =   4.1cm",dilated,
+ao_root_cat,"AORTA:
+ Aortic root dimensions; normal 
+ Sinuses 3.0cm, ST junction 2.2cm,
+ ",nondilated,
+ao_root_cat,Aortic root not dilated indexed to BSA.,nondilated,
+ao_root_cat,"AORTA:
+ Upper normal dimension of the aortic root",nondilated,
+ao_root_cat,Mild aortic sclerosis with at least eccentric mild AR. Dilated aorta root.,dilated,
+ao_root_cat,aortic root Non-dilated. CHAMB_AO_DESC_NORMAL: F,nondilated,
+ao_root_cat,The aortic root is normal in size.,nondilated,
+ao_root_cat,Aortic root - dilated. asymmetrical dilatation at NCC SoV. 4.1cm. Remaining root not clearly seen. ,dilated,
+ao_root_cat,The aortic root is mildly dilated.,dilated,
+ao_root_cat,"the aortic root is normal for height. 
+
+",nondilated,
+ao_root_cat,"Aortic root slightly dilated, ascending aorta  3.1cm",dilated,
+ao_root_cat,"AORTA Not well imaged, however root does not appear dilated.",nondilated,
+ao_root_cat,MM_AO_CUSP_SEP: 0. MM_AO_ROOT: 0. MM_AORTIC_ANNULUS: 0. MM_DESCENDING_AORTA. MM_EJ_MANUAL_ENTRY: T. MM_ESTIMATED_EJ: 0. Mm_FS_Manual_Entry: T. MM_IVS: 1.5. MM_LA: 0. MM_LVED: 3.7. MM_LVES: 2.5. MM_LVOT_D: 1.8. MM_PA: 0. MM_PW: 1.1. MM_RV: 0. MM_SINOTUBULAR_JUNCTION: 2.9. MM_SINUS_OF_VALSALVA: 4. NORMAL_STUDY: F.,,
+ao_root_cat,HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: General aortic root 3.5cm. This is not dilated indexed to BSA at 1.9cm/m_.. . . CHAMB_AO_DESC_NORMAL: F. CHAMB_AO_DESC_TEXT: Flow in descending aorta ~0.6m/s..,nondilated,
+ao_root_cat,HAMB_AO_ARCH_NORMAL: F. CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: Proximal ascending aorta 3.3cm. ,,
+ao_root_cat,"AORTA Not well imaged, however root does not appear dilated.",nondilated,
+ao_root_cat,HAMB_AO_ARCH_NORMAL: F. CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT. CHAMB_AO_DESC_NORMAL: F. CHAMB_AO_DESC_TEXT. CHAMB_COMMENT. CHAMB_IAS_INTACT: F. CHAMB_IAS_TEXT. CHAMB_LA_NORMAL: F. CHAMB_LA_TEXT. CHAMB_LAA_NORMAL: F. CHAMB_LAA_TEXT. CHAMB_LV_NORMAL: F. CHAMB_LV_TEXT. CHAMB_NORMAL: F. CHAMB_RA_NORMAL: F. CHAMB_RA_TEXT. CHAMB_RV_NORMAL: F. CHAMB_RV_TEXT. DOPP_AR_DESC_T. DOPP_AR_SLOPE: 0. DOPP_AREA_AORTIC: 0. DOPP_AREA_MITRAL: 0. DOPP_AREA_PULM. DOPP_AREA_TRI. DOPP_ARP12T: 0. DOPP_EA_RATIO: 2.44. DOPP_IVRT: 0. DOPP_MITRAL_E_SLOPE: 199. OPP_MPGRAD_AORTIC: 0. DOPP_MPGRAD_LVOT: 0. DOPP_MPGRAD_MITRAL: 0. DOPP_MPGRAD_PULM. DOPP_MPGRAD_TRI: 0. DOPP_MV2DAREA: 0. DOPP_MVEL_AORTIC: 0. DOPP_MVEL_LVOT: 0. DOPP_MVEL_MITRAL: 0. DOPP_MVEL_PULM. DOPP_MVEL_TRI.,,
+ao_root_cat,HAMB_AO_ARCH_NORMAL: F. CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT. CHAMB_AO_DESC_NORMAL: F. CHAMB_AO_DESC_TEXT. CHAMB_COMMENT. CHAMB_IAS_INTACT: F. CHAMB_IAS_TEXT. CHAMB_LA_NORMAL: F.,,
+ao_root_cat,Mild aortic sclerosis with at least eccentric mild AR. Dilated aortic root.,dilated,
+ao_root_cat,Aortic root - dilated.,dilated,

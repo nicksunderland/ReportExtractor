@@ -1,0 +1,121 @@
+var_name,text,expected_value,expected_units
+ao_asc_cat,Normal aortic root with a dilated asc ao (4.1cm).,dilated,
+ao_asc_cat,HAMB_AO_ASC_TEXT: Upper limits of normal at sinus of valsalva,,
+ao_asc_cat,"HAMB_AO_ASC_TEXT: Dilated sinus of valsalva, measures 4.0cm",,
+ao_asc_cat,"Proximal ascending aorta measures 33.2mm, not dilated indexed to height at 18.4mm/m. ",nondilated,
+ao_asc_cat,"Proximal ascending aorta 4.1cm, dilated when indexed for BSA ( 2.0cm/m_)",dilated,
+ao_asc_cat,"Sinus of Valsalva 4.1cm. Proximal ascending aorta 4.3cm, (neither dilated when related to BSA).",nondilated,
+ao_asc_cat,AORTA: Dilated aortic root from Sinus fo Valsalva to proximal ascending aorta for height.,dilated,
+ao_asc_cat,"Aortic root; SoV 3.7cm - not dilated indexed to BSA, proximal ascending aorta not well imaged measures approx 3.9cm - not dilated indexed to BSA (1.98cm/m_). Descending aorta velocity 1.3m/s",nondilated,
+ao_asc_cat,AORTA: Proximal ascending aorta is outside the normal range for height.,dilated,
+ao_asc_cat,"**this is a test block AS AR MS MR TS TR PS PR this is a test block**
+
+Great Vessels
+
+Non dilated proximal aorta. Arch and abdominal aorta appear normal in dimension. Normal descending aortic flow velocity. ",nondilated,
+ao_asc_cat,HAMB_AO_ASC_TEXT: Normal aortic root size.,,
+ao_asc_cat,aortic root at valve level measures within normal limits however the proximal ascending aorta and the arch could not be accurately assessed,,
+ao_asc_cat,HAMB_AO_ASC_TEXT: Dilated aortic root.,,
+ao_asc_cat,"Mildly dilated aortic root with mild to moderate aortic stenosis. 
+Great Vessels
+Mildly dilated proximal aorta (3.9cm at sinus level extending through to the arch) with loss of ST geometry.",dilated,
+ao_asc_cat,"Great Vessels
+Non dilated proximal aorta. The aortic arch appears mildly dilated (3.8cm). ",nondilated,
+ao_asc_cat,"Great Vessels
+Non dilated proximal aorta. Poor arch views.
+
+
+",nondilated,
+ao_asc_cat,"Great Vessels
+The aortic root is normal size. The aortic arch was not well seen on this scan. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+",,
+ao_asc_cat,"Great Vessels
+Non dilated proximal aorta by dimension (3.4cm) but visually appears mildly dilated. The root appears mildly calcified at sinus level. Normal arch views and descending aortic flow velocity. ",nondilated,
+ao_asc_cat,"Great Vessels
+Non dilated proximal aorta to sinus level. Unable to visualise beyond this point on parasternal views. The arch views are suboptimal and the arch itself is not clearly seen but the impression is that it is dilated (~3.9cm) at the level of the innominate artery. The descending limb of the aorta is not dilated and flow is normal. 
+
+
+",nondilated,
+ao_asc_cat,"Great Vessels
+Non dilated proximal aorta. The arch appears mildly dilated at 3.4cm. Abdominal aorta appears non dilated and pulsatile. 
+",nondilated,
+ao_asc_cat,"Great Vessels
+Non dilated by dimension but appears mildly dilated. The proximal aorta appears very mildly calcified.The abdominal aorta does not appear dilated but regions of calcification can be seen on subcostal views.",,
+ao_asc_cat,"Great Vessels
+Non dilated proximal aorta. Arch views appear normal with normal descending aortic flow velocity.",nondilated,
+ao_asc_cat,"Great Vessels
+As far as can be seen, the proximal aorta does not appear dilated. Arch views are suboptimal. ",nondilated,
+ao_asc_cat,"Great Vessels
+Could not be visualised. No arch views available. ",,
+ao_asc_cat,"Great Vessels
+From what can be seen of the aortic root there does not appear to be any significant dilatation. The aortic arch was not well seen. 
+
+",,
+ao_asc_cat,"AORTA:
+ Normal dimension of the aortic root. Sinuses 2.8cm
+ Ascending aorta and arch if not well imaged",,
+ao_asc_cat," Aorta:
+ Aortic root and proximal ascending aorta not visualised. 
+ Aortic arch is of normal dimensions. No abnormal flow detected in the descending aorta. 
+ Aortic Arch: 3.6cm",,
+ao_asc_cat,"Aorta:
+ Dilated ascending aorta. Ascending aorta = 4.6cm (LE-LE as per departmental protocol)",dilated,
+ao_asc_cat,"AORTA:
+ Normal dimension of the aortic root
+ Sinuses 3.5cm, Ascending aorta 3.3cm, LVOT 2.2cm",,
+ao_asc_cat,"AORTA:
+ Normal dimension of the aortic root
+ Sinuses 2.8cm, ST junction 2.4cm, Ascending aorta 3.0cm
+ Normal appearance of the aortic arch with no obvious evidence of co-arctation",,
+ao_asc_cat," Aorta:
+ Normal aortic root, proximal ascending aorta and aortic arch dimensions. ",nondilated,
+ao_asc_cat,"Mild aortic sclerosis with at least eccentric mild AR. Dilated asc ao., SOV 4.8cm.",dilated,
+ao_asc_cat,HAMB_AO_ASC_TEXT: Non-dilated. CHAMB_AO_DESC_NORMAL: F,nondilated,
+ao_asc_cat,The ascending aorta is normal in size.,nondilated,
+ao_asc_cat,The ascending aorta is mildly dilated.,dilated,
+ao_asc_cat,"the asc. aorta is normal for height. 
+
+",nondilated,
+ao_asc_cat,"Asc Ao. slightly dilated, ascending aorta  3.1cm",dilated,
+ao_asc_cat,HAMB_AO_ARCH_NORMAL: F. CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: Sinus of valsalva 4.3cm. . Sino-tubular junction 2.9cm. . . CHAMB_AO_DESC_NORMAL: F.,,
+ao_asc_cat,"HAMB_AO_ARCH_NORMAL: F
+CHAMB_AO_ARCH_TEXT: not clearly seen on TTE, measures approx 3.5cm
+HAMB_AO_ASC_NORMAL: F
+HAMB_AO_ASC_TEXT: not clearly seen, dilated at SOV level 4.8cm
+CHAMB_AO_DESC_NORMAL: F
+CHAMB_AO_DESC_TEXT
+CHAMB_COMMENT
+CHAMB_IAS_INTACT: F",,
+ao_asc_cat,"HAMB_AO_ASC_TEXT: SoV dilated, 54.8mm (31.2mm/m)
+STJ effaced, not measured
+Prox Asc Ao dilated, 66.0mm (37.5 mm/m)",dilated,
+ao_asc_cat,Dilated aortic root at SoV and ascending aorta. ,dilated,
+ao_asc_cat,The SoV and ascending aorta are non-dilated. Test. ,nondilated,
+ao_asc_cat,SoV/proximal ascending aorta normal in size.,nondilated,

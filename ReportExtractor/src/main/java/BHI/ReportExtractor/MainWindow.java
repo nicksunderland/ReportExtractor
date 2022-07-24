@@ -1,4 +1,4 @@
-package neoImage.v2;
+package BHI.ReportExtractor;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -22,6 +22,12 @@ import javax.swing.JFileChooser;
 import java.io.File;
 import java.io.IOException;  
 
+/**
+ * @author nicholassunderland
+ *
+ * GUI class
+ *
+ */
 public class MainWindow {
 
 	/**

@@ -1,7 +1,7 @@
 Imports: {
 	import static gate.Utils.*;
+	import BHI.ReportExtractor.JapeRhsProcessor;
 }
-
 Phase: internal_diameter_diastole
 Input: Token Lookup  
 Options: control=Appelt 

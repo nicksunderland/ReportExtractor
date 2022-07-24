@@ -1,4 +1,4 @@
-package neoImage.v2;
+package BHI.ReportExtractor;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

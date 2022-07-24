@@ -1,0 +1,45 @@
+var_name,text,expected_value,expected_units
+ao_sov_cat,"Sinus of Valsalva 4.1cm. Proximal ascending aorta 4.3cm, (neither dilated when related to BSA).",nondilated,
+ao_sov_cat,"Sinus of Valsalva measures 3.6cm, this is not dilated when corrected to BSA (Z2 -0.39), however is 
+dilated when indexed to height (Z3 2.27).",dilated,
+ao_sov_cat,AORTA: Dilated aortic root from Sinus fo Valsalva to proximal ascending aorta for height.,dilated,
+ao_sov_cat,"AORTA: Sinus of Valsalva measures 43.2mm, this is dilated indexed to height at 24mm/m.",dilated,
+ao_sov_cat,"SOV 4.1cm - this is not dilated when corrected to BSA, however, it is dilated when indexed to height ",dilated,
+ao_sov_cat,Sinus of Valsalva is non dilated for height.,nondilated,
+ao_sov_cat,Dilated aortic root at SoV. ,dilated,
+ao_sov_cat,Aorta Visually no significant dilatation of the aortic root at sinus level.  ,nondilated,
+ao_sov_cat,"Proximal aorta only visualised up to sinus level (2.8cm) but as far as can be seen, does not appear dilated.",nondilated,
+ao_sov_cat,"Great Vessels
+Non dilated proximal aorta to sinus level.
+
+
+
+
+
+
+
+",nondilated,
+ao_sov_cat,"Great Vessels
+From what can be seen of the aortic root there does not appear to be any significant dilatation. The aortic arch was not well seen. 
+
+
+
+",,
+ao_sov_cat,"Mild aortic sclerosis with at least eccentric mild AR. Dilated aortic root, SOV dilated 4.8cm.",dilated,
+ao_sov_cat,"Aortic root - dilated at SoV level, ? asymmetrical dilatation at NCC SoV. 4.1cm. Remaining root not clearly seen. ",dilated,
+ao_sov_cat,"Aortic root, slightly dilated anterior aspect of sinus of valsalva, ascending aorta  3.1cm",dilated,
+ao_sov_cat,HAMB_AO_ARCH_NORMAL: F. CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT. CHAMB_AO_DESC_NORMAL: F. CHAMB_AO_DESC_TEXT. CHAMB_COMMENT. CHAMB_IAS_INTACT: F. CHAMB_IAS_TEXT. CHAMB_LA_NORMAL: F.,,
+ao_sov_cat,"HAMB_AO_ASC_TEXT: SoV dilated, 54.8mm (31.2mm/m)
+STJ effaced, not measured
+Prox Asc Ao dilated, 66.0mm (37.5 mm/m)",dilated,
+ao_sov_cat,"The ascending aorta is mildly dilated.
+HAMB_AO_ARCH_NORMAL: F
+CHAMB_AO_ARCH_TEXT
+HAMB_AO_ASC_NORMAL: F
+HAMB_AO_ASC_TEXT
+CHAMB_AO_DESC_NORMAL: F
+CHAMB_AO_DESC_TEXT",,
+ao_sov_cat,Dilated aortic root at SoV and ascending aorta. ,dilated,
+ao_sov_cat,The SoV and ascending aorta are non-dilated. Test. ,nondilated,
+ao_sov_cat,Sinus of Valsalva measures 4.3cm this is not dilated when corrected to BSA (Z2 1.34).,nondilated,
+ao_sov_cat,SoV/proximal ascending aorta normal in size.,nondilated,

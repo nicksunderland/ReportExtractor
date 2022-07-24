@@ -1,7 +1,7 @@
 /**
  * 
  */
-package neoImage.v2;
+package BHI.ReportExtractor;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

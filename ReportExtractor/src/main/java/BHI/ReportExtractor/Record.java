@@ -1,7 +1,13 @@
-package neoImage.v2;
+package BHI.ReportExtractor;
 
 import com.opencsv.bean.CsvBindByName;
 
+/**
+ * @author nicholassunderland
+ *
+ * Class that holds record / text reports and associated details
+ *
+ */
 public class Record{
 	
 	@CsvBindByName(column = "id", required = true)

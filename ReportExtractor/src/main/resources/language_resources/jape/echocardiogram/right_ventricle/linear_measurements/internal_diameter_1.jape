@@ -1,6 +1,6 @@
 Imports: {
 	import static gate.Utils.*;
-	import neoImage.v2.JapeRhsProcessor;
+	import BHI.ReportExtractor.JapeRhsProcessor;
 }
 
 Phase: internal_diameter_1

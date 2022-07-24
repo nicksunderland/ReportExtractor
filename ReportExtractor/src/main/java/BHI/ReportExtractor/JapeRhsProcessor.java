@@ -1,4 +1,4 @@
-package neoImage.v2;
+package BHI.ReportExtractor;
 
 import static gate.Utils.stringFor;
 import gate.Annotation;

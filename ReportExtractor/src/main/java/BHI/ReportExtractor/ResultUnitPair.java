@@ -1,5 +1,11 @@
-package neoImage.v2;
+package BHI.ReportExtractor;
 
+/**
+ * @author nicholassunderland
+ *
+ * Class that holds individual results, variable values and their units
+ *
+ */
 public class ResultUnitPair<A, B> {
     private A value;
     private B units;

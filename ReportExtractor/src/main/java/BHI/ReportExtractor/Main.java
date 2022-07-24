@@ -1,7 +1,13 @@
-package neoImage.v2;
+package BHI.ReportExtractor;
 
 import java.awt.EventQueue;
 
+/**
+ * @author nicholassunderland
+ *
+ * Main class
+ *
+ */
 public class Main {
 	
 	//Main class variables 

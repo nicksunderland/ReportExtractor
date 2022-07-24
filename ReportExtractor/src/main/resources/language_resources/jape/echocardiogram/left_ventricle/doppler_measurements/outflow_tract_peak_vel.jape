@@ -3,7 +3,7 @@
 
 Imports: {
 	import static gate.Utils.*;
-	import neoImage.v2.JapeRhsProcessor;
+	import BHI.ReportExtractor.JapeRhsProcessor;
 }
 
 Phase: outflow_tract_peak_velocity
