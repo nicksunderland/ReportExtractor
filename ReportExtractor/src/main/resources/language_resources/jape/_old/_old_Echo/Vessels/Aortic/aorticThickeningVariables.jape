@@ -1,0 +1,302 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  aorticThickeningVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: aorticThickeningVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of aortic valve thickening Variable relations from Lookup Annotations 
+*/
+
+Phase: aorticThickeningVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: AorticThickeningValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MINIMAL"} | {Token.string ==~ "(?i)MINIMUM"} | {Token.string ==~ "(?i)TRIVIAL"}):trivial | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)SEVERE(LY)?"}):severe
+) 
+) 
+
+( {Token.string ==~ "(?i)THICK(ENED)?"} | {Token.string ==~ "(?i)THICKENING"} | {Token.string ==~ "(?i)SCLEROTIC"} |
+{Token.string ==~ "(?i)SCLEROSIS"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+
+):context
+
+
+):AorticThickeningValueGram 
+
+--> 
+:AorticThickeningValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticThickeningValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "Levels: 0 (no thickening) to 4 (Severely thickening)");
+	newFeatures.put("varType","AV Thickening");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Thickening normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: AorticThickeningAlternValueRule
+Priority:10
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MINIMAL"} | {Token.string ==~ "(?i)MINIMUM"} | {Token.string ==~ "(?i)TRIVIAL"}):trivial | 
+({Token.string ==~ "(?i)MILD"} | {Token.string ==~ "(?i)MILDLY"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)SEVERE(LY)?"}):severe
+) 
+) 
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+( {Token.string ==~ "(?i)THICK(ENED)?"} | {Token.string ==~ "(?i)THICKENING"} | {Token.string ==~ "(?i)SCLEROTIC"} |
+{Token.string ==~ "(?i)SCLEROSIS"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+
+):context
+
+
+):AorticThickeningAlternValueGram 
+
+--> 
+:AorticThickeningAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticThickeningAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "Levels: 0 (no thickening) to 4 (Severely thickening)");
+	newFeatures.put("varType","AV Thickening");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Thickening altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+Rule: AorticThickeningAltern2ValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+
+( {Token.string ==~ "(?i)THICK(ENED)?"} | {Token.string ==~ "(?i)THICKENING"} | {Token.string ==~ "(?i)SCLEROTIC"} |
+{Token.string ==~ "(?i)SCLEROSIS"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+
+):context
+
+
+):AorticThickeningAltern2ValueGram 
+
+--> 
+:AorticThickeningAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticThickeningAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "3");
+	
+	newFeatures.put("unit", "Levels: 0 (no thickening) to 4 (Severely thickening)");
+	newFeatures.put("varType","AV Thickening");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Thickening altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: AorticThickeningAltern3ValueRule
+Priority:10
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MINIMAL"} | {Token.string ==~ "(?i)MINIMUM"} | {Token.string ==~ "(?i)TRIVIAL"}):trivial | 
+({Token.string ==~ "(?i)MILD"} | {Token.string ==~ "(?i)MILDLY"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)SEVERE(LY)?"}):severe
+) 
+) 
+{Token.kind == "word"}
+
+( {Token.string ==~ "(?i)THICK(ENED)?"} | {Token.string ==~ "(?i)THICKENING"} | {Token.string ==~ "(?i)SCLEROTIC"} |
+{Token.string ==~ "(?i)SCLEROSIS"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+
+):context
+
+
+):AorticThickeningAltern3ValueGram 
+
+--> 
+:AorticThickeningAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticThickeningAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "Levels: 0 (no thickening) to 4 (Severely thickening)");
+	newFeatures.put("varType","AV Thickening");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Thickening altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: AorticThickeningAltern4ValueRule
+Priority: 20
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)NO[N]?"} | {Token.string ==~ "(?i)NOT"} |
+{Token.string ==~ "(?i)NO"} {Token.string ==~ "(?i)AORTIC"} 
+)
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.string == "/"})?
+
+( {Token.string ==~ "(?i)THICK(ENED)?"} | {Token.string ==~ "(?i)THICKENING"} | {Token.string ==~ "(?i)SCLEROTIC"} |
+{Token.string ==~ "(?i)SCLEROSIS"})
+
+):context
+
+
+):AorticThickeningAltern4NonValueGram 
+
+--> 
+:AorticThickeningAltern4NonValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticThickeningAltern4NonValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "Levels: 0 (no thickening) to 4 (Severely thickening)");
+	newFeatures.put("varType","AV Thickening");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Thickening altern4");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

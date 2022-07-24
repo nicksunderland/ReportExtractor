@@ -1,0 +1,123 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  tricuspidRVVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: tricuspidRVVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of tricuspid valve regurgitation volume Variable relations from Lookup Annotations 
+*/
+
+Phase: tricuspidRVVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+  
+Rule: TricuspidRVValueRule
+(
+(
+({Token.string ==~ "(?i)TR"} | {Token.string ==~ "(?i)RAVVR"})
+{Token.string ==~ "(?i)RV"}
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)ML"}):unit)?
+)
+
+
+):TricuspidRVValueGram 
+
+--> 
+:TricuspidRVValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidRVValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","TR RV");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "TR RV normal");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: TricuspidRVAlternValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+( 
+{Token.string ==~ "(?i)RV"} 
+| 
+(({Token.string ==~ "(?i)REGURG(ITATION)?"} | {Token.string ==~ "(?i)REGURG(ITANT)?"}) {Token.string ==~ "(?i)VOLUME"}) 
+)
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+
+({Token.string == "~"})?
+({Token.string == "~"})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+	
+(
+(({Token.string ==~ "(?i)ML"}):unit)?
+)
+
+):TricuspidRVAlternValueGram 
+
+--> 
+:TricuspidRVAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidRVAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varType","TR RV");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "TR RV altern");
+	
+	if (matchedunit != null) {
+		newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

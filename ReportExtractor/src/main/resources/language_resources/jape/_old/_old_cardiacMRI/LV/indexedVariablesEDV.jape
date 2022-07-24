@@ -1,0 +1,139 @@
+/*
+*  indexedVariablesEDV.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020
+*  $Id: indexedVariablesEDV.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of EDV relations from Lookup Annotations 
+*/
+
+Phase: indexedVariablesEDV
+Input: Token Lookup  
+Options: control=appelt 
+
+
+
+Rule: iLVEDVValueRule
+(
+{Token.string == "LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Diastolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+(
+{Token.kind == "number"}
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+)
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVEDVValueGram 
+({Token.string!="number"}|{SpaceToken.string!=")"})*
+{Token.string == ")"}
+
+--> 
+:iLVEDVValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVEDVValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVEDVValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVEDVValue", newFeatures);
+  }
+  
+
+Rule: iLVEDVValueAlternRule
+(
+{Token.string == "LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Diastolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVEDVValueAlternGram 
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+{!Token.kind == "number"}
+
+--> 
+:iLVEDVValueAlternGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVEDVValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVEDVValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVEDVValue", newFeatures);
+  }
+  
+
+Rule: iLVEDVValueAbbrevRule
+(
+{Token.string == "iLVEDV"}	
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVEDVValueGramAbbrev 
+
+--> 
+:iLVEDVValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVEDVValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVEDVValueAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVEDVValue", newFeatures);
+  }
+  
+
+Rule: iLVEDVValueAlternRule2
+(
+{Token.string =~ ".*LV"} 
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Diastolic"}
+{Token.string == "Volume"}
+{Token.string=="ml"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+{Token.kind == "number"}	
+{Token.position == startpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVEDVValueAlternGram2 
+
+--> 
+:iLVEDVValueAlternGram2
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVEDVValueAlternGram2");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVEDVValueAlternRule2");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVEDVValue", newFeatures);
+  }

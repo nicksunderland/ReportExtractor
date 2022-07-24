@@ -1,0 +1,481 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleHypertrophyLevelVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleHypertrophyLevelVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle Hypertrophy Level Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleHypertrophyLevelVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LeftVentricleHypertrophyLevelValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+(
+(
+(
+
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MODERATELY"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Lookup.majorType == severity_Level_Mild}):mild | 
+({Lookup.majorType == severity_Level_Severe}):severe
+) 
+)
+
+{Token.string ==~ "(?i)HYPERTROPHY"}
+
+
+):context
+
+
+):LeftVentricleHypertrophyLevelValueGram 
+
+--> 
+:LeftVentricleHypertrophyLevelValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleHypertrophyLevelValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No hypertrophy) to 3 (Severe hypertrophy), Null (assume 0)");
+	newFeatures.put("varType","LV Hypertrophy Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypertrophy Level normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleHypertrophyLevelAlternValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+(
+(
+(
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MODERATELY"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Lookup.majorType == severity_Level_Mild}):mild | 
+({Lookup.majorType == severity_Level_Severe}):severe
+) 
+)
+
+{Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion}
+{Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion}
+{Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion}
+
+{Token.string ==~ "(?i)HYPERTROPHY"}
+
+
+):context
+
+
+):LeftVentricleHypertrophyLevelAlternValueGram 
+
+--> 
+:LeftVentricleHypertrophyLevelAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleHypertrophyLevelAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No hypertrophy) to 3 (Severe hypertrophy), Null (assume 0)");
+	newFeatures.put("varType","LV Hypertrophy Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypertrophy Level altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+Rule: LeftVentricleHypertrophyLevelAlternFourValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+(
+(
+(
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MODERATELY"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Lookup.majorType == severity_Level_Mild}):mild | 
+({Lookup.majorType == severity_Level_Severe}):severe
+) 
+)
+
+{Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion}
+{Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion}
+{Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion}
+{Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion}
+
+{Token.string ==~ "(?i)HYPERTROPHY"}
+
+
+):context
+
+
+):LeftVentricleHypertrophyLevelAlternFourValueGram 
+
+--> 
+:LeftVentricleHypertrophyLevelAlternFourValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleHypertrophyLevelAlternFourValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No hypertrophy) to 3 (Severe hypertrophy), Null (assume 0)");
+	newFeatures.put("varType","LV Hypertrophy Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypertrophy Level alternFour");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+Rule: LeftVentricleHypertrophyLevelAltern2ValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+(
+(
+(
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MODERATELY"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Lookup.majorType == severity_Level_Mild}):mild | 
+({Lookup.majorType == severity_Level_Severe}):severe
+) 
+)
+
+{Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion}
+{Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion}
+
+{Token.string ==~ "(?i)HYPERTROPHY"}
+
+
+):context
+
+
+):LeftVentricleHypertrophyLevelAltern2ValueGram 
+
+--> 
+:LeftVentricleHypertrophyLevelAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleHypertrophyLevelAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No hypertrophy) to 3 (Severe hypertrophy), Null (assume 0)");
+	newFeatures.put("varType","LV Hypertrophy Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypertrophy Level altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleHypertrophyLevelAltern3ValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MODERATELY"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Lookup.majorType == severity_Level_Mild}):mild | 
+({Lookup.majorType == severity_Level_Severe}):severe
+)  
+)
+
+{Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion}
+
+{Token.string ==~ "(?i)HYPERTROPHY"}
+
+
+):context
+
+
+):LeftVentricleHypertrophyLevelAltern3ValueGram 
+
+--> 
+:LeftVentricleHypertrophyLevelAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleHypertrophyLevelAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No hypertrophy) to 3 (Severe hypertrophy), Null (assume 0)");
+	newFeatures.put("varType","LV Hypertrophy Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypertrophy Level altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleHypertrophyLevelAlternModerateValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)HYPERTROPHY"}
+
+
+):context
+
+
+):LeftVentricleHypertrophyLevelAlternModerateValueGram 
+
+--> 
+:LeftVentricleHypertrophyLevelAlternModerateValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleHypertrophyLevelAlternModerateValueGram");
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2");
+	
+	newFeatures.put("unit", "scale 0 (No hypertrophy) to 3 (Severe hypertrophy), Null (assume 0)");
+	newFeatures.put("varType","LV Hypertrophy Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypertrophy Level alternModerate");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleHypertrophyLevelUnboundedValueRule
+Priority:10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MODERATELY"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Lookup.majorType == severity_Level_Mild}):mild | 
+({Lookup.majorType == severity_Level_Severe}):severe
+) 
+)
+{Token.string ==~ "(?i)HYPERTROPHY"}
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion})?
+{Token.string ==~ "(?i)LEFT"}
+{Token.string ==~ "(?i)VENTRICLE"}
+
+):context
+
+
+):LeftVentricleHypertrophyLevelUnboundedValueGram 
+
+--> 
+:LeftVentricleHypertrophyLevelUnboundedValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleHypertrophyLevelUnboundedValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "Levels: 0 (No hypertrophy) to 3 (Severe hypertrophy), Null (assume 0)");
+	newFeatures.put("varType","LV Hypertrophy Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypertrophy Level Unbounded");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+Rule: LeftVentricleHypertrophyLevelAlternNonValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)NO[N]?"} | {Token.string ==~ "(?i)NOT"} |
+{Token.string ==~ "(?i)NO"} {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICULAR"}
+)
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Level_AnyWord_Exclusion})?
+({Token.string == "/"})?
+
+{Token.string ==~ "(?i)HYPERTROPHY"}
+
+):context
+
+
+):LeftVentricleHypertrophyLevelAlternNonValueGram 
+
+--> 
+:LeftVentricleHypertrophyLevelAlternNonValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleHypertrophyLevelAlternNonValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "Levels: 0 (No hypertrophy) to 3 (Severe hypertrophy), Null (assume 0)");
+	newFeatures.put("varType","LV Hypertrophy Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypertrophy Level alternNon");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

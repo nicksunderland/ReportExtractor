@@ -1,0 +1,69 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  aorticDVIVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: aorticDVIVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of aortic dimensionless index or velocity ratio Variable relations from Lookup Annotations 
+*/
+
+Phase: aorticDVIVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: AorticDVIValueRule
+Priority:1
+(
+(
+({Token.string ==~ "(?i)LVOT"} | {Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | ({Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} ))
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)D[V]?I"} | {Token.string ==~ "(?i)DIMENSIONLESS"} {Token.string ==~ "(?i)INDEX"} | 
+{Token.string ==~ "(?i)VELOCITY"} {Token.string ==~ "(?i)RATIO"} |
+{Token.string ==~ "(?i)VR"} )
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+
+):AorticDVIValueGram 
+
+--> 
+:AorticDVIValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticDVIValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","AV DVI");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Aortic Valve Velocity Ratio/Dimensionless Index normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+
+  
+  

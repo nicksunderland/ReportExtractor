@@ -1,0 +1,102 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+/* The aorta section of the report needs to be tagged first.
+ * Ensure ReportSection phases run first (report_sections.jape)
+ */
+
+/* This phase extends the Anatomy annotations based of things found within
+ * the Aorta Report Section. e.g. "sinuses" could have a number of meanings if 
+ * found elsewhere within a report, however if "sinuses" are found within the
+ * "AORTA:" report section or a sentence talking about an aorta then it is 
+ * highly likely that it is referring to the sinuses of Valsalva.
+ */
+Phase: TagVarSentence
+Input: Sentence Anatomy
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * Sentence that contains 'aorta' phrases
+ */
+Rule: var_sentence
+(
+	{Sentence contains {Anatomy.majorType == "aorta"}}
+	({Sentence notContains {Anatomy.majorType != "aorta"}})?
+	
+):var_sentence
+-->
+:var_sentence.VarSentence = {type = "aorta"}
+
+
+
+Phase: ExtendAnatomyAnnotations
+Input: Token ReportSection VarSentence Lookup Anatomy
+Options: control=first negationGrouping=false
+/*
+ * Description:
+ * Tag 'root', 'sinus', and 'valsalva' as relating to the aorta if it appears in a
+ * sentence or report sections about aortas
+ */
+Rule: ext_anat_annots_1
+(
+	{Token.string ==~ "(?i)sinus(es)?", 
+		Token within {ReportSection.type == "aorta"}, 
+		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"},
+		Token notWithin {Anatomy.minorType == "coronary_sinus"},
+		Token notWithin {Anatomy.minorType == "sinus_venosus"},
+		Token notWithin {Lookup.majorType == "cardiac_rhythm"}} |
+	{Token.string ==~ "(?i)sinus(es)?", 
+		Token within {VarSentence.type == "aorta"},
+		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"},
+		Token notWithin {Anatomy.minorType == "coronary_sinus"},
+		Token notWithin {Anatomy.minorType == "sinus_venosus"},
+		Token notWithin {Lookup.majorType == "cardiac_rhythm"}} |
+	{Token.string ==~ "(?i)valsalva", 
+		Token within {VarSentence.type == "aorta"},
+		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"}} |
+	{Token.string ==~ "(?i)valsalva", 
+		Token within {ReportSection.type == "aorta"}, 
+		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"}}
+		
+
+):ext_anat_annots
+-->
+:ext_anat_annots.Anatomy = {language = "en", majorType = "aorta", minorType = "sinus_of_valsalva"}
+
+/*
+ * Description:
+ * Tag 'root' and 'sinus' as relating to the aorta if it appears in a
+ * sentence or report sections about aortas
+ */
+Rule: ext_anat_annots_2
+(
+	{Token.string ==~ "(?i)root",
+		Token notWithin {Anatomy.minorType == "aortic_root"},
+		Token within {ReportSection.type == "aorta"}} |
+	{Token.string ==~ "(?i)root",
+		Token notWithin {Anatomy.minorType == "aortic_root"},
+		Token within {VarSentence.type == "aorta"}}
+
+):ext_anat_annots
+-->
+:ext_anat_annots.Anatomy = {language = "en", majorType = "aorta", minorType = "aortic_root"}
+
+/*
+ * Description:
+ * Tag 'arch' as relating to the aorta if it appears in a
+ * sentence or report sections about aortas
+ */
+Rule: ext_anat_annots_3
+(
+	{Token.string ==~ "(?i)arch",
+		Token notWithin {Anatomy.minorType == "aortic_arch"},
+		Token within {ReportSection.type == "aorta"}} |
+	{Token.string ==~ "(?i)arch",
+		Token notWithin {Anatomy.minorType == "aortic_arch"},
+		Token within {VarSentence.type == "aorta"}}
+
+):ext_anat_annots
+-->
+:ext_anat_annots.Anatomy = {language = "en", majorType = "aorta", minorType = "aortic_arch"}

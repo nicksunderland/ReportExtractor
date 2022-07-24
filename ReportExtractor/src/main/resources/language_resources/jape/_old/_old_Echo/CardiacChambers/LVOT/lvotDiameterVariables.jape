@@ -1,0 +1,171 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  lvotDiameterVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: lvotDiameterVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of LVOT diameter Variable relations from Lookup Annotations 
+*/
+
+Phase: lvotDiameterVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+ 
+  
+Rule: LvotDiameterValueRule
+(
+(
+
+{Token.string ==~ "(?i)LVOT[D]?"}
+({Token.string ==~ "(?i)DIAM(ETER)?"})?
+
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+
+({Token.string == "~"})?
+({Token.string == "~"})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"}):unit)
+)
+
+):LvotDiameterValueGram 
+(
+({Token.string != "/"})?
+({Token.string != "S"})?
+)
+
+--> 
+:LvotDiameterValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LvotDiameterValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","LVOT Diam");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LVOT Diam normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LvotDiameterAlternValueRule
+(
+(
+({Token.string ==~ "(?i)LVOT"})
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)AR", Token.string !=~ "(?i)A[OV]", Token.string !=~ "(?i)AVA[I]?"}|{SpaceToken.string!=DIMENSION})*
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)DIMENSION"}
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+
+({Token.string == "~"})?
+({Token.string == "~"})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"}):unit)
+)
+
+):LvotDiameterAlternValueGram 
+(
+({Token.string != "/"})?
+({Token.string != "S"})?
+)
+
+--> 
+:LvotDiameterAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LvotDiameterAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","LVOT Diam");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LVOT Diam altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

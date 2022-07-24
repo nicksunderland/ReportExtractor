@@ -1,0 +1,340 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleIVSFlatteningVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleIVSFlatteningVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle IVS flattening Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleIVSFlatteningVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LeftVentricleIVSFlatteningValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+( 
+
+({Token.position == "startpunct"})?
+
+(
+({Token.string ==~ "(?i)SYSTOLIC"} ):systolic | 
+({Token.string ==~ "(?i)DIASTOLIC"} ):diastolic |
+({Token.string ==~ "(?i)SYSTOLIC"} {Token.string ==~ "(?i)AND"} {Token.string ==~ "(?i)DIASTOLIC"} | {Token.string ==~ "(?i)DIASTOLIC"} {Token.string ==~ "(?i)AND"} {Token.string ==~ "(?i)SYSTOLIC"}):both |
+({Token.string ==~ "(?i)NO"} ):noFlattening
+)
+ 
+({Token.position == "endpunct"})?
+
+(
+({Token.string ==~ "(?i)SEPTAL"} | {Token.string ==~ "(?i)SEPTUM"}) 
+
+({Token.string ==~ "(?i)FLATTENING"} | {Token.string ==~ "(?i)FLATTENED"})
+|
+{Token.string ==~ "(?i)D-SHAPED"} | {Token.string ==~ "(?i)D"} {Token.string ==~ "(?i)SHAPED"} | {Token.string ==~ "(?i)D"} {Token.string == "-"} {Token.string ==~ "(?i)SHAPED"}
+)
+
+):context
+
+
+):LeftVentricleIVSFlatteningValueGram 
+
+--> 
+:LeftVentricleIVSFlatteningValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedSystolic=(gate.AnnotationSet) bindings.get("systolic");
+	gate.AnnotationSet matchedDiastolic=(gate.AnnotationSet) bindings.get("diastolic");
+	gate.AnnotationSet matchedBoth=(gate.AnnotationSet) bindings.get("both");
+	gate.AnnotationSet matchedNoFlattening=(gate.AnnotationSet) bindings.get("noFlattening");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleIVSFlatteningValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedSystolic != null) {
+		newFeatures.put("varValue", "Systolic");
+	} else if (matchedDiastolic != null) {
+		newFeatures.put("varValue", "Diastolic");
+	} else if (matchedBoth != null) {
+		newFeatures.put("varValue", "Systolic and Diastolic");
+	} else if (matchedNoFlattening != null) {
+		newFeatures.put("varValue", "No Flattening");
+	} else {
+		newFeatures.put("varValue", "Unspecified");
+	}
+	
+	newFeatures.put("unit", "No Flattening, Systolic, Diastolic, Systolic and Diastolic, Unspecified (flattening but timing not specified)");
+	newFeatures.put("varType","IVS flattening");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Interventricular Septal Flattening normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LeftVentricleIVSFlatteningAlternValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+( 
+
+({Token.position == "startpunct"})?
+
+(
+({Token.string ==~ "(?i)SYSTOLIC"} ):systolic | 
+({Token.string ==~ "(?i)DIASTOLIC"} ):diastolic |
+({Token.string ==~ "(?i)SYSTOLIC"} {Token.string ==~ "(?i)AND"} {Token.string ==~ "(?i)DIASTOLIC"} | {Token.string ==~ "(?i)DIASTOLIC"} {Token.string ==~ "(?i)AND"} {Token.string ==~ "(?i)SYSTOLIC"}):both |
+({Token.string ==~ "(?i)NO"} ):noFlattening
+)
+ 
+({Token.position == "endpunct"})?
+
+(
+({Token.string ==~ "(?i)FLATTENING"} | {Token.string ==~ "(?i)FLATTENED"})
+
+({Token.string ==~ "(?i)SEPTAL"} | {Token.string ==~ "(?i)SEPTUM"}) 
+|
+{Token.string ==~ "(?i)D-SHAPED"} | {Token.string ==~ "(?i)D"} {Token.string ==~ "(?i)SHAPED"} | {Token.string ==~ "(?i)D"} {Token.string == "-"} {Token.string ==~ "(?i)SHAPED"}
+)
+
+):context
+
+
+):LeftVentricleIVSFlatteningAlternValueGram 
+
+--> 
+:LeftVentricleIVSFlatteningAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedSystolic=(gate.AnnotationSet) bindings.get("systolic");
+	gate.AnnotationSet matchedDiastolic=(gate.AnnotationSet) bindings.get("diastolic");
+	gate.AnnotationSet matchedBoth=(gate.AnnotationSet) bindings.get("both");
+	gate.AnnotationSet matchedNoFlattening=(gate.AnnotationSet) bindings.get("noFlattening");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleIVSFlatteningAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedSystolic != null) {
+		newFeatures.put("varValue", "Systolic");
+	} else if (matchedDiastolic != null) {
+		newFeatures.put("varValue", "Diastolic");
+	} else if (matchedBoth != null) {
+		newFeatures.put("varValue", "Systolic and Diastolic");
+	} else if (matchedNoFlattening != null) {
+		newFeatures.put("varValue", "No Flattening");
+	} else {
+		newFeatures.put("varValue", "Unspecified");
+	}
+	
+	newFeatures.put("unit", "No Flattening, Systolic, Diastolic, Systolic and Diastolic, Unspecified (flattening but timing not specified)");
+	newFeatures.put("varType","IVS flattening");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Interventricular Septal Flattening altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleIVSFlatteningAltern2ValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+( 
+
+({Token.position == "startpunct"})?
+
+(
+({Token.string ==~ "(?i)SYSTOLIC"} ):systolic | 
+({Token.string ==~ "(?i)DIASTOLIC"} ):diastolic |
+({Token.string ==~ "(?i)SYSTOLIC"} {Token.string ==~ "(?i)AND"} {Token.string ==~ "(?i)DIASTOLIC"} | {Token.string ==~ "(?i)DIASTOLIC"} {Token.string ==~ "(?i)AND"} {Token.string ==~ "(?i)SYSTOLIC"}):both |
+({Token.string ==~ "(?i)NO"} ):noFlattening
+)
+ 
+({Token.position == "endpunct"})?
+
+(
+({Token.string ==~ "(?i)SEPTAL"} | {Token.string ==~ "(?i)SEPTUM"}) 
+
+({Token.kind == "word", !Lookup.majorType == Septal_Flattening_AnyWordExclusion})?
+({Token.kind == "word", !Lookup.majorType == Septal_Flattening_AnyWordExclusion})?
+
+({Token.string ==~ "(?i)FLATTENING"} | {Token.string ==~ "(?i)FLATTENED"})
+|
+{Token.string ==~ "(?i)D-SHAPED"} | {Token.string ==~ "(?i)D"} {Token.string ==~ "(?i)SHAPED"} | {Token.string ==~ "(?i)D"} {Token.string == "-"} {Token.string ==~ "(?i)SHAPED"}
+)
+
+):context
+
+
+):LeftVentricleIVSFlatteningAltern2ValueGram 
+
+--> 
+:LeftVentricleIVSFlatteningAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedSystolic=(gate.AnnotationSet) bindings.get("systolic");
+	gate.AnnotationSet matchedDiastolic=(gate.AnnotationSet) bindings.get("diastolic");
+	gate.AnnotationSet matchedBoth=(gate.AnnotationSet) bindings.get("both");
+	gate.AnnotationSet matchedNoFlattening=(gate.AnnotationSet) bindings.get("noFlattening");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleIVSFlatteningAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedSystolic != null) {
+		newFeatures.put("varValue", "Systolic");
+	} else if (matchedDiastolic != null) {
+		newFeatures.put("varValue", "Diastolic");
+	} else if (matchedBoth != null) {
+		newFeatures.put("varValue", "Systolic and Diastolic");
+	} else if (matchedNoFlattening != null) {
+		newFeatures.put("varValue", "No Flattening");
+	} else {
+		newFeatures.put("varValue", "Unspecified");
+	}
+	
+	newFeatures.put("unit", "No Flattening, Systolic, Diastolic, Systolic and Diastolic, Unspecified (flattening but timing not specified)");
+	newFeatures.put("varType","IVS flattening");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Interventricular Septal Flattening altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+Rule: LeftVentricleIVSFlatteningAltern3ValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+( 
+
+(
+({Token.string ==~ "(?i)SEPTAL"} | {Token.string ==~ "(?i)SEPTUM"}) 
+
+({Token.kind == "word", !Lookup.majorType == Septal_Flattening_AnyWordExclusion})?
+({Token.kind == "word", !Lookup.majorType == Septal_Flattening_AnyWordExclusion})?
+
+({Token.string ==~ "(?i)FLATTENING"} | {Token.string ==~ "(?i)FLATTENED"})
+|
+{Token.string ==~ "(?i)D-SHAPED"} | {Token.string ==~ "(?i)D"} {Token.string ==~ "(?i)SHAPED"} | {Token.string ==~ "(?i)D"} {Token.string == "-"} {Token.string ==~ "(?i)SHAPED"}
+)
+
+):context
+
+
+):LeftVentricleIVSFlatteningAltern3ValueGram 
+
+--> 
+:LeftVentricleIVSFlatteningAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedSystolic=(gate.AnnotationSet) bindings.get("systolic");
+	gate.AnnotationSet matchedDiastolic=(gate.AnnotationSet) bindings.get("diastolic");
+	gate.AnnotationSet matchedBoth=(gate.AnnotationSet) bindings.get("both");
+	gate.AnnotationSet matchedNoFlattening=(gate.AnnotationSet) bindings.get("noFlattening");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleIVSFlatteningAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Unspecified");
+	
+	newFeatures.put("unit", "No Flattening, Systolic, Diastolic, Systolic and Diastolic, Unspecified (flattening but timing not specified)");
+	newFeatures.put("varType","IVS flattening");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Interventricular Septal Flattening altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+Rule: LeftVentricleIVSFlatteningValueAlternNonRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+( 
+
+({Token.string ==~ "(?i)NO"} ):noFlattening
+
+(
+({Token.string ==~ "(?i)SEPTAL"} | {Token.string ==~ "(?i)SEPTUM"}) 
+
+({Token.string ==~ "(?i)FLATTENING"} | {Token.string ==~ "(?i)FLATTENED"})
+|
+{Token.string ==~ "(?i)D-SHAPED"} | {Token.string ==~ "(?i)D"} {Token.string ==~ "(?i)SHAPED"} | {Token.string ==~ "(?i)D"} {Token.string == "-"} {Token.string ==~ "(?i)SHAPED"}
+)
+
+):context
+
+
+):LeftVentricleIVSFlatteningValueAlternNonGram 
+
+--> 
+:LeftVentricleIVSFlatteningValueAlternNonGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedNoFlattening=(gate.AnnotationSet) bindings.get("noFlattening");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleIVSFlatteningValueAlternNonGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "No Flattening");
+		
+	newFeatures.put("unit", "No Flattening, Systolic, Diastolic, Systolic and Diastolic, Unspecified (flattening but timing not specified)");
+	newFeatures.put("varType","IVS flattening");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Interventricular Septal Flattening alternNon");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

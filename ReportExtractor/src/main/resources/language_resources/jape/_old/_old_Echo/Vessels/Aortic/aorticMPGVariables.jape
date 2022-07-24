@@ -1,0 +1,109 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  aorticMPGVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: aorticMPGVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of aortic MPG Variable relations from Lookup Annotations 
+*/
+
+Phase: aorticMPGVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: AorticMPGValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV[A]?"} | ({Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} ))
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)AO"})?
+({Token.string ==~ "(?i)MEANPG"} | {Token.string ==~ "(?i)MEAN"} | {Token.string ==~ "(?i)MPD"} | ({Token.string ==~ "(?i)MEAN"} {Token.string ==~ "(?i)PG"} ))
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):AorticMPGValueGram 
+
+--> 
+:AorticMPGValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticMPGValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","AV MPG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("unit", "mmHg");
+	newFeatures.put("rule","AV MPG Normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: AorticMPGAlternValueRule
+Priority:10
+(
+(
+({Token.string ==~ "(?i)AO"} | {Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"})
+({Token.string ==~ "(?i)MEANPG"} | {Token.string ==~ "(?i)MPD"} | ({Token.string ==~ "(?i)MEAN"} {Token.string ==~ "(?i)PG"} ))
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)?
+)
+
+):AorticMPGAlternValueGram 
+
+--> 
+:AorticMPGAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticMPGAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","AV MPG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("unit", "mmHg");
+	newFeatures.put("rule","AV MPG Altern");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+  
+  

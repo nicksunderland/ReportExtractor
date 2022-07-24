@@ -1,0 +1,77 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  rightVentriclePacemakerVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: rightVentriclePacemakerVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Right Ventricle Pacemaker Variable relations from Lookup Annotations 
+*/
+
+Phase: rightVentriclePacemakerVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: RightVentriclePacemakerValueRule
+(
+(
+( {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)VENTRICLE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)HEART"} |
+{Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)SIDED"} {Token.string ==~ "(?i)STRUCTURES"} | {Token.string ==~ "(?i)RV"})
+({Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)MISC", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)CAVA", Token.string !=~ "(?i)IVC", Token.string !=~ "(?i)PRESSURE", Token.string !=~ "(?i)LA", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)PULMONARY"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+( 
+(
+(
+({Token.string ==~ "(?i)ICD"} | ({Token.string ==~ "(?i)IMPLANTABLE"})? {Token.string ==~ "(?i)CARDIOVERTER"} {Token.string ==~ "(?i)DEFIBRILLATOR"}):icd | 
+({Token.string ==~ "(?i)CRT"} | ({Token.string ==~ "(?i)CARDIAC"})? {Token.string ==~ "(?i)RESYCHRONIZATION"} {Token.string ==~ "(?i)THERAPY"} | {Token.string ==~ "(?i)BIV(ENTRICULAR)?"} {Token.string ==~ "(?i)PACEMAKER"}):crt |
+({Token.string ==~ "(?i)DEVICE"} | {Token.string ==~ "(?i)PPM"} | {Token.string ==~ "(?i)PACING"} | {Token.string ==~ "(?i)PACING"} {Token.string ==~ "(?i)SYSTEM"} | {Token.string ==~ "(?i)PACING"} {Token.string ==~ "(?i)LEAD[S]?"} | {Token.string ==~ "(?i)PACEMAKER"}):unspecified
+) 
+) 
+
+
+):context
+
+
+):RightVentriclePacemakerValueGram 
+
+--> 
+:RightVentriclePacemakerValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedICD=(gate.AnnotationSet) bindings.get("icd");
+	gate.AnnotationSet matchedCRT=(gate.AnnotationSet) bindings.get("crt");
+	gate.AnnotationSet matchedUnspecified=(gate.AnnotationSet) bindings.get("unspecified");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RightVentriclePacemakerValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedICD != null) {
+		newFeatures.put("varValue", "ICD");
+	} else if (matchedCRT != null) {
+		newFeatures.put("varValue", "CRT");
+	} else {
+		newFeatures.put("varValue", "Unspecified");
+	}
+	
+	newFeatures.put("unit", "Unspecified relates to - (device, PPM, pacing system)");
+	newFeatures.put("varType","RV Pacemaker");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "RV Pacemaker normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  

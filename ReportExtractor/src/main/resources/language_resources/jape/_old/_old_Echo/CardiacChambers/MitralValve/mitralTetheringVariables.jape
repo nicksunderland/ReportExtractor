@@ -1,0 +1,145 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  mitralTetheringVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: mitralTetheringVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of mitral valve tethering Variable relations from Lookup Annotations 
+*/
+
+Phase: mitralTetheringVariables
+Input: Token Lookup  
+Options: control=appelt 
+
+
+
+Rule: MitralTetheringValueRule
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=ATRIUM})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)TETHERING"} | {Token.string ==~ "(?i)TETHERED"})
+
+
+):context
+
+
+):MitralTetheringValueGram 
+
+--> 
+:MitralTetheringValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralTetheringValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "0 (Tethering absent) to 1 (Tethering present)");
+	newFeatures.put("varType","MV Tethering");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Tethering normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: MitralTetheringAbsentValueRule
+Priority: 10
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=AORTIC})*
+
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)NO"}
+({Token.kind == "word"})?
+{Token.string ==~ "(?i)TETHERING"}
+
+
+):context
+
+
+):MitralTetheringAbsentValueGram 
+
+--> 
+:MitralTetheringAbsentValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralTetheringAbsentValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "0 (Tethering absent) to 1 (Tethering present)");
+	newFeatures.put("varType","MV Tethering");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Tethering absent");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+Rule: MitralTetheringAbsent2ValueRule
+Priority: 10
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=AORTIC})*
+
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)NOT"}
+({Token.kind == "word"})?
+{Token.string ==~ "(?i)TETHERED"}
+
+
+):context
+
+
+):MitralTetheringAbsent2ValueGram 
+
+--> 
+:MitralTetheringAbsent2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralTetheringAbsent2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "0 (Tethering absent) to 1 (Tethering present)");
+	newFeatures.put("varType","MV Tethering");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Tethering absent2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

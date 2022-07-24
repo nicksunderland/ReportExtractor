@@ -1,0 +1,190 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  mitralReplacementVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: mitralReplacementVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of aortic valve replacement Variable relations from Lookup Annotations 
+*/
+
+Phase: mitralReplacementVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: MitralReplacementValueRule
+Priority: 10
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)BIOLOGICAL", Token.string !=~ "(?i)TMVI", Token.string !=~ "(?i)MVR", Token.string !=~ "(?i)TRANSCATHETER", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=ATRIUM})*
+
+):context
+)
+
+(
+( 
+
+(
+({Token.string ==~ "(?i)BIOLOGICAL"} | {Token.string ==~ "(?i)BIOPROSTHETIC"} | {Token.string ==~ "(?i)TISSUE"} |
+{Token.string ==~ "(?i)PORCINE"} | {Token.string ==~ "(?i)BOVINE"} ):biological | 
+({Token.string ==~ "(?i)TMVI"} | {Token.string ==~ "(?i)TRANSCATHETER"}):tmvi | 
+({Token.string ==~ "(?i)MECHANICAL"}):mechanical 
+)
+
+({Token.string ==~ "(?i)MITRAL"})? 
+({Token.string ==~ "(?i)VALVE"})?
+
+({Token.string ==~ "(?i)REPLACEMENT"} | {Token.string ==~ "(?i)MVR"} | {Token.string ==~ "(?i)PROSTHESIS"})
+
+):context
+
+
+):MitralReplacementValueGram 
+
+--> 
+:MitralReplacementValueGram
+  {
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedbiological=(gate.AnnotationSet) bindings.get("biological");
+	gate.AnnotationSet matchedtmvi=(gate.AnnotationSet) bindings.get("tmvi");
+	gate.AnnotationSet matchedmechanical=(gate.AnnotationSet) bindings.get("mechanical");
+
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralReplacementValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedbiological != null) {
+		newFeatures.put("varValue", "Biological");
+	} else if (matchedtmvi != null) {
+		newFeatures.put("varValue", "TMVI");
+	} else if (matchedmechanical != null) {
+		newFeatures.put("varValue", "Mechanical");
+	} else {
+		newFeatures.put("varValue", "Unspecified MVR");
+	}
+	
+	newFeatures.put("unit", "Levels: Biological (PORCINE, BOVINE), TMVI, Mechanical, Unspecified MVR");
+	newFeatures.put("varType","MV Replacement");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Replacement normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: MitralReplacementAlternValueRule
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)BIOLOGICAL", Token.string !=~ "(?i)TMVI", Token.string !=~ "(?i)MVR", Token.string !=~ "(?i)TRANSCATHETER", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=ATRIUM})*
+
+):context
+)
+
+(
+( 
+
+({Token.string ==~ "(?i)MITRAL"})? 
+({Token.string ==~ "(?i)VALVE"})?
+
+({Token.string ==~ "(?i)REPLACEMENT"} | {Token.string ==~ "(?i)MVR"} | {Token.string ==~ "(?i)PROSTHESIS"})
+
+):context
+
+
+):MitralReplacementAlternValueGram 
+
+--> 
+:MitralReplacementAlternValueGram
+  {
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedbiological=(gate.AnnotationSet) bindings.get("biological");
+	gate.AnnotationSet matchedtavi=(gate.AnnotationSet) bindings.get("tavi");
+	gate.AnnotationSet matchedmechanical=(gate.AnnotationSet) bindings.get("mechanical");
+
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralReplacementAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Unspecified MVR");
+	
+	newFeatures.put("unit", "Levels: Biological (PORCINE, BOVINE), TMVI, Mechanical, Unspecified MVR");
+	newFeatures.put("varType","MV Replacement");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Replacement altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: MitralReplacementAltern2ValueRule
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)BIOLOGICAL", Token.string !=~ "(?i)TMVI", Token.string !=~ "(?i)MVR", Token.string !=~ "(?i)TRANSCATHETER", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=ATRIUM})*
+
+):context
+)
+
+(
+( 
+
+(
+({Token.string ==~ "(?i)BIOLOGICAL"} | {Token.string ==~ "(?i)BIOPROSTHETIC"} | {Token.string ==~ "(?i)TISSUE"} |
+{Token.string ==~ "(?i)PORCINE"} | {Token.string ==~ "(?i)BOVINE"} ):biological | 
+({Token.string ==~ "(?i)TMVI"} | {Token.string ==~ "(?i)TRANSCATHETER"}):tmvi | 
+({Token.string ==~ "(?i)MECHANICAL"}):mechanical 
+)
+
+({Token.string ==~ "(?i)MITRAL"})? 
+({Token.string ==~ "(?i)VALVE"})?
+
+
+):context
+
+
+):MitralReplacementAltern2ValueGram 
+
+--> 
+:MitralReplacementAltern2ValueGram
+  {
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedbiological=(gate.AnnotationSet) bindings.get("biological");
+	gate.AnnotationSet matchedtmvi=(gate.AnnotationSet) bindings.get("tmvi");
+	gate.AnnotationSet matchedmechanical=(gate.AnnotationSet) bindings.get("mechanical");
+
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralReplacementAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedbiological != null) {
+		newFeatures.put("varValue", "Biological");
+	} else if (matchedtmvi != null) {
+		newFeatures.put("varValue", "TMVI");
+	} else if (matchedmechanical != null) {
+		newFeatures.put("varValue", "Mechanical");
+	} else {
+		newFeatures.put("varValue", "Unspecified MVR");
+	}
+	
+	newFeatures.put("unit", "Levels: Biological (PORCINE, BOVINE), TMVI, Mechanical, Unspecified MVR");
+	newFeatures.put("varType","MV Replacement");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Replacement altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

@@ -1,0 +1,73 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  lvotSVVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: lvotSVVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of LVOT stroke volume Variable relations from Lookup Annotations 
+*/
+
+Phase: lvotSVVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LvotSVValueRule
+Priority:1
+(
+(
+({Token.string ==~ "(?i)LVOT"})
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)AR", Token.string !=~ "(?i)A[OV]", Token.string !=~ "(?i)AVA[I]?"}|{SpaceToken.string!=SV})*
+):context
+)
+
+(
+({Token.string ==~ "(?i)SV"} | {Token.string ==~ "(?i)STROKE"} {Token.string ==~ "(?i)VOLUME"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)ML"}):unit)
+)
+
+):LvotSVValueGram 
+(
+({Token.string != "/"})
+({Token.string !=~ "(?i)M"})
+)
+
+--> 
+:LvotSVValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LvotSVValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varType","LVOT SV");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","LVOT Stroke Volume normal");
+		
+	if (matchedunit != null) {
+		newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

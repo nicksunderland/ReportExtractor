@@ -1,0 +1,103 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  mitralBillowVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: mitralBillowVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of mitral valve billowing Variable relations from Lookup Annotations 
+*/
+
+Phase: mitralBillowVariables
+Input: Token Lookup  
+Options: control=appelt 
+
+
+
+Rule: MitralBillowingValueRule
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=ATRIUM})*
+
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)BILLOWING"}
+
+
+):context
+
+
+):MitralBillowingValueGram 
+
+--> 
+:MitralBillowingValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralBillowingValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "0 (Billowing absent) to 1 (Billowing present)");
+	newFeatures.put("varType","MV Billowing");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Billowing normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: MitralBillowingAbsentValueRule
+Priority: 10
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=AORTIC})*
+
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)NO"}
+({Token.kind == "word"})?
+{Token.string ==~ "(?i)BILLOWING"}
+
+
+):context
+
+
+):MitralBillowingAbsentValueGram 
+
+--> 
+:MitralBillowingAbsentValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralBillowingAbsentValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "0 (Billowing absent) to 1 (Billowing present)");
+	newFeatures.put("varType","MV Billowing");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Billowing absent");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

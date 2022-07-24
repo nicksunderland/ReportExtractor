@@ -1,0 +1,1036 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  measurementVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: measurementVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of LV Measurement Variable relations from Lookup Annotations 
+*/
+
+Phase: measurementVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: IVSValueAbbrevRule
+(
+(
+{Token.string =~ "IVS[d]?"}	
+({Token.string == "="})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"}):unit)
+)
+
+
+):IVSValueGramAbbrev 
+
+--> 
+:IVSValueGramAbbrev
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("IVSValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","IVS");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+ 
+Rule: IVSValueRule
+(
+(
+{Token.string == "Septum"}	
+{Token.string == "thickness"}
+({Token.string == "["})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+):IVSValueGram 
+
+--> 
+:IVSValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("IVSValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","IVS");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+  
+
+Rule: PWDValueAbbrevRule
+(
+(
+{Token.string == "PWd"}	
+({Token.string == "="})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"}):unit)
+)
+
+):PWDValueGramAbbrev 
+
+--> 
+:PWDValueGramAbbrev
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PWDValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","PWd");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+  
+  
+Rule: PWDValueRule
+(
+(
+{Token.string == "LVPWD"}	
+({Token.string == "["})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+):PWDValueGram 
+
+--> 
+:PWDValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PWDValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","PWd");
+	newFeatures.put("unit", "cm");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+
+
+Rule: EARatioValueRule
+(
+(
+{Token.string == "E"}
+{Token.string == "/"}
+{Token.string == "A"}
+{Token.string == "ratio"}	
+({Token.string == "="})?
+):context
+
+(
+({Token.string == "-"})?
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+):EARatioValueGram 
+
+--> 
+:EARatioValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("EARatioValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","E/A ratio");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+
+Rule: DcTValueAbbrevRule
+(
+(
+{Token.string =~ "(?i)DcT"}
+({Token.string == "="})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MS"} | {Token.string ==~ "(?i)S"} | {Token.string ==~ "(?i)SEC"}):unit)
+)
+
+):DcTValueAbbrevGram 
+
+--> 
+:DcTValueAbbrevGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("DcTValueAbbrevGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("s") || unitOrig.equals("sec")) {
+	
+		varDouble = varDouble * 1000D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "ms");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","DcT");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+  
+Rule: DcTValueRule
+(
+(
+{Token.string =~ "(?i)Deceleration"}
+{Token.string == "time"}
+({Token.string == "="})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MS"} | {Token.string ==~ "(?i)S"} | {Token.string ==~ "(?i)SEC"}):unit)
+)
+
+):DcTValueGram 
+
+--> 
+:DcTValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("DcTValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("s") || unitOrig.equals("sec")) {
+	
+		varDouble = varDouble * 1000D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "ms");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","DcT");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+
+
+Rule: LVIDdValueRule
+(
+(
+({Token.string == "LVIDd"} | {Token.string == "LVEDD"})
+({Token.string == "="} | {Token.string == "["})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"}):unit)
+)
+
+):LVIDdValueGram 
+
+--> 
+:LVIDdValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVIDdValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","LVIDd");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+  
+
+Rule: LVIDsValueRule
+(
+(
+({Token.string == "LVIDs"} | {Token.string == "LVESD"})
+({Token.string == "="} | {Token.string == "["})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"}):unit)
+)
+
+):LVIDsValueGram 
+
+--> 
+:LVIDsValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVIDsValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","LVIDs");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+  
+Rule: PeakEVelocityValueRule
+(
+(
+({Token.string ==~ "(?i)Peak"}
+{Token.string ==~ "(?i)E"}
+({Token.string =~ "(?i)wave"})?
+{Token.string ==~ "(?i)velocity"} | {Token.string ==~ "(?i)E"} {Token.string =~ "(?i)wave"})
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+(
+(({Token.string == "cm"} | {Token.string == "m"}):unit)?
+)
+
+):PeakEVelocityValueGram 
+
+--> 
+:PeakEVelocityValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PeakEVelocityValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("m")) {
+	
+		varDouble = varDouble * 100D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","Peak E Velocity");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+  
+Rule: PeakAVelocityValueRule
+(
+(
+({Token.string =~ "(?i)Peak"}
+{Token.string ==~ "(?i)A"}
+({Token.string =~ "(?i)wave"})?
+{Token.string =~ "(?i)velocity"} | {Token.string ==~ "(?i)A"} {Token.string =~ "(?i)wave"})
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string == "cm"} | {Token.string == "m"}):unit)?
+)
+
+):PeakAVelocityValueGram 
+
+--> 
+:PeakAVelocityValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PeakAVelocityValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("m")) {
+	
+		varDouble = varDouble * 100D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","Peak A Velocity");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+  
+
+Rule: AverageERatioValueRule
+(
+{ Token.string !~ "(?i)Lateral", Token.string !~ "(?i)Septal" } 
+)
+(
+(
+{Token.string ==~ "(?i)E"}
+{Token.string == "/"}
+{Token.string ==~ "(?i)E"}
+({Token.string == "'"} | {Token.string ==~ "(?i)Prime"})?
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+):context1
+
+(
+({Token.string == "-"})?
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number", Token.string !~ "(?i)cm", Token.string !~ "(?i)m"}):varValue
+
+(
+(({Token.position == "startpunct"})?
+{Token.string ==~ "(?i)average[d]", Token.string !~ "(?i)Lateral", Token.string !~ "(?i)Septal"}
+({Token.position == "endpunct"})?
+)?
+):context2
+
+):AverageERatioValueGram 
+
+--> 
+:AverageERatioValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext1=(gate.AnnotationSet) bindings.get("context1");
+	gate.AnnotationSet matchedcontext2=(gate.AnnotationSet) bindings.get("context2");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AverageERatioValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","Average E/E'");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	String mContext2 = ""; 
+	if ( matchedcontext2 != null) { mContext2 = stringFor(doc, matchedcontext2); }
+	
+	newFeatures.put("context", stringFor(doc, matchedcontext1) + " " + mContext2);
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+  
+Rule: AverageERatioAlternValueRule
+(
+(
+{Token.string ==~ "(?i)Averaged"}
+{Token.string == ":"}
+):context
+
+(
+({Token.string == "-"})?
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number", Token.string !~ "(?i)cm", Token.string !~ "(?i)m"}):varValue
+
+):AverageERatioValueGram 
+
+--> 
+:AverageERatioValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AverageERatioValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","Average E/E'");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+  
+Rule: AverageERatioAltern2ValueRule
+(
+(
+{Token.string ==~ "(?i)E"}
+{Token.string == "/"}
+{Token.string ==~ "(?i)E"}
+({Token.string == "'"} | {Token.string ==~ "(?i)Prime"})?
+(({Token.position == "startpunct"})?
+{Token.string ==~ "(?i)average[d]"}
+({Token.position == "endpunct"})?
+)
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+
+):context
+
+(
+({Token.string == "-"})?
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number", Token.string !~ "(?i)cm", Token.string !~ "(?i)m"}):varValue
+
+):AverageERatioValueGram 
+
+--> 
+:AverageERatioValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AverageERatioValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","Average E/E'");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+
+
+Rule: GLSValueRule
+(
+(
+
+({Token.string ==~ "(?i)GL[P]?S[-]?"} | ({Token.string ==~ "(?i)Global"} ({Token.string ==~ "(?i)Longitudinal"})? {Token.string ==~ "(?i)Strain[-]?"} ))
+({Token.string == "-"})?
+({Token.string ==~ "(?i)Avg"})?
+({Token.string ==~ "(?i):"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+
+):context
+
+(
+({Token.string == "-"})?
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string == "%"}):unit)?
+)
+
+):GLSValueGram 
+
+--> 
+:GLSValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("GLSValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","GLS");
+	
+	
+	String varStr = stringFor(doc, matchedVar);
+	String contextStr = stringFor(doc, matchedcontext);
+	
+	if(contextStr.contains("-")) {
+		newFeatures.put("varValue", "-" + varStr);
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+
+
+Rule: AvgMAPSEValueRule
+(
+(
+
+{Token.string ==~ "(?i)MAPSE"} 
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+
+):context
+
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string == "cm"} | {Token.string == "mm"}):unit)?
+)
+
+):AvgMAPSEValueGram 
+
+--> 
+:AvgMAPSEValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AvgMAPSEValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","Avg. MAPSE");
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	String contextStr = stringFor(doc, matchedcontext);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if(contextStr.contains("-")) {
+		newFeatures.put("varValue", "-" + varStr);
+	} else if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+
+
+Rule: SeptalMAPSEValueRule
+Priority:10
+(
+(
+((({Token.string ==~ "(?i)SEPTAL"} | {Token.string ==~ "(?i)SEPT"}) {Token.string ==~ "(?i)MAPSE"}) 
+| ({Token.string ==~ "(?i)MAPSE"} ({Token.string ==~ "(?i)SEPTAL"} | {Token.string ==~ "(?i)SEPT"}) ))
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+):context
+
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string == "cm"} | {Token.string == "mm"}):unit)?
+)
+
+):SeptalMAPSEValueGram 
+
+--> 
+:SeptalMAPSEValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("SeptalMAPSEValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","Septal MAPSE");
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	String contextStr = stringFor(doc, matchedcontext);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if(contextStr.contains("-")) {
+		newFeatures.put("varValue", "-" + varStr);
+	} else if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+  
+  
+Rule: LateralMAPSEValueRule
+Priority:10
+(
+(
+(({Token.string ==~ "(?i)LATERAL"} | {Token.string ==~ "(?i)LAT"}) {Token.string ==~ "(?i)MAPSE"}) 
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+):context
+
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string == "cm"} | {Token.string == "mm"}):unit)?
+)
+
+):LateralMAPSEValueGram 
+
+--> 
+:LateralMAPSEValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LateralMAPSEValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","Lateral MAPSE");
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	String contextStr = stringFor(doc, matchedcontext);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if(contextStr.contains("-")) {
+		newFeatures.put("varValue", "-" + varStr);
+	} else if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+  
+ 
+Rule: SinotubularJunctionValueRule
+(
+(
+({Token.string ==~ "(?i)SINO"} | {Token.string ==~ "(?i)SINOTUBULAR"} | {Token.string ==~ "(?i)ST"}) 
+({Token.string ==~ "(?i)TUBULAR"})?
+({Token.string ==~ "(?i)JUNCTION"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+):context
+
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+({Token.string == "cm"} | {Token.string == "mm"})
+):unit
+
+):SinotubularJunctionValueGram 
+(
+{Token.string != "/"} 
+(({Token.string !~ "(?i)M"} | {Token.string !~ "(?i)M2"})
+{Token.string !~ "(?i)2"})?
+)
+
+--> 
+:SinotubularJunctionValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("SinotubularJunctionValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","Sinotubular Junction");
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	String contextStr = stringFor(doc, matchedcontext);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  } 
+

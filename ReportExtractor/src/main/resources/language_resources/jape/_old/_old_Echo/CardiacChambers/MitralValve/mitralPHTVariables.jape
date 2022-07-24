@@ -1,0 +1,163 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  mitralPHTVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: mitralPHTVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of mitral valve PHT Variable relations from Lookup Annotations 
+*/
+
+Phase: mitralPHTVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+  
+Rule: MitralPHTValueRule
+(
+(
+({Token.string ==~ "(?i)MV"})
+({Token.string == ":"})?
+{Token.string ==~ "(?i)PHT"}
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MS"} | {Token.string ==~ "(?i)S"} | {Token.string ==~ "(?i)SEC"}):unit)
+)
+
+
+):MitralPHTValueGram 
+
+--> 
+:MitralPHTValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralPHTValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("s") || unitOrig.equals("sec")) {
+	
+		varDouble = varDouble * 1000D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "ms");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","MV PHT");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV PHT normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: MitralPHTAlternValueRule
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=ATRIUM})*
+
+({Token.string !=~ "(?i)MVA"})
+
+):context
+)
+
+(
+(
+( 
+{Token.string ==~ "(?i)PHT"} 
+| 
+({Token.string ==~ "(?i)P(RESSURE)?"} {Token.string == "1"} {Token.string == "/"} {Token.string == "2"} {Token.string ==~ "(?i)TIME"}) 
+)
+
+({Token.string == ":"} | {Token.string ==~ "(?i)IS"})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+	
+(
+(({Token.string ==~ "(?i)MS"} | {Token.string ==~ "(?i)S"} | {Token.string ==~ "(?i)SEC"}):unit)
+)
+
+):MitralPHTAlternValueGram 
+
+--> 
+:MitralPHTAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralPHTAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("s") || unitOrig.equals("sec")) {
+	
+		varDouble = varDouble * 1000D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "ms");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","MV PHT");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV PHT altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

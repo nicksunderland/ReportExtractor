@@ -1,0 +1,493 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  ecgAVBlockVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: ecgAVBlockVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of ECG AV Block Variable relations from Lookup Annotations 
+*/
+
+Phase: ecgAVBlockVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+Rule: ECGAVBlockValueUnspecifiedRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)Atrioventricular"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)Atrio-ventricular"} {Token.string ==~ "(?i)BLOCK"} 
+)
+
+):context
+
+
+):ECGAVBlockValueUnspecifiedGram 
+
+--> 
+:ECGAVBlockValueUnspecifiedGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAVBlockValueUnspecifiedGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Unspecified");
+	
+	newFeatures.put("unit", "Levels: Unspecified, 1st Degree, 2nd Degree Unspecified, 2nd Degree Mobitz I, 2nd Degree Mobitz II, 3rd Degree");
+	newFeatures.put("varType","ECG AV Block");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG AV Block unspecified");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+
+
+Rule: ECGAVBlockValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string == "1"} {Token.string ==~ "(?i)DHB"} | {Token.string ==~ "(?i)FIRST"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)FIRST"} {Token.string ==~ "(?i)DEGREE"} | {Token.string == "1"} {Token.string ==~ "(?i)ST"} {Token.string ==~ "(?i)DEGREE"} |  {Token.string ==~ "(?i)1ST"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)FIRST"} {Token.string == "-"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)FIRST-"}  {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)FIRST-DEGREE"}
+)
+
+
+):context
+
+
+):ECGAVBlockValueGram 
+
+--> 
+:ECGAVBlockValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAVBlockValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1st Degree");
+	
+	newFeatures.put("unit", "Levels: Unspecified, 1st Degree, 2nd Degree Unspecified, 2nd Degree Mobitz I, 2nd Degree Mobitz II, 3rd Degree");
+	newFeatures.put("varType","ECG AV Block");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG AV Block normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+
+Rule: ECGAVBlockValueNormal2Rule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string == "1"} {Token.string ==~ "(?i)DHB"} | {Token.string ==~ "(?i)FIRST"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)FIRST"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "1"} {Token.string ==~ "(?i)ST"} {Token.string ==~ "(?i)DEGREE"} |  {Token.string ==~ "(?i)1ST"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)FIRST"} {Token.string == "-"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)FIRST-"}  {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)FIRST-DEGREE"}
+)
+
+( {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)Atrioventricular"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)Atrio-ventricular"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)HEART"} {Token.string ==~ "(?i)BLOCK"} |
+{Token.string ==~ "(?i)HB"} 
+)
+
+):context
+
+
+):ECGAVBlockValueNormal2Gram 
+
+--> 
+:ECGAVBlockValueNormal2Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAVBlockValueNormal2Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1st Degree");
+	
+	newFeatures.put("unit", "Levels: Unspecified, 1st Degree, 2nd Degree Unspecified, 2nd Degree Mobitz I, 2nd Degree Mobitz II, 3rd Degree");
+	newFeatures.put("varType","ECG AV Block");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG AV Block normal2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+
+  
+Rule: ECGAVBlockValueAlternRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string == "2"} {Token.string ==~ "(?i)DHB"} | {Token.string ==~ "(?i)SECOND"} {Token.string ==~ "(?i)DEGREE"} {Token.string ==~ "(?i)HEART"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)SECOND"} {Token.string ==~ "(?i)DEGREE"} | {Token.string == "2"} {Token.string ==~ "(?i)ND"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)2ND"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)SECOND"} {Token.string == "-"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)SECOND-"}  {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)SECOND-DEGREE"}
+)
+
+
+):context
+
+
+):ECGAVBlockValueAlternGram 
+
+--> 
+:ECGAVBlockValueAlternGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAVBlockValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2nd Degree Unspecified");
+	
+	newFeatures.put("unit", "Levels: Unspecified, 1st Degree, 2nd Degree Unspecified, 2nd Degree Mobitz I, 2nd Degree Mobitz II, 3rd Degree");
+	newFeatures.put("varType","ECG AV Block");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG AV Block altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+Rule: ECGAVBlockValueAlternV2Rule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string == "2"} {Token.string ==~ "(?i)DHB"} | {Token.string ==~ "(?i)SECOND"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)SECOND"} {Token.string ==~ "(?i)DEGREE"} | {Token.string == "2"} {Token.string ==~ "(?i)ND"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)2ND"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)SECOND"} {Token.string == "-"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)SECOND-"}  {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)SECOND-DEGREE"}
+)
+
+( {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)Atrioventricular"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)Atrio-ventricular"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)HEART"} {Token.string ==~ "(?i)BLOCK"} |
+{Token.string ==~ "(?i)HB"} 
+)
+
+):context
+
+
+):ECGAVBlockValueAlternV2Gram 
+
+--> 
+:ECGAVBlockValueAlternV2Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAVBlockValueAlternV2Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2nd Degree Unspecified");
+	
+	newFeatures.put("unit", "Levels: Unspecified, 1st Degree, 2nd Degree Unspecified, 2nd Degree Mobitz I, 2nd Degree Mobitz II, 3rd Degree");
+	newFeatures.put("varType","ECG AV Block");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG AV Block alternV2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }  
+
+  
+Rule: ECGAVBlockValueAltern2Rule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+(  {Token.string ==~ "(?i)VARIABLE"}  | {Token.string ==~ "(?i)Mobitz"} {Token.kind == "word"} {Token.string == "1"} |  {Token.string ==~ "(?i)Mobitz"} {Token.kind == "word"} {Token.string == "I"} | {Token.string ==~ "(?i)Mobitz"} {Token.string == "1"} | {Token.string ==~ "(?i)Mobitz"} {Token.string == "I"} | {Token.string ==~ "(?i)Wenckebach"} | {Token.string ==~ "(?i)TYPE"} {Token.string == "1"} | {Token.string ==~ "(?i)TYPE"} {Token.string == "I"}
+)
+
+( {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)Atrioventricular"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)Atrio-ventricular"} {Token.string ==~ "(?i)BLOCK"} |  {Token.string ==~ "(?i)Phenomenon"} | {Token.string ==~ "(?i)HEART"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)HB"} 
+)
+
+):context
+
+
+):ECGAVBlockValueAltern2Gram 
+
+--> 
+:ECGAVBlockValueAltern2Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAVBlockValueAltern2Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2nd Degree Mobitz I");
+	
+	newFeatures.put("unit", "Levels: Unspecified, 1st Degree, 2nd Degree Unspecified, 2nd Degree Mobitz I, 2nd Degree Mobitz II, 3rd Degree");
+	newFeatures.put("varType","ECG AV Block");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG AV Block altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+
+
+Rule: ECGAVBlockValueAltern3Rule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string ==~ "(?i)VARIABLE"} | {Token.string ==~ "(?i)Mobitz"} {Token.kind == "word"} {Token.string == "1"} |  {Token.string ==~ "(?i)Mobitz"} {Token.kind == "word"} {Token.string == "I"} | {Token.string ==~ "(?i)Mobitz"} {Token.string == "1"} | {Token.string ==~ "(?i)Mobitz"} {Token.string == "I"} | {Token.string ==~ "(?i)Wenckebach"} 
+)
+
+
+):context
+
+
+):ECGAVBlockValueAltern3Gram 
+
+--> 
+:ECGAVBlockValueAltern3Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAVBlockValueAltern3Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2nd Degree Mobitz I");
+	
+	newFeatures.put("unit", "Levels: Unspecified, 1st Degree, 2nd Degree Unspecified, 2nd Degree Mobitz I, 2nd Degree Mobitz II, 3rd Degree");
+	newFeatures.put("varType","ECG AV Block");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG AV Block altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+
+
+Rule: ECGAVBlockValueAltern4Rule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string ==~ "(?i)Mobitz"} {Token.kind == "word"} {Token.string == "2"} |  {Token.string ==~ "(?i)Mobitz"} {Token.kind == "word"} {Token.string == "II"} | {Token.string ==~ "(?i)Mobitz"} {Token.string == "2"} | {Token.string ==~ "(?i)Mobitz"} {Token.string == "II"} 
+| {Token.string ==~ "(?i)TYPE"} {Token.string == "2"} | {Token.string ==~ "(?i)TYPE"} {Token.string == "II"}
+)
+
+( {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)Atrioventricular"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)Atrio-ventricular"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)HEART"} {Token.string ==~ "(?i)BLOCK"} |
+{Token.string ==~ "(?i)HB"} 
+)
+
+):context
+
+
+):ECGAVBlockValueAltern4Gram 
+
+--> 
+:ECGAVBlockValueAltern4Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAVBlockValueAltern4Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2nd Degree Mobitz II");
+	
+	newFeatures.put("unit", "Levels: Unspecified, 1st Degree, 2nd Degree Unspecified, 2nd Degree Mobitz I, 2nd Degree Mobitz II, 3rd Degree");
+	newFeatures.put("varType","ECG AV Block");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG AV Block altern4");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+
+
+Rule: ECGAVBlockValueAltern5Rule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string ==~ "(?i)Mobitz"} {Token.kind == "word"} {Token.string == "2"} |  {Token.string ==~ "(?i)Mobitz"} {Token.kind == "word"} {Token.string == "II"} | {Token.string ==~ "(?i)Mobitz"} {Token.string == "2"} | {Token.string ==~ "(?i)Mobitz"} {Token.string == "II"} 
+)
+
+
+):context
+
+
+):ECGAVBlockValueAltern5Gram 
+
+--> 
+:ECGAVBlockValueAltern5Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAVBlockValueAltern5Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2nd Degree Mobitz II");
+	
+	newFeatures.put("unit", "Levels: Unspecified, 1st Degree, 2nd Degree Unspecified, 2nd Degree Mobitz I, 2nd Degree Mobitz II, 3rd Degree");
+	newFeatures.put("varType","ECG AV Block");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG AV Block altern5");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+  
+Rule: ECGAVBlockValueAltern6Rule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string == "3"} {Token.string ==~ "(?i)DHB"} | {Token.string ==~ "(?i)THIRD"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)THIRD"} {Token.string ==~ "(?i)DEGREE"} | {Token.string == "3"} {Token.string ==~ "(?i)RD"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)3RD"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)THIRD"} {Token.string == "-"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)THIRD-"}  {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)THIRD-DEGREE"} | {Token.string ==~ "(?i)COMPLETE"} 
+)
+
+( {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)Atrioventricular"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)Atrio-ventricular"} {Token.string ==~ "(?i)BLOCK"} | {Token.string ==~ "(?i)HEART"} {Token.string ==~ "(?i)BLOCK"} |
+{Token.string ==~ "(?i)HB"} 
+)
+
+):context
+
+
+):ECGAVBlockValueAltern6Gram 
+
+--> 
+:ECGAVBlockValueAltern6Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAVBlockValueAltern6Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "3rd Degree");
+	
+	newFeatures.put("unit", "Levels: Unspecified, 1st Degree, 2nd Degree Unspecified, 2nd Degree Mobitz I, 2nd Degree Mobitz II, 3rd Degree");
+	newFeatures.put("varType","ECG AV Block");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG AV Block altern6");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+
+Rule: ECGAVBlockValueAltern7Rule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string == "3"} {Token.string ==~ "(?i)DHB"} | {Token.string ==~ "(?i)THIRD"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)THIRD"} {Token.string ==~ "(?i)DEGREE"} | {Token.string == "3"} {Token.string ==~ "(?i)RD"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)3RD"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)THIRD"} {Token.string == "-"} {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)THIRD-"}  {Token.string ==~ "(?i)DEGREE"} | {Token.string ==~ "(?i)THIRD-DEGREE"}
+)
+
+
+):context
+
+
+):ECGAVBlockValueAltern7Gram 
+
+--> 
+:ECGAVBlockValueAltern7Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAVBlockValueAltern7Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "3rd Degree");
+	
+	newFeatures.put("unit", "Levels: Unspecified, 1st Degree, 2nd Degree Unspecified, 2nd Degree Mobitz I, 2nd Degree Mobitz II, 3rd Degree");
+	newFeatures.put("varType","ECG AV Block");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG AV Block altern7");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }

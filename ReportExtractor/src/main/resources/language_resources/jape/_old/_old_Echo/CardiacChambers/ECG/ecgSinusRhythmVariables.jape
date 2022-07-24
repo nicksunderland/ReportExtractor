@@ -1,0 +1,105 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  ecgSinusRhythmVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: ecgSinusRhythmVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of ECG Sinus Rhythm Variable relations from Lookup Annotations 
+*/
+
+Phase: ecgSinusRhythmVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: ECGSinusRhythmValueRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+( 
+ 
+ 
+({Token.string ==~ "(?i)SR"} | {Token.string ==~ "(?i)SINUS"} {Token.string ==~ "(?i)RHYTHM"} | {Token.string ==~ "(?i)SINUS"} | {Token.string ==~ "(?i)REGULAR"} {Token.string ==~ "(?i)HR"})
+ 
+
+):context
+
+
+):ECGSinusRhythmValueGram 
+(
+{!Lookup.majorType == Sinus_Exclusion} 
+)
+
+--> 
+:ECGSinusRhythmValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGSinusRhythmValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "1");
+	
+	newFeatures.put("unit", "Levels: 1 (SR), 0 (Irregular), Null (assume irregular)");
+	newFeatures.put("varType","ECG SR");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Sinus Rhythm normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+
+Rule: ECGSinusRhythmValueAlternRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+( 
+ 
+ 
+({Token.string ==~ "(?i)IRREGULAR"})
+ 
+
+):context
+
+
+):ECGSinusRhythmValueAlternGram 
+
+--> 
+:ECGSinusRhythmValueAlternGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGSinusRhythmValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	
+	newFeatures.put("unit", "Levels: 1 (SR), 0 (Irregular), Null (assume irregular)");
+	newFeatures.put("varType","ECG SR");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Sinus Rhythm altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }

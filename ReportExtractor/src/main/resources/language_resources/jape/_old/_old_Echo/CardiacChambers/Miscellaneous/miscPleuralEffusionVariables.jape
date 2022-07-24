@@ -1,0 +1,113 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  miscPleuralEffusionVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: miscPleuralEffusionVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Miscellaneous Pleural Effusion Variable relations from Lookup Annotations 
+*/
+
+Phase: miscPleuralEffusionVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: MiscPleuralEffusionValueRule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)PLEURAL"} {Token.string ==~ "(?i)effusion"} 
+
+
+):context
+
+
+):MiscPleuralEffusionValueGram 
+
+--> 
+:MiscPleuralEffusionValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscPleuralEffusionValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	
+	newFeatures.put("unit", "Levels: 1 (present), 0 (absent), Null (assume absent)");
+	newFeatures.put("varType","Pleural Effusion");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Pleural Effusion normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  
+
+
+Rule: MiscPleuralEffusionValueAlternRule
+Priority: 20
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)NO"}
+)
+
+({Token.kind == "word", !Token.string ==~ "(?i)Pericardial"})? 
+({Token.kind == "word", !Token.string ==~ "(?i)Pericardial"})? 
+({Token.kind == "word", !Token.string ==~ "(?i)Pericardial"})? 
+
+({Token.string ==~ "(?i)PLEURAL"} {Token.string ==~ "(?i)effusion"})
+
+
+):context
+
+
+):MiscPleuralEffusionValueAlternGram 
+
+--> 
+:MiscPleuralEffusionValueAlternGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscPleuralEffusionValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "0");
+	
+	newFeatures.put("unit", "Levels: 1 (present), 0 (absent), Null (assume absent)");
+	newFeatures.put("varType","Pleural Effusion");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Pleural Effusion altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }

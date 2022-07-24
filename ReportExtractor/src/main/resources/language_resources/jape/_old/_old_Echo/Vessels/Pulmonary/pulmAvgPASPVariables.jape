@@ -1,0 +1,211 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  pulmAvgPASPVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: pulmAvgPASPVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of average pulmonary artery systolic pressure estimated Variable relations from Lookup Annotations 
+*/
+
+Phase: pulmAvgPASPVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+  
+Rule: pulmAvgASPValueRule
+Priority:10
+(
+(
+{Token.string ==~ "(?i)PULMONARY"}
+{Token.string ==~ "(?i)ARTERY"}
+{Token.string ==~ "(?i)SYSTOLIC"}
+{Token.string ==~ "(?i)PRESSURE"}
+{Token.string ==~ "(?i)(UNDER)?ESTIMATED"}
+({Token.kind == "word"})?
+({Token.string ==~ "(?i)AT"}
+({Token.kind == "word"} | {Token.string ==~ "(?i)LEAST"})?):greaterSign
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == " "})?
+
+(({Token.string == ">"}):greaterSign | ({Token.string == "<"}):lessSign )?
+):context
+
+((({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):firstvalue
+({Token.string == "-"} | {Token.string ==~ "(?i)TO"})?
+(({Token.kind == "number"})?
+({Token.string == "."})?
+({Token.kind == "number"})?):secondValue
+):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)?
+)
+
+
+):pulmAvgPASPValueGram 
+
+--> 
+:pulmAvgPASPValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedFirstVar=(gate.AnnotationSet) bindings.get("firstvalue");
+	
+	gate.AnnotationSet matchedSecondVar=(gate.AnnotationSet) bindings.get("secondValue");
+	
+	gate.AnnotationSet matchedGreaterSign=(gate.AnnotationSet) bindings.get("greaterSign");
+	gate.AnnotationSet matchedLessSign=(gate.AnnotationSet) bindings.get("lessSign");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("pulmAvgPASPValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	if (matchedSecondVar != null) {
+		String firstVarStr = stringFor(doc, matchedFirstVar);
+		double firstVarDouble = Double.parseDouble(firstVarStr);
+		
+		newFeatures.put("varValue1", stringFor(doc, matchedFirstVar));
+		newFeatures.put("varValue2", stringFor(doc, matchedSecondVar));
+
+		Double value1 = Double.parseDouble(stringFor(doc, matchedFirstVar)); 
+		Double value2 = Double.parseDouble(stringFor(doc, matchedSecondVar)); 
+		Double varValue = (value1 + value2)/2;
+		
+		newFeatures.put("varOrig", stringFor(doc, matchedVar));
+		newFeatures.put("varValue", String.valueOf(varValue));
+		newFeatures.put("unit", "mmHg");
+		
+	} else {
+		String firstVarStr = stringFor(doc, matchedFirstVar);
+		double firstVarDouble = Double.parseDouble(firstVarStr);
+		
+		if (matchedGreaterSign != null) {
+			String greaterStr = stringFor(doc, matchedGreaterSign);
+			
+			if (greaterStr.equals(">") || greaterStr.toLowerCase().equals("at least")) {
+				firstVarDouble = firstVarDouble + 1;
+			} 
+		} else if (matchedLessSign != null) {
+				firstVarDouble = firstVarDouble - 1;
+		}
+		
+		newFeatures.put("varValue", String.valueOf(firstVarDouble));
+		newFeatures.put("unit", "mmHg");
+	}
+	
+	newFeatures.put("varType","Avg. PASP Est.");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	newFeatures.put("rule", "Avg. PASP Est. normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: pulmAvgPASPAlternValueRule
+(
+(
+(
+{Token.string ==~ "(?i)ESTIMATED"}
+({Token.string ==~ "(?i)PA[S]?"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)ARTERY"} {Token.string ==~ "(?i)SYSTOLIC"})
+{Token.string ==~ "(?i)PRESSURE"} | 
+{Token.string ==~ "(?i)PASP"}
+)
+
+({Token.kind == "word"})?
+(({Token.string ==~ "(?i)AT"}
+{Token.string ==~ "(?i)LEAST"}):greaterSign)?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"})?
+
+(({Token.string == ">"}):greaterSign | ({Token.string == "<"}):lessSign )?
+):context
+
+((({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):firstvalue
+({Token.string == "-"} | {Token.string ==~ "(?i)TO"})?
+(({Token.kind == "number"})?
+({Token.string == "."})?
+({Token.kind == "number"})?):secondValue
+):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+
+):pulmAvgPASPAlternValueGram 
+(
+{Token.string != "+"}
+)
+
+--> 
+:pulmAvgPASPAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedFirstVar=(gate.AnnotationSet) bindings.get("firstvalue");
+	
+	gate.AnnotationSet matchedSecondVar=(gate.AnnotationSet) bindings.get("secondValue");
+	
+	gate.AnnotationSet matchedGreaterSign=(gate.AnnotationSet) bindings.get("greaterSign");
+	gate.AnnotationSet matchedLessSign=(gate.AnnotationSet) bindings.get("lessSign");
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("pulmAvgPASPAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	if (matchedSecondVar != null) {
+		
+		String firstVarStr = stringFor(doc, matchedFirstVar);
+		double firstVarDouble = Double.parseDouble(firstVarStr);
+		
+		newFeatures.put("varValue1", stringFor(doc, matchedFirstVar));
+		newFeatures.put("varValue2", stringFor(doc, matchedSecondVar));
+
+		Double value1 = Double.parseDouble(stringFor(doc, matchedFirstVar)); 
+		Double value2 = Double.parseDouble(stringFor(doc, matchedSecondVar)); 
+		Double varValue = (value1 + value2)/2;
+		
+		newFeatures.put("varOrig", stringFor(doc, matchedVar));
+		newFeatures.put("varValue", String.valueOf(varValue));
+		newFeatures.put("unit", "mmHg");
+		
+	} else {
+		String firstVarStr = stringFor(doc, matchedFirstVar);
+		double firstVarDouble = Double.parseDouble(firstVarStr);
+		
+		if (matchedGreaterSign != null) {
+			firstVarDouble = firstVarDouble + 1;
+		} else if (matchedLessSign != null) {
+			firstVarDouble = firstVarDouble - 1;
+		}
+		
+		newFeatures.put("varValue", String.valueOf(firstVarDouble));
+		newFeatures.put("unit", "mmHg");
+	}
+	
+	newFeatures.put("varType","Avg. PASP Est.");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	newFeatures.put("rule", "Avg. PASP Est. altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

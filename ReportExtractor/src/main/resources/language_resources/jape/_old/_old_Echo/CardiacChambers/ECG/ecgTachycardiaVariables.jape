@@ -1,0 +1,155 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  ecgTachycardiaVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: ecgTachycardiaVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of ECG Tachycardia Variable relations from Lookup Annotations 
+*/
+
+Phase: ecgTachycardiaVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Macro: tachycardiaTerm
+( {Token.string ==~ "(?i)TACHYCARDIC"} | {Token.string ==~ "(?i)TACHYCARDIA"} | {Token.string ==~ "(?i)TACHYCARDIAC"} | {Token.string ==~ "(?i)TACHY"} | {Token.string ==~ "(?i)TACH"} | {Token.string ==~ "(?i)FAST"} {Token.string ==~ "(?i)HR"} | 
+{Token.string ==~ "(?i)FAST"} {Token.kind == "word"} {Token.string ==~ "(?i)RHYTHM"} | 
+{Token.string ==~ "(?i)RHYTHM"} {Token.kind == "word"}  {Token.string ==~ "(?i)FAST"} |
+{Token.string ==~ "(?i)FAST"} {Token.string ==~ "(?i)RHYTHM"} |
+{Token.string ==~ "(?i)FAST"} {Token.kind == "word"} {Token.string ==~ "(?i)RATE"} 
+)
+
+Rule: ECGTachycardiaValueRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+tachycardiaTerm
+
+
+):context
+
+
+):ECGTachycardiaValueGram 
+
+--> 
+:ECGTachycardiaValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGTachycardiaValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Unspecified");
+	
+	newFeatures.put("unit", "Levels: Unspecified, Sinus Tachycardia, SVT");
+	newFeatures.put("varType","ECG Tachycardia");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Tachycardia normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+  
+Rule: ECGTachycardiaValueAlternRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)SINUS"} 
+tachycardiaTerm
+
+
+):context
+
+
+):ECGTachycardiaValueAlternGram 
+
+--> 
+:ECGTachycardiaValueAlternGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGTachycardiaValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Sinus Tachycardia");
+	
+	newFeatures.put("unit", "Levels: Unspecified, Sinus Tachycardia, SVT");
+	newFeatures.put("varType","ECG Tachycardia");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Tachycardia normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+Rule: ECGTachycardiaValueAltern2Rule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+(
+(
+{Token.string ==~ "(?i)SUPRAVENTRICULAR"} 
+tachycardiaTerm
+) |
+{Token.string ==~ "(?i)SVT"} 
+)
+
+):context
+
+
+):ECGTachycardiaValueAltern2Gram 
+
+--> 
+:ECGTachycardiaValueAltern2Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGTachycardiaValueAltern2Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "SVT");
+	
+	newFeatures.put("unit", "Levels: Unspecified, Sinus Tachycardia, SVT");
+	newFeatures.put("varType","ECG Tachycardia");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Tachycardia normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }

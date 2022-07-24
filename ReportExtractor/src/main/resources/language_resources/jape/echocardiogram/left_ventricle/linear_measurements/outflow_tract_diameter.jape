@@ -1,0 +1,91 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+Phase: outflow_tract_diameter
+Input: Token Lookup SpaceToken
+Options: control=Appelt 
+
+
+
+Rule: lvot_diam_rule_1
+(
+	(
+		{Token.string ==~ "(?i)LVOT[D]?"}
+		({Token.string ==~ "(?i)DIAM(ETER)?"})?
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+		({Token.string == "~"})?
+		({Token.string == "~"})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"})
+	):unit
+
+):lvot_diam
+(
+	({Token.string != "/"})?
+	({Token.string != "S"})?
+)
+--> 
+:lvot_diam
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "lvot_diam",
+			 										  doc, 
+			 										  bindings, 
+			  										  outputAS);
+  }
+
+
+
+Rule: lvot_diam_rule_2
+(
+		
+	(
+		({Token.string ==~ "(?i)LVOT"})
+		({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)AR", Token.string !=~ "(?i)A[OV]", Token.string !=~ "(?i)AVA[I]?"}|{SpaceToken.string!=DIMENSION})*
+	):context
+		{Token.string ==~ "(?i)DIMENSION"}	
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+		({Token.string == "~"})?
+		({Token.string == "~"})?
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"})
+	):unit
+		
+):lvot_diam
+(
+	({Token.string != "/"})?
+	({Token.string != "S"})?
+)
+--> 
+:lvot_diam
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "lvot_diam",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }
+  

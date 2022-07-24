@@ -1,0 +1,413 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  tricuspidStenosisVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: tricuspidStenosisVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of tricuspid valve stenosis Variable relations from Lookup Annotations 
+*/
+
+Phase: tricuspidStenosisVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: TricuspidStenosisValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+(
+
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+
+
+({Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+
+):context
+
+
+):TricuspidStenosisValueGram 
+
+--> 
+:TricuspidStenosisValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidStenosisValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","TV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "TV Stenosis normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: TricuspidStenosisAlternValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+(
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+({Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+
+):context
+
+
+):TricuspidStenosisAlternValueGram 
+
+--> 
+:TricuspidStenosisAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidStenosisAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","TV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "TV Stenosis altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: TricuspidStenosisAltern2ValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+(
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+)
+)
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+({Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+
+):context
+
+
+):TricuspidStenosisAltern2ValueGram 
+
+--> 
+:TricuspidStenosisAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidStenosisAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","TV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "TV Stenosis altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: TricuspidStenosisAltern3ValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+
+{Token.kind == "word"}
+
+({Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+
+):context
+
+
+):TricuspidStenosisAltern3ValueGram 
+
+--> 
+:TricuspidStenosisAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidStenosisAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","TV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "TV Stenosis altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: TricuspidStenosisAlternModerateValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+
+):context
+
+
+):TricuspidStenosisAlternModerateValueGram 
+
+--> 
+:TricuspidStenosisAlternModerateValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidStenosisAlternModerateValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2");
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","TV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "TV Stenosis alternModerate");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: TricuspidStenosisUnboundedValueRule
+Priority:10
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+({Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+{Token.string ==~ "(?i)TRICUSPID"}
+{Token.string ==~ "(?i)VALVE"}
+
+):context
+
+
+):TricuspidStenosisUnboundedValueGram 
+
+--> 
+:TricuspidStenosisUnboundedValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidStenosisUnboundedValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","TV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "TV Stenosis Unbounded");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+Rule: TricuspidStenosisAlternNonValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)NO[N]?"} | {Token.string ==~ "(?i)NOT"} |
+{Token.string ==~ "(?i)NO"} {Token.string ==~ "(?i)TRICUSPID"} 
+)
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.string == "/"})?
+
+({Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+):context
+
+
+):TricuspidStenosisAlternNonValueGram 
+
+--> 
+:TricuspidStenosisAlternNonValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidStenosisAlternNonValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","TV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "TV Stenosis alternNon");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

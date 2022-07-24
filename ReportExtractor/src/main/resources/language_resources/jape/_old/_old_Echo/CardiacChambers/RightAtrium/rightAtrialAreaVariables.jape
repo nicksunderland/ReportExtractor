@@ -1,0 +1,126 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  rightAtrialAreaVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: rightAtrialAreaVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of right atrial area Variable relations from Lookup Annotations 
+*/
+
+Phase: rightAtrialAreaVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: RightAtrialAreaValueRule
+Priority:1
+(
+(
+( {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIUM"} | {Token.string ==~ "(?i)RA"})
+({Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)IVC", Token.string !=~ "(?i)ATRIOVENTRICULAR", Token.string !=~ "(?i)AV", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LA", Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=AREA})*
+
+):context
+)
+
+(
+
+(
+({Token.string ==~ "(?i)AREA"} | {Token.string ==~ "(?i)RA"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)AT"} | {Token.string == ","})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+({Token.string ==~ "(?i)CM"} {Token.string == "2"} | {Token.string ==~ "(?i)CM"}{Token.string == "."}{Token.string ==~ "(?i)SQ"}):unit
+)
+
+):RightAtrialAreaValueGram 
+
+--> 
+:RightAtrialAreaValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RightAtrialAreaValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varType","RA Area");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","RA Area normal");
+		
+	if (matchedunit != null) {
+		newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+
+Rule: RightAtrialAreaValueAlternRule
+Priority:10
+(
+(
+( {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIUM"} | {Token.string ==~ "(?i)RA"})
+({Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)IVC", Token.string !=~ "(?i)ATRIOVENTRICULAR", Token.string !=~ "(?i)AV", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LA", Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=AREA})*
+
+):context
+)
+
+(
+
+(
+({Token.string ==~ "(?i)AREA"} | {Token.string ==~ "(?i)RA"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)AT"} | {Token.string == ","})?
+):context
+
+(({Token.kind == "number"})
+({Token.string == "."})
+{Token.kind == "number"}):varValue
+
+(
+({Token.string ==~ "(?i)CM"} {Token.string == "2"} | {Token.string ==~ "(?i)CM"}{Token.string == "."}{Token.string ==~ "(?i)SQ"}):unit
+)
+
+):RightAtrialAreaValueAlternGram 
+
+--> 
+:RightAtrialAreaValueAlternGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RightAtrialAreaValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varType","RA Area");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","RA Area altern");
+		
+	if (matchedunit != null) {
+		newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

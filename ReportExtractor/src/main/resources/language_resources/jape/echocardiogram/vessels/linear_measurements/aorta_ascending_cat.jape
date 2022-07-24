@@ -1,0 +1,149 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+
+Phase: TagVarSentence
+Input: Sentence Anatomy
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * Tag sentences that refer to the ascending aorta +/- the sentence after it 
+ * as long as it doesn't contain other anatomical words
+ */
+Rule: var_sentence
+(
+	{Sentence contains {Anatomy.minorType == "ascending_aorta"}}
+	({Sentence notContains {Anatomy.minorType != "ascending_aorta"}})?
+					
+):var_sentence
+-->
+:var_sentence.VarSentence = {type = "ascending_aorta"}
+
+
+
+Phase: AortaAscVisualDiameter
+Input: Token Anatomy VarSentence Units Categorical Numeric Lookup Split
+Options: control=Appelt negationGrouping=false
+
+Macro: CONTEXT
+(
+	{Anatomy,
+		Anatomy within {VarSentence.type == "ascending_aorta"},
+		Anatomy.minorType == "ascending_aorta"}
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
+)
+
+Macro: CONTEXT_OTHER_AORTA
+(
+	{Anatomy,
+		Anatomy within {VarSentence.type == "ascending_aorta"},
+		Anatomy.majorType == "aorta"}
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
+)
+
+Macro: FILTER
+(
+	{Token,
+		Token.string != ",", //don't allow commas that aren't captured as "conjunctions" in the context
+		!Anatomy, //don't read over anatomy not captured in context
+		!Categorical,
+		!Split.kind == "external",
+		Token within {VarSentence.type == "ascending_aorta"}}
+)
+
+Macro: VALUE
+(
+	({Categorical, 
+		Categorical.minorType == "dilated", 
+		Categorical within {VarSentence.type == "ascending_aorta"}}) |
+	({Categorical, 
+		Categorical.minorType == "nondilated",
+		Categorical within {VarSentence.type == "ascending_aorta"}})
+)
+
+Macro: MODIFIER
+(
+	{Categorical, 
+		Categorical.minorType == "negative_modifier",
+		Categorical within {VarSentence.type == "ascending_aorta"}}
+)
+
+/*
+ * Description:
+ * Of the forms...
+ * e.g. 'Asc. Ao is not dilated for height'
+ * e.g. 'Sov, Stj, Asc ao are not dilated'
+ * e.g. 'Asc. Ao and SOV are not dilated'
+ */
+Rule: ao_asc_cat
+Priority: 100
+(
+	(
+		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
+		((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
+		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
+	):context
+	
+	( FILTER )[0,10]
+			
+	( (MODIFIER)? ):modifier
+	
+	( FILTER )[0,2]
+
+	( VALUE ):value
+	
+):ao_asc_cat 
+--> 
+:ao_asc_cat
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_asc_cat", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * Of the forms...
+ * e.g. 'Non-dilated StJ'
+ * e.g. 'Not dilated at the StJ'
+ * e.g. 'Non-dilated aortic root at the STJ'
+ * e.g. 'Non-dilated aortic root at the Sov and Stj'
+ */
+Rule: ao_asc_cat
+Priority: 99
+(
+	( (MODIFIER)? ):modifier
+	
+	( FILTER )[0,2]
+
+	( VALUE ):value
+	
+	(
+		{Anatomy,
+			Anatomy.minorType == "aortic_root",
+			Anatomy within {VarSentence.type == "ascending_aorta"}}
+		{Lookup.minorType == "preposition"}
+	)?
+			
+	( FILTER )[0,3]
+	
+	(
+		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
+		((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
+		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
+	):context
+	
+):ao_asc_cat 
+--> 
+:ao_asc_cat
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_asc_cat", doc, bindings, outputAS);
+}

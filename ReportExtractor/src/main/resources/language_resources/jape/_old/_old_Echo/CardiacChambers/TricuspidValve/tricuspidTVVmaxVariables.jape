@@ -1,0 +1,185 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  tricuspidTVVmaxVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: tricuspidTVVmaxVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of tricuspid valve max velocity Variable relations from Lookup Annotations 
+*/
+
+Phase: tricuspidTVVmaxVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: TricuspidTVVmaxValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+
+( {Token.string ==~ "(?i)V"} {Token.string ==~ "(?i)MAX"} | {Token.string ==~ "(?i)VM[A]?X"} ) 
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)AT"})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)M"} | {Token.string ==~ "(?i)CM"}):unit)
+)
+
+):TricuspidTVVmaxValueGram 
+
+--> 
+:TricuspidTVVmaxValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidTVVmaxValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("cm")) {
+	
+		varDouble = varDouble / 100D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "m");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","TV Vmax");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","TV Vmax normal");
+		
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: TricuspidTVVmaxAlternValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+
+( {Token.string ==~ "(?i)V"} {Token.string ==~ "(?i)MAX"} | {Token.string ==~ "(?i)VM[A]?X"} ) 
+({Token.string == ":"})?
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+
+(
+(({Token.string ==~ "(?i)M"} | {Token.string ==~ "(?i)CM"}):unit)
+{Token.string == "/"}
+{Token.string ==~ "(?i)S"}
+)
+
+):context
+
+
+):TricuspidTVVmaxAlternValueGram 
+(
+
+({Token.string == ","})?
+({Token.position == "startpunct"})?
+
+({Token.string ==~ "(?i)PPD"} | {Token.string ==~ "(?i)MAXPG"} | {Token.string ==~ "(?i)MAX"} {Token.string ==~ "(?i)PG"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)AT"})?
+
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"})
+
+(
+({Token.string ==~ "(?i)MMHG"})
+)
+
+({Token.string !=~ "(?i)PPD", Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} | {SpaceToken.string!=PPD})*
+{Token.string ==~ "(?i)PPD"}
+({Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} | {SpaceToken.string!=PULMONARY})*
+{Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"}
+)
+
+--> 
+:TricuspidTVVmaxAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidTVVmaxAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("cm")) {
+	
+		varDouble = varDouble / 100D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "m");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","TV Vmax");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","TV Vmax altern");
+		
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+ 

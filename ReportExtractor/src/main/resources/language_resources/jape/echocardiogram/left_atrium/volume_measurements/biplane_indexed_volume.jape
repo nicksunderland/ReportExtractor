@@ -1,0 +1,125 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+Phase: biplane_volume
+Input: Token Lookup SpaceToken
+Options: control=Appelt 
+
+
+
+Rule: la_biplane_volume_rule_1
+(
+
+	(
+		({Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIUM"} | {Token.string ==~ "(?i)LA"} )
+		({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)VENTRICLE"} | {SpaceToken.string!=AORTIC})*
+		{Token.string ==~ "(?i)VOLUME"} 
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+					
+	(
+		({Token.string ==~ "(?i)ML[S]?"})?
+	):unit
+		{Token.string != "/"}
+		(({Token.string !=~ "(?i)M"} | {Token.string !=~ "(?i)M2"})
+		{Token.string !=~ "(?i)2"})
+		
+):la_vol
+--> 
+:la_vol
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "la_vol",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }
+
+
+
+Rule: la_biplane_volume_rule_2
+(
+
+	(
+		({Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIUM"} | {Token.string ==~ "(?i)LA"} )
+		({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)VENTRICLE"} | {SpaceToken.string!=AORTIC})*
+		{Token.string ==~ "(?i)VOLUME"} 
+
+		{Token.position == "startpunct"}
+		({Token.string ==~ "(?i)BIPLANE"} | {Token.kind == "word"})
+		{Token.position == "endpunct"} | {Token.kind == "word"}
+
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+					
+	(
+		({Token.string ==~ "(?i)ML[S]?"})?
+	):unit
+		{Token.string != "/"} {Token.string !=~ "(?i)M"} {Token.string !=~ "(?i)2"}
+		
+):la_vol
+--> 
+:la_vol
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "la_vol",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }
+
+
+
+Rule: la_biplane_volume_rule_3
+(
+
+	(
+		({Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIUM"} | {Token.string ==~ "(?i)LA"})
+		({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)VENTRICLE"} | {SpaceToken.string!=AORTIC})*
+	):context
+				
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+		
+	(
+		({Token.string ==~ "(?i)ML[S]?"})?
+	):unit
+		{Token.string != "/"}
+		(({Token.string !=~ "(?i)M"} | {Token.string !=~ "(?i)M2"}) {Token.string !=~ "(?i)2"})
+		
+):la_vol
+--> 
+:la_vol
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "la_vol",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }

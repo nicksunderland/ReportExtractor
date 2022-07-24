@@ -1,0 +1,72 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+Phase: interventricular_septal_diameter
+Input: Token Lookup  
+Options: control=Appelt 
+
+Rule: lv_ivs_rule_1
+(
+	
+	(
+		{Token.string =~ "(?i)IVS[d]?"}	
+		({Token.string == "="})?			
+	):context
+	
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}			
+	):value
+	
+	(
+		({Token.string ==~ "(?i)MM"} | 
+		 {Token.string ==~ "(?i)CM"})		
+	):unit
+
+):lv_ivs 
+--> 
+:lv_ivs
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "lv_ivs",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }
+  
+  
+ 
+Rule: lv_ivs_rule_2
+(
+	
+	(
+		{Token.string == "Septum"}	
+		{Token.string == "thickness"}
+		({Token.string == "["})?		
+	):context
+	
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}		
+	):value
+
+):lv_ivs 
+--> 
+:lv_ivs
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "lv_ivs",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }

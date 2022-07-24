@@ -1,0 +1,610 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  tricuspidTRMaxPGVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: tricuspidTRMaxPGVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Tricuspid regurgitation Max Pressure Gradient or Peak Pressure Difference or Peak RA to RV pressure drop Variable relations from Lookup Annotations 
+*/
+
+Phase: tricuspidTRMaxPGVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: TricuspidTRMaxPGValueRule
+Priority:1
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)PEAK"} {Token.string ==~ "(?i)R[AV]"} {Token.string ==~ "(?i)TO"} {Token.string ==~ "(?i)R[AV]"}
+{Token.string ==~ "(?i)PRESSURE"} {Token.string ==~ "(?i)DROP"} {Token.string ==~ "(?i)IS"} {Token.string ==~ "(?i)MEASURED"}
+{Token.string ==~ "(?i)AT"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):TricuspidTRMaxPGValueGram 
+
+--> 
+:TricuspidTRMaxPGValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidTRMaxPGValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","TR max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","TR max PG normal");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: TricuspidTRMaxPGAlternValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)PEAK"} {Token.string ==~ "(?i)R[AV]"} {Token.string ==~ "(?i)TO"} {Token.string ==~ "(?i)R[AV]"}
+{Token.string ==~ "(?i)PRESSURE"} {Token.string ==~ "(?i)DROP"} {Token.string ==~ "(?i)IS"} {Token.string ==~ "(?i)MEASURED"}
+{Token.string ==~ "(?i)AT"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"})
+
+(
+({Token.string ==~ "(?i)M"} {Token.string == "/"} {Token.string == "s"})
+)
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):TricuspidTRMaxPGAlternValueGram 
+
+--> 
+:TricuspidTRMaxPGAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidTRMaxPGAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","TR max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","TR max PG altern");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: TricuspidTRMaxPGAltern2ValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)PEAK"} {Token.string ==~ "(?i)R[AV]"} {Token.string ==~ "(?i)TO"} {Token.string ==~ "(?i)R[AV]"}
+{Token.string ==~ "(?i)PRESSURE"} {Token.string ==~ "(?i)DROP"} {Token.string ==~ "(?i)IS"} {Token.string ==~ "(?i)MEASURED"}
+{Token.string ==~ "(?i)AT"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"})
+
+(
+{Token.kind == "word"}
+)?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):TricuspidTRMaxPGAltern2ValueGram 
+
+--> 
+:TricuspidTRMaxPGAltern2ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidTRMaxPGAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","TR max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","TR max PG altern2");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: TricuspidTRMaxPGAltern3ValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)PEAK"} {Token.string ==~ "(?i)R[AV]"} {Token.string ==~ "(?i)TO"} {Token.string ==~ "(?i)R[AV]"}
+{Token.string ==~ "(?i)PRESSURE"} {Token.string ==~ "(?i)DROP"} {Token.string ==~ "(?i)IS"} {Token.string ==~ "(?i)MEASURED"}
+{Token.string ==~ "(?i)AT"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"})
+
+(
+({Token.string ==~ "(?i)M"} {Token.string == "/"} {Token.string == "s"})
+)
+
+({Token.string ==~ "(?i)PPD"} | {Token.string ==~ "(?i)MAXPG"} | {Token.string ==~ "(?i)MAX"} {Token.string ==~ "(?i)PG"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):TricuspidTRMaxPGAltern3ValueGram 
+
+--> 
+:TricuspidTRMaxPGAltern3ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidTRMaxPGAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","TR max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","TR max PG altern3");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+  
+Rule: TricuspidTRMaxPGAltern4ValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+{Token.string ==~ "(?i)PEAK"} {Token.string ==~ "(?i)R[AV]"} {Token.string ==~ "(?i)TO"} {Token.string ==~ "(?i)R[AV]"}
+{Token.string ==~ "(?i)PRESSURE"} {Token.string ==~ "(?i)DROP"} 
+({Token.kind == "word", Token.string !=~ "(?i)MEASURED"})?
+({Token.kind == "word", Token.string !=~ "(?i)MEASURED"})?
+({Token.kind == "word", Token.string !=~ "(?i)MEASURED"})?
+({Token.kind == "word", Token.string !=~ "(?i)MEASURED"})?
+
+({Token.string == ","})?
+
+({Token.kind == "word", Token.string !=~ "(?i)MEASURED"})?
+
+{Token.string ==~ "(?i)MEASURED"}
+({Token.kind == "word", Token.string !=~ "(?i)MEASURED"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)AT"})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):TricuspidTRMaxPGAltern4ValueGram 
+
+--> 
+:TricuspidTRMaxPGAltern4ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidTRMaxPGAltern4ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","TR max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","TR max PG altern4");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: TricuspidTRMaxPGAltern5ValueRule
+(
+(
+(
+({Token.string ==~ "(?i)TR"} | {Token.string ==~ "(?i)RAVVR"} | ({Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)REGURGITATION"} ))
+
+):context
+
+({Token.string == ","})?
+
+({Token.string ==~ "(?i)PPD"} | {Token.string ==~ "(?i)MAXPG"} | {Token.string ==~ "(?i)MAX"} {Token.string ==~ "(?i)PG"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)AT"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):TricuspidTRMaxPGAltern5ValueGram 
+
+--> 
+:TricuspidTRMaxPGAltern5ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidTRMaxPGAltern5ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","TR max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","TR max PG Altern5");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: TricuspidTRMaxPGAltern6ValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+
+{Token.string !=~ "(?i)TV", Token.string !=~ "(?i)RAVV"}
+
+(
+({Token.string ==~ "(?i)PPD"} | {Token.string ==~ "(?i)MAXPG"} | {Token.string ==~ "(?i)MAX"} {Token.string ==~ "(?i)PG"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)AT"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):TricuspidTRMaxPGAltern6ValueGram 
+
+--> 
+:TricuspidTRMaxPGAltern6ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidTRMaxPGAltern6ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","TR max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","TR max PG altern6");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: TricuspidTRMaxPGAltern7ValueRule
+(
+(
+({Token.string ==~ "(?i)TR"} | {Token.string ==~ "(?i)RAVVR"})
+( {Token.string ==~ "(?i)V"} {Token.string ==~ "(?i)MAX"} | {Token.string ==~ "(?i)VM[A]?X"} ) 
+({Token.string ==~ ":"})?
+
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+
+
+({Token.string ==~ "(?i)M"}
+{Token.string == "/"}
+{Token.string ==~ "(?i)S"}
+)
+
+({Token.string == ","})?
+({Token.position == "startpunct"})?
+
+):context
+
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):TricuspidTRMaxPGAltern7ValueGram 
+
+--> 
+:TricuspidTRMaxPGAltern7ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidTRMaxPGAltern7ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","TR max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","TR max PG Altern7");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: TricuspidTRMaxPGAltern8ValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+({Token.string ==~ "(?i)PPD"} | {Token.string ==~ "(?i)MAXPG"} | {Token.string ==~ "(?i)MAX"} {Token.string ==~ "(?i)PG"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)AT"})?
+	
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"})
+
+(
+({Token.string ==~ "(?i)MMHG"})
+)	
+
+({Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PPD})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)PPD"} | {Token.string ==~ "(?i)MAXPG"} | {Token.string ==~ "(?i)MAX"} {Token.string ==~ "(?i)PG"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)AT"})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+
+):TricuspidTRMaxPGAltern8ValueGram 
+
+--> 
+:TricuspidTRMaxPGAltern8ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidTRMaxPGAltern8ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","TR max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","TR max PG altern8");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+Rule: TricuspidTRMaxPGAltern9ValueRule
+(
+(
+({Token.string ==~ "(?i)TR"} | {Token.string ==~ "(?i)RAVVR"})
+({Token.string ==~ ":"})?
+
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+
+(
+({Token.string ==~ "(?i)M"} | {Token.string ==~ "(?i)CM"})
+{Token.string == "/"} {Token.string ==~ "(?i)S"}
+)
+
+({Token.string == ","})?
+({Token.position == "startpunct"})?
+
+):context
+
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):TricuspidTRMaxPGAltern9ValueGram 
+
+--> 
+:TricuspidTRMaxPGAltern9ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidTRMaxPGAltern9ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","TR max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","TR max PG Altern9");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

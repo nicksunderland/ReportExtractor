@@ -1,0 +1,316 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+
+Phase: TagNumeric
+Input: Token SpaceToken Split Lookup Units
+Options: control=Appelt  negationGrouping=false
+
+/*
+ * Description:
+ * Tag float/double values with annotation type 'Numeric' type="double"
+ * We don't allow tagging of things like '3D' or '3-dimensional' or cm2 and so make
+ * sure that the number is not within another Lookup or Units annotation.
+ * To be as broad as possible, we allow accidental typing of spaces prior to a '.' or ',', 
+ * but not spaces after, as that may tag numbers at the end of sentences or after 
+ * commas; i.e. allow '12 .3' or '12 ,3' or '12.3' or '12,3'; but not '12, 3' or '12. 3'
+ */
+Rule: date_tagger_ddmmyyyy
+Priority: 100
+(
+	// DD/MM/YYYY or DD/MM/YY
+
+	({Token.kind == "number",
+		Token.string ==~ "[12][0-9]|3[01]|0[1-9]|[1-9]", // day (allow single numbers, e.g. 5/7/22, as well as 05/07/22)
+		Token notWithin Lookup, 
+		Token notWithin Units}):day
+	
+	({Token.string ==~ "[./-]"} | {SpaceToken})
+	
+	({Token.kind == "number",
+		Token.string ==~ "1[0-2]|0[1-9]|[1-9]", // month
+		Token notWithin Lookup, 
+		Token notWithin Units} | {Lookup.majorType == "month"}):month
+	
+	({Token.string ==~ "[./-]"} | {SpaceToken})
+	
+	({Token.kind == "number", // year YYYY
+		Token.string ==~ "(19|20)[0-9][0-9]", 
+		Token notWithin Lookup, 
+		Token notWithin Units} |
+	 {Token.kind == "number", // year YY
+		Token.string ==~ "[0-9][0-9]", 
+		Token notWithin Lookup, 
+		Token notWithin Units}):year
+				
+	 ({!Token.string ==~ "[./-]"}{!Token.kind == "number"} | {Split})
+	 
+):date_tagger
+-->
+:date_tagger.Date = {type = "date", day = :day@cleanString, month = :month@cleanString, year = :year@cleanString}
+
+Rule: date_tagger_ddmm
+Priority: 100
+(
+	// DD/MM
+
+	({Token.kind == "number",
+		Token.string ==~ "[12][0-9]|3[01]|0[1-9]", // day (don't allow single numbers, e.g. 5/7, as easily could be a fraction)
+		Token notWithin Lookup, 
+		Token notWithin Units}):day
+	
+	({Token.string ==~ "[./-]"} | {SpaceToken})
+	
+	({Token.kind == "number",
+		Token.string ==~ "1[0-2]|0[1-9]", // month
+		Token notWithin Lookup, 
+		Token notWithin Units} | {Lookup.majorType == "month"}):month
+				
+	 ({!Token.string ==~ "[./-]"}{!Token.kind == "number"} | {Split})
+	 
+):date_tagger
+-->
+:date_tagger.Date = {type = "date", day = :day@cleanString, month = :month@cleanString, year = null}
+
+Rule: date_tagger_mmyyyy
+Priority: 100
+(
+	({Token.kind == "number",
+		Token.string ==~ "1[0-2]|0[1-9]", // month
+		Token notWithin Lookup, 
+		Token notWithin Units} | {Lookup.majorType == "month"}):month
+	
+	({Token.string ==~ "[./-]"} | {SpaceToken})
+	
+	({Token.kind == "number", // year YYYY
+		Token.string ==~ "(19|20)[0-9][0-9]", 
+		Token notWithin Lookup, 
+		Token notWithin Units} |
+	 {Token.kind == "number", // year YY
+		Token.string ==~ "[0-9][0-9]", 
+		Token notWithin Lookup, 
+		Token notWithin Units}):year
+	
+	({!Token.string ==~ "[./-]"}{!Token.kind == "number"} | {Split})
+	
+):date_tagger
+-->
+:date_tagger.Date = {type = "date", day = null, month = :month@cleanString, year = :year@cleanString}
+
+Rule: date_tagger_yyyy
+Priority: 100
+(	
+	({Token.kind == "number", // year YYYY
+		Token.string ==~ "(19|20)[0-9][0-9]", 
+		Token notWithin Lookup, 
+		Token notWithin Units}):year
+	
+	({!Token.string ==~ "[./-]"}{!Token.kind == "number"} | {Split})
+	
+):date_tagger
+-->
+:date_tagger.Date = {type = "date", day = null, month = null, year = :year@cleanString}
+
+/*
+ * Description:
+ * Here we retag numeric ranges e.g. 50-50% as a Numeric annotation with a 'value' feature containing the mean
+ */
+Rule: numeric_ranges_rule
+Priority: 99
+(
+	({Token.kind == "number"}({Token.string ==~ "[.,]"}{Token.kind == "number"})?):lo
+		({SpaceToken})?
+			({Units})?
+				({SpaceToken})?
+	({Token.string ==~ "(?i)[-]|(to)"})
+		({SpaceToken}{Token.string ==~ "(?i)a"})?
+			({SpaceToken}{Token.string ==~ "(?i)(max)|(min)"})?
+				({SpaceToken}{Token.string ==~ "(?i)of"})?
+		({SpaceToken})?
+	({Token.kind == "number"}({Token.string ==~ "[.,]"}{Token.kind == "number"})?):hi
+	
+	
+	//33 mm to a max 40 mm
+
+):numeric_range
+-->
+:numeric_range{
+	
+	String lo_str = stringFor(doc, bindings.get("lo"));
+	String hi_str = stringFor(doc, bindings.get("hi"));
+	lo_str = lo_str.replace(",", ".");
+	hi_str = hi_str.replace(",", ".");
+	String value  = null;
+	try {
+		Double lo = Double.parseDouble(lo_str);
+		Double hi = Double.parseDouble(hi_str);
+		Double av = (lo + hi) / 2.0;
+		value = av.toString();
+	}catch(Exception e) {
+		return;
+	}
+	
+	FeatureMap newFeatures = Factory.newFeatureMap();
+	newFeatures.put("value", value);
+	newFeatures.put("hi", hi_str);
+	newFeatures.put("lo", lo_str);
+	newFeatures.put("type", "double");
+	outputAS.add(bindings.get("numeric_range").firstNode(),bindings.get("numeric_range").lastNode(),"Numeric", newFeatures);
+}
+
+/*
+ * Description:
+ * Here we retag orthogonal values as a specific Numeric annotations with 'value1' and 'value2' features
+ */
+Rule: orthogonal_numbers_rule
+Priority: 98
+(
+	({Token.kind == "number"}({Token.string ==~ "[.,]"}{Token.kind == "number"})?):value1
+	({SpaceToken})?({Units.majorType == "length"})?({SpaceToken})?
+	({Token.string ==~ "(?i)(x)|(by)"})
+	({SpaceToken})?
+	({Token.kind == "number"}({Token.string ==~ "[.,]"}{Token.kind == "number"})?):value2
+
+):orthogonal_numbers
+-->
+:orthogonal_numbers{
+	
+	String value1_str = stringFor(doc, bindings.get("value1"));
+	String value2_str = stringFor(doc, bindings.get("value2"));
+	value1_str = value1_str.replace(",", ".");
+	value2_str = value2_str.replace(",", ".");
+	try {
+		Double value1 = Double.parseDouble(value1_str);
+		Double value2 = Double.parseDouble(value2_str);
+		value1_str = value1.toString();
+		value2_str = value2.toString();
+		
+	}catch(Exception e) {
+		return;
+	}
+	
+	FeatureMap newFeatures = Factory.newFeatureMap();
+	newFeatures.put("value1", value1_str);
+	newFeatures.put("value2", value2_str);
+	newFeatures.put("type", "orthogonal_numbers");
+	outputAS.add(bindings.get("orthogonal_numbers").firstNode(),bindings.get("orthogonal_numbers").lastNode(),"Numeric", newFeatures);
+}
+
+/*
+ * Description:
+ * Tag the weeks shorthand e.g. 1/40 (1 week pregnant) or 1/52 (1 week)
+ */
+Rule: weeks_fraction_shorthand
+Priority: 97
+(
+	( {Token.string ==~ "[1234][0-9]|[5][0-2]|[1-9]"} ):numerator //1-52
+	( {Token.string == "/"}
+   	  ({Token.string ==~ "40"} | {Token.string ==~ "52"}) ):denominator  //40-pregnancy; 52-weeks in year
+
+):fraction_shorthand
+-->
+:fraction_shorthand{
+	
+	String num_weeks_str = stringFor(doc, bindings.get("numerator"));
+	try {
+		int num_weeks = Integer.parseInt(num_weeks_str);
+		num_weeks_str = String.valueOf(num_weeks);
+	}catch(Exception e) {
+		return;
+	}
+	
+	// Add the Numeric annotations to the numerator
+	FeatureMap newFeatures = Factory.newFeatureMap();
+	newFeatures.put("value", num_weeks_str);
+	newFeatures.put("type", "integer");
+	outputAS.add(bindings.get("numerator").firstNode(),bindings.get("numerator").lastNode(),"Numeric", newFeatures);
+	
+	// Add a Lookup annotation to the denominator
+	FeatureMap newFeatures_2 = Factory.newFeatureMap();
+	newFeatures_2.put("majorType", "time");
+	newFeatures_2.put("minorType", "weeks");
+	newFeatures_2.put("language", "en");
+	outputAS.add(bindings.get("denominator").firstNode(),bindings.get("denominator").lastNode(),"Units", newFeatures_2);
+}
+
+Rule: fraction_tagger
+Priority: 96
+(
+	(({Token.kind == "number", 
+		Token notWithin Lookup,
+		Token notWithin Date,
+		Token notWithin Units}):main
+	{SpaceToken})?
+	({Token.kind == "number", 
+		Token notWithin Lookup,
+		Token notWithin Date,
+		Token notWithin Units}):numerator
+	{Token.string == "/"} 
+	({Token.kind == "number", 
+		Token notWithin Lookup,
+		Token notWithin Date,
+		Token notWithin Units} |
+	 {Token.string ==~ "(?i)[0-9]*(st|nd|rd|th)(s)?", 
+	 	Token notWithin Lookup,
+	 	Token notWithin Date,
+	 	Token notWithin Units}):denominator
+	
+):fraction_tagger
+-->
+:fraction_tagger{
+	
+	String main_str = bindings.get("main")!=null ? stringFor(doc, bindings.get("main")) : "0";
+	String numerator_str = stringFor(doc, bindings.get("numerator"));
+	String denominator_str = stringFor(doc, bindings.get("denominator")).replaceAll("(st|nd|rd|th)(s)?","");
+	String value = null;
+	try {
+		Double main = Double.parseDouble(main_str);
+		Double numerator = Double.parseDouble(numerator_str);
+		Double denominator = Double.parseDouble(denominator_str);
+		main = main + (numerator/denominator);
+		value = main.toString();
+	}catch(Exception e) {
+		return;
+	}
+	FeatureMap newFeatures = Factory.newFeatureMap();
+	newFeatures.put("value", value);
+	newFeatures.put("type", "fraction");
+	outputAS.add(bindings.get("fraction_tagger").firstNode(),bindings.get("fraction_tagger").lastNode(),"Numeric", newFeatures);
+}
+
+Rule: double_tagger
+Priority: 95
+(
+	{Token.kind == "number", 
+		Token notWithin Lookup, 
+		Token notWithin Units} 
+	({SpaceToken, !Split})[0,1] 
+	{Token.string ==~ "[.,]"} 
+	{Token.kind == "number", 
+		Token notWithin Lookup, 
+		Token notWithin Units}
+	({SpaceToken}
+	 {Token.string == "0",   //allow a space then a 0 (as this won't change the value), but not other numbers
+		Token notWithin Lookup, 
+		Token notWithin Units})?
+	
+):double_tagger
+-->
+:double_tagger.Numeric = {type = "double", value = :double_tagger@cleanString}
+
+/*
+ * Description:
+ * If the double_tagger rule does not fire, then we come here to tag numbers on their
+ * own as Numeric with type="integer"
+ */
+Rule: int_tagger
+Priority: 94
+(
+	{Token.kind == "number", 
+		Token notWithin Lookup, 
+		Token notWithin Units}
+):int_tagger
+-->
+:int_tagger.Numeric = {type = "integer", value = :int_tagger@cleanString}

@@ -1,0 +1,417 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleWMHypokineticLevelVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleWMHypokineticLevelVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle Hypokinesis level Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleWMHypokineticLevelVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+Macro: hypokinesisTerm
+( {Token.string ==~ "(?i)HYPOKINESIS"} | {Token.string ==~ "(?i)HYPOKINETIC"}  | {Token.string ==~ "(?i)HYPOKINESIA"} |
+{Token.string ==~ "(?i)WALL"} {Token.string ==~ "(?i)MOTION"} {Token.string ==~ "(?i)ABNORMALITY"}
+)
+
+
+Rule: LeftVentricleWMHypokineticLevelValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=contract})*
+
+):context
+)
+
+(
+(
+(
+
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MODERATELY"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD"} | {Token.string ==~ "(?i)MILDLY"} | {Token.string ==~ "(?i)SUBTLE"}):mild | 
+({Lookup.majorType == severity_Level_Severe}):severe
+) 
+)
+
+hypokinesisTerm
+
+
+):context
+
+
+):LeftVentricleWMHypokineticLevelValueGram 
+
+--> 
+:LeftVentricleWMHypokineticLevelValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMHypokineticLevelValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (Not hypokinetic) to 3 (Severely hypokinetic)");
+	newFeatures.put("varType","LV Hypokinesis Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypokinesis Level normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleWMHypokineticLevelAlternValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=contract})*
+
+):context
+)
+
+(
+(
+(
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MODERATELY"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD"} | {Token.string ==~ "(?i)MILDLY"} | {Token.string ==~ "(?i)SUBTLE"}):mild | 
+({Lookup.majorType == severity_Level_Severe}):severe
+) 
+)
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+hypokinesisTerm
+
+
+):context
+
+
+):LeftVentricleWMHypokineticLevelAlternValueGram 
+
+--> 
+:LeftVentricleWMHypokineticLevelAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMHypokineticLevelAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (Not hypokinetic) to 3 (Severely hypokinetic)");
+	newFeatures.put("varType","LV Hypokinesis Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypokinesis Level altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+
+Rule: LeftVentricleWMHypokineticLevelAltern2ValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=contract})*
+
+):context
+)
+
+(
+(
+(
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MODERATELY"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD"} | {Token.string ==~ "(?i)MILDLY"} | {Token.string ==~ "(?i)SUBTLE"}):mild | 
+({Lookup.majorType == severity_Level_Severe}):severe
+) 
+)
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+hypokinesisTerm
+
+
+):context
+
+
+):LeftVentricleWMHypokineticLevelAltern2ValueGram 
+
+--> 
+:LeftVentricleWMHypokineticLevelAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMHypokineticLevelAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (Not hypokinetic) to 3 (Severely hypokinetic)");
+	newFeatures.put("varType","LV Hypokinesis Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypokinesis Level altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleWMHypokineticLevelAltern3ValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=contract})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MODERATELY"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD"} | {Token.string ==~ "(?i)MILDLY"} | {Token.string ==~ "(?i)SUBTLE"}):mild | 
+({Lookup.majorType == severity_Level_Severe}):severe
+)  
+)
+
+{Token.kind == "word"}
+
+hypokinesisTerm
+
+
+):context
+
+
+):LeftVentricleWMHypokineticLevelAltern3ValueGram 
+
+--> 
+:LeftVentricleWMHypokineticLevelAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMHypokineticLevelAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (Not hypokinetic) to 3 (Severely hypokinetic)");
+	newFeatures.put("varType","LV Hypokinesis Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypokinesis Level altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleWMHypokineticLevelAlternModerateValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=contract})*
+
+):context
+)
+
+(
+(
+
+hypokinesisTerm
+
+
+):context
+
+
+):LeftVentricleWMHypokineticLevelAlternModerateValueGram 
+
+--> 
+:LeftVentricleWMHypokineticLevelAlternModerateValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMHypokineticLevelAlternModerateValueGram");
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2");
+	
+	newFeatures.put("unit", "scale 0 (Not hypokinetic) to 3 (Severely hypokinetic)");
+	newFeatures.put("varType","LV Hypokinesis Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypokinesis Level alternModerate");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleWMHypokineticLevelUnboundedValueRule
+Priority:10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=contract})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MODERATELY"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD"} | {Token.string ==~ "(?i)MILDLY"} | {Token.string ==~ "(?i)SUBTLE"}):mild | 
+({Lookup.majorType == severity_Level_Severe}):severe
+) 
+)
+hypokinesisTerm
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+{Token.string ==~ "(?i)LEFT"}
+{Token.string ==~ "(?i)VENTRICLE"}
+
+):context
+
+
+):LeftVentricleWMHypokineticLevelUnboundedValueGram 
+
+--> 
+:LeftVentricleWMHypokineticLevelUnboundedValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMHypokineticLevelUnboundedValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (Not hypokinetic) to 3 (Severely hypokinetic)");
+	newFeatures.put("varType","LV Hypokinesis Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypokinesis Level Unbounded");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+Rule: LeftVentricleWMHypokineticLevelAlternNonValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=contract})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)NO[N]?"} | {Token.string ==~ "(?i)NOT"} |
+{Token.string ==~ "(?i)NO"} {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICULAR"}
+)
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.string == "/"})?
+
+hypokinesisTerm
+
+):context
+
+
+):LeftVentricleWMHypokineticLevelAlternNonValueGram 
+
+--> 
+:LeftVentricleWMHypokineticLevelAlternNonValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMHypokineticLevelAlternNonValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "scale 0 (Not hypokinetic) to 3 (Severely hypokinetic)");
+	newFeatures.put("varType","LV Hypokinesis Level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Hypokinesis Level alternNon");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

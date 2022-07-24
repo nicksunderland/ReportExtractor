@@ -1,0 +1,90 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  pulmPREndVmaxVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: pulmPREndVmaxVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of pulm regurgitation end diastolic Vmax Variable relations from Lookup Annotations 
+*/
+
+Phase: pulmPREndVmaxVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+  
+Rule: PulmPREndVmaxValueRule
+(
+(
+({Token.string ==~ "(?i)PR"})
+({Token.string ==~ "(?i)END"})
+({Token.string ==~ "(?i)VM[A]?X"} | {Token.string ==~ "(?i)VEL"} | {Token.string ==~ "(?i)VELOCITY"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)M"} | {Token.string ==~ "(?i)CM"}):unit)
+{Token.string == "/"} 
+{Token.string ==~ "(?i)S"}
+)?
+
+
+):PulmPREndVmaxValueGram 
+
+--> 
+:PulmPREndVmaxValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmPREndVmaxValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("cm")) {
+	
+		varDouble = varDouble / 100D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "m");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","PR end Vmax");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PR end diastolic Vmax normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+

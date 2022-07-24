@@ -1,0 +1,350 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  pulmPADiameterVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: pulmPADiameterVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of pulm MPA (main), LPA (left), RPA (right) Artery Diameter Variable relations from Lookup Annotations 
+*/
+
+Phase: pulmPADiameterVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+  
+Rule: PulmMPADiameterValueRule
+(
+(
+{Token.string ==~ "(?i)MPA"}
+({Token.string ==~ "(?i)DIAM(ETER)?"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"}):unit)
+)
+
+):PulmMPADiameterValueGram 
+
+--> 
+:PulmMPADiameterValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmMPADiameterValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","MPA diam");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MPA diam normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: PulmMPADiameterAlternValueRule
+(
+(
+{Token.string ==~ "(?i)MAIN"}
+{Token.string ==~ "(?i)PULMONARY"}
+{Token.string ==~ "(?i)ARTERY"}
+({Token.string == ","})?
+({Token.string =~ "(?i)MEASUR(ED)?"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)CM"} | {Token.string ==~ "(?i)MM"}):unit)
+)
+
+):PulmMPADiameterAlternValueGram 
+
+--> 
+:PulmMPADiameterAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmMPADiameterAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","MPA diam");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MPA diam altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: PulmMPADiameterAltern2ValueRule
+Priority:1
+(
+(
+({Token.string ==~ "(?i)MPA"})
+({Token.string != "PERICARDIUM", Token.string !=~ "(?i)SUMMARY", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)RVOT", Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)TR", Token.string !=~ "(?i)PR"}|{SpaceToken.string!=LVOT})*
+):context
+)
+
+(
+(
+({Token.string == ","})?
+({Token.string =~ "(?i)MEASUR(ED)?"})
+
+({Token.string == "~"})?
+({Token.string == "~"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)CM"} | {Token.string ==~ "(?i)MM"}):unit)
+)
+
+
+):PulmMPADiameterAltern2ValueGram 
+
+--> 
+:PulmMPADiameterAltern2ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmMPADiameterAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","MPA diam");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MPA diam altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: PulmLPADiameterValueRule
+(
+(
+{Token.string ==~ "(?i)LPA"}
+({Token.string ==~ "(?i)DIAM(ETER)?"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)CM"} | {Token.string ==~ "(?i)MM"}):unit)
+)
+
+):PulmMPADiameterValueGram 
+
+--> 
+:PulmMPADiameterValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmMPADiameterValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","LPA diam");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LPA diam normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: PulmRPADiameterValueRule
+(
+(
+{Token.string ==~ "(?i)RPA"}
+({Token.string ==~ "(?i)DIAM(ETER)?"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)CM"} | {Token.string ==~ "(?i)MM"}):unit)
+)
+
+):PulmMPADiameterValueGram 
+
+--> 
+:PulmMPADiameterValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmMPADiameterValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","RPA diam");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "RPA diam normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

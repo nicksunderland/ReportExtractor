@@ -1,0 +1,384 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  aorticRegurgitationLevelVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: aorticRegurgitationLevelVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of aortic regurgitation level Variable relations from Lookup Annotations 
+*/
+
+Phase: aorticRegurgitationLevelVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Macro: aorticRegurgSeverityTerm
+(
+({Token.string ==~ "(?i)MINIMAL"} | {Token.string ==~ "(?i)MINIMUM"} | {Token.string ==~ "(?i)TRIVIAL"} | 
+{Token.string ==~ "(?i)VERY"} {Token.string ==~ "(?i)MILD"} | {Token.string ==~ "(?i)TRACE"}):trivial | 
+({Token.string ==~ "(?i)MILD"} | {Token.string ==~ "(?i)TRIVIAL-MILD"}):mild | 
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MILD-MODERATE"} | {Token.string ==~ "(?i)MOD"}):moderate |
+({Token.string ==~ "(?i)HEAVY"} | {Token.string ==~ "(?i)MARKED"} | {Token.string ==~ "(?i)PROMINENT"} | 
+{Token.string ==~ "(?i)SEVERE"} | {Token.string ==~ "(?i)MODERATE-SEVERE"} | {Token.string ==~ "(?i)MODERATE"}
+{Token.string ==~ "(?i)TO"} {Token.string ==~ "(?i)SEVERE"}):severe
+)
+
+Macro: aorticRegurgitationTerm
+(
+{Token.string ==~ "(?i)REGURGITATION"} | {Token.string ==~ "(?i)AR"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)REGURGITATION"}
+)
+
+
+Rule: AorticRegurgitationLevelValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE", !Lookup.majorType == AorticRegurgitation_LevelSpecific_WordExclusion}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+
+aorticRegurgSeverityTerm
+
+
+aorticRegurgitationTerm
+
+
+):context
+
+
+):AorticRegurgitationLevelValueGram 
+
+--> 
+:AorticRegurgitationLevelValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticRegurgitationLevelValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "3");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "0");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","AR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AR level normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+ 
+ 
+Rule: AorticRegurgitationLevelAlternValueRule
+Priority: 10
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE", !Lookup.majorType == AorticRegurgitation_LevelSpecific_WordExclusion}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+
+(
+(
+
+aorticRegurgSeverityTerm 
+
+
+{Token.kind == "word", !Lookup.majorType == severity_Level_All}
+
+aorticRegurgitationTerm
+
+
+):context
+
+
+):AorticRegurgitationLevelAlternValueGram 
+
+--> 
+:AorticRegurgitationLevelAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticRegurgitationLevelAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "3");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "0");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","AR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AR level altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: AorticRegurgitationLevelAltern2ValueRule
+Priority: 10
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE", !Lookup.majorType == AorticRegurgitation_LevelSpecific_WordExclusion}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+
+(
+(
+ 
+aorticRegurgSeverityTerm 
+
+
+{Token.kind == "word", !Lookup.majorType == severity_Level_All}
+{Token.kind == "word", !Lookup.majorType == severity_Level_All}
+
+aorticRegurgitationTerm
+
+
+):context
+
+
+):AorticRegurgitationLevelAltern2ValueGram 
+
+--> 
+:AorticRegurgitationLevelAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticRegurgitationLevelAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "3");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "0");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","AR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AR level altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: AorticRegurgitationLevelAltern3ValueRule
+Priority: 10
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE", !Lookup.majorType == AorticRegurgitation_LevelSpecific_WordExclusion}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+
+(
+(
+ 
+aorticRegurgSeverityTerm
+
+
+{Token.kind == "word", !Lookup.majorType == severity_Level_All}
+{Token.kind == "word", !Lookup.majorType == severity_Level_All}
+{Token.kind == "word", !Lookup.majorType == severity_Level_All}
+
+aorticRegurgitationTerm
+
+
+):context
+
+
+):AorticRegurgitationLevelAltern3ValueGram 
+
+--> 
+:AorticRegurgitationLevelAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticRegurgitationLevelAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "3");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "0");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","AR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AR level altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: AorticRegurgitationLevelAlternNonValueRule
+Priority: 10
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE", !Lookup.majorType == AorticRegurgitation_LevelSpecific_WordExclusion}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)NO[N]?"} | {Token.string ==~ "(?i)NOT"} |
+{Token.string ==~ "(?i)NO"} {Token.string ==~ "(?i)AORTIC"} 
+)
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+
+aorticRegurgitationTerm
+
+):context
+
+
+):AorticRegurgitationLevelAlternNonValueGram 
+
+--> 
+:AorticRegurgitationLevelAlternNonValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticRegurgitationLevelAlternNonValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","AR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AR level alternNon");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: AorticRegurgitationLevelUnboundedValueRule
+(
+(
+
+aorticRegurgSeverityTerm
+
+
+({Token.string ==~ "(?i)AORTIC"}
+{Token.string ==~ "(?i)REGURGITATION"} | {Token.string ==~ "(?i)AR"})
+
+
+):context
+
+
+):AorticRegurgitationLevelUnboundedValueGram 
+
+--> 
+:AorticRegurgitationLevelUnboundedValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticRegurgitationLevelUnboundedValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "3");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "0");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","AR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AR level Unbounded");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

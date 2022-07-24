@@ -1,0 +1,63 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleSpontaneousEchoContrastVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleSpontaneousEchoContrastVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle Spontaneous Echo Contrast Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleSpontaneousEchoContrastVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LeftVentricleSpontaneousEchoContrastValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Measurements})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)SPONTANEOUS"} ({Token.string ==~ "(?i)ECHO"} {Token.string ==~ "(?i)CONTRAST"} |
+{Token.string ==~ "(?i)ECHOCONTRAST"})
+)
+
+):context
+
+
+):LeftVentricleSpontaneousEchoContrastValueGram 
+
+--> 
+:LeftVentricleSpontaneousEchoContrastValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleSpontaneousEchoContrastValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "scale NULL (Absent) to 1 (Present)");
+	newFeatures.put("varType","LV SEC");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV SEC normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  

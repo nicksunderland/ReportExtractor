@@ -1,0 +1,95 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  rightVentricleSVelocityVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: rightVentricleSVelocityVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of right ventricle S Velocity or tricuspid annular systolic velocity Variable relations from Lookup Annotations 
+*/
+
+Phase: rightVentricleSVelocityVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: RightVentricleSVelocityValueRule
+(
+(
+( {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)VENTRICLE"} | {Token.string ==~ "(?i)RV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)HEART"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)SIDED"} {Token.string ==~ "(?i)STRUCTURES"} )
+({Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)MISC", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)CAVA", Token.string !=~ "(?i)IVC", Token.string !=~ "(?i)PRESSURE", Token.string !=~ "(?i)LA", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)PULMONARY"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+( 
+{Token.string ==~ "(?i)S"}
+({Token.string == "'"} | {Token.string ==~ "(?i)Prime"})?
+({Token.string =~ "(?i)velocity"} | {Token.string =~ "(?i)VEL"} ({Token.string == "."})?)? | 
+{Token.string =~ "(?i)TDI"} ({Token.string ==~ "(?i)S"})?
+({Token.string =~ "(?i)waves"})? )
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+(
+(({Token.string == "cm"} | {Token.string == "m"}):unit)?
+)
+
+):RightVentricleSVelocityValueGram 
+
+--> 
+:RightVentricleSVelocityValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RightVentricleSVelocityValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("m")) {
+	
+		varDouble = varDouble * 100D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","RV S'");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "RV tricuspid annular systolic velocity normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  

@@ -1,0 +1,420 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  mitralStenosisVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: mitralStenosisVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of mitral valve stenosis Variable relations from Lookup Annotations 
+*/
+
+Phase: mitralStenosisVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: MitralStenosisValueRule
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=ATRIUM})*
+
+):context
+)
+
+(
+(
+(
+
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+
+
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+
+):context
+
+
+):MitralStenosisValueGram 
+
+--> 
+:MitralStenosisValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralStenosisValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","MV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Stenosis normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: MitralStenosisAlternValueRule
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=ATRIUM})*
+
+):context
+)
+
+(
+(
+(
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+
+):context
+
+
+):MitralStenosisAlternValueGram 
+
+--> 
+:MitralStenosisAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralStenosisAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","MV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Stenosis altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: MitralStenosisAltern2ValueRule
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=ATRIUM})*
+
+):context
+)
+
+(
+(
+(
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+)
+)
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+
+):context
+
+
+):MitralStenosisAltern2ValueGram 
+
+--> 
+:MitralStenosisAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralStenosisAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","MV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Stenosis altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: MitralStenosisAltern3ValueRule
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=ATRIUM})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+
+{Token.kind == "word"}
+
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+
+):context
+
+
+):MitralStenosisAltern3ValueGram 
+
+--> 
+:MitralStenosisAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralStenosisAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","MV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Stenosis altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: MitralStenosisAlternModerateValueRule
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=ATRIUM})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+
+):context
+
+
+):MitralStenosisAlternModerateValueGram 
+
+--> 
+:MitralStenosisAlternModerateValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralStenosisAlternModerateValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2");
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","MV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Stenosis alternModerate");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: MitralStenosisUnboundedValueRule
+Priority:10
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=ATRIUM})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+{Token.string ==~ "(?i)MITRAL"}
+{Token.string ==~ "(?i)VALVE"}
+
+):context
+
+
+):MitralStenosisUnboundedValueGram 
+
+--> 
+:MitralStenosisUnboundedValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralStenosisUnboundedValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","MV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Stenosis Unbounded");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+Rule: MitralStenosisAlternNonValueRule
+Priority: 10
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=ATRIUM})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)NO[N]?"} | {Token.string ==~ "(?i)NOT"} |
+{Token.string ==~ "(?i)NO"} {Token.string ==~ "(?i)MITRAL"} 
+)
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.string == "/"})?
+
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} )
+
+):context
+
+
+):MitralStenosisAlternNonValueGram 
+
+--> 
+:MitralStenosisAlternNonValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralStenosisAlternNonValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","MV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV Stenosis alternNon");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

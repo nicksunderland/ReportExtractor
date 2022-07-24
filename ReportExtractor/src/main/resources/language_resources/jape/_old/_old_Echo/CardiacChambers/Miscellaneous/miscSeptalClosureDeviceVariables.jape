@@ -1,0 +1,63 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  miscSeptalClosureDeviceVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: miscSeptalClosureDeviceVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Miscellaneous Septal Closure Device Variable relations from Lookup Annotations 
+*/
+
+Phase: miscSeptalClosureDeviceVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: MiscSeptalClosureDeviceValueRule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)closure"} {Token.string =~ "(?i)device"} | {Token.string ==~ "(?i)Occluder"} | 
+{Token.string ==~ "(?i)PATCH"})
+
+
+):context
+
+
+):MiscSeptalClosureDeviceValueGram 
+
+--> 
+:MiscSeptalClosureDeviceValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscSeptalClosureDeviceValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	
+	newFeatures.put("unit", "Levels: 1 (present), Null (assume absent)");
+	newFeatures.put("varType","Septal Occluder");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Septal Occluder normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }

@@ -1,0 +1,97 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+
+Phase: TagVarSentence
+Input: Sentence Anatomy
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * ....
+ */
+Rule: var_sentence
+(
+	{Sentence contains {Anatomy.minorType == "aortic_root"}}
+	({Sentence notContains {Anatomy.minorType != "aortic_root"}})?
+					
+):var_sentence
+-->
+:var_sentence.VarSentence = {type = "aortic_root"}
+
+
+
+Phase: AorticRootDiameter
+Input: Token Anatomy Numeric Units Lookup VarSentence Split
+Options: control=Appelt negationGrouping=false
+
+Macro: CONTEXT
+(
+	{Anatomy,
+		Anatomy within {VarSentence.type == "aortic_root"},
+		Anatomy.minorType == "aortic_root"}
+)
+
+Macro: FILTER
+(
+
+	{Token,
+		!Numeric, //force carry on
+		!Units.majorType == "length", //force carry on
+		!Anatomy.minorType != "aortic_root",
+		!Lookup.majorType == "height",
+		!Lookup.majorType == "body_surface_area",
+		!Lookup.majorType == "misc_echo_descriptor",
+		!Units.majorType == "length/length", 
+		!Units.majorType == "z_score", 
+		!Lookup.majorType == "quantity_change", 
+		Token within {VarSentence.type == "aortic_root"}}
+)
+
+Macro: VALUE
+(
+	{Numeric,
+		Numeric within {VarSentence.type == "aortic_root"}, 
+		Numeric.type == "double"} |
+	{Numeric,
+		Numeric within {VarSentence.type == "aortic_root"}, 
+		Numeric.type == "integer"}
+)
+
+Macro: UNITS
+(
+	{Units,
+		Units within {VarSentence.type == "aortic_root"},
+		Units.majorType == "length"}
+)
+
+/*
+ * Description:
+ * e.g. 'the root is dilated at 45mm at the Sov'
+ */
+Rule: ao_root_diam_1
+Priority:100
+(
+	( CONTEXT ):context
+	
+	( FILTER )[0,10]
+	
+	( VALUE ):value
+			
+	( (UNITS)? ):unit
+			
+	({Token, 
+		!Lookup.minorType == "preposition", 
+		!Units} | {Split})
+	
+):ao_root_diam 
+--> 
+:ao_root_diam
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_root_diam", doc, bindings, outputAS);
+}

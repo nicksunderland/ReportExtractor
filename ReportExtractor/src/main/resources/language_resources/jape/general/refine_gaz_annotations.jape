@@ -1,0 +1,197 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+
+Phase: CleanUnits
+Input: Units
+Options: control=Appelt negationGrouping=false
+/*
+ * Description:
+ * Here we remove units within units and assume that the large spanning annotation
+ * is correct. 
+ * e.g. 'cm/m' may get tagged as 'cm', 'm', and 'cm/m' ==> just 'cm/m'
+ */
+Rule: clean_units
+Priority: 100
+(
+	{Units}
+):unit
+-->
+{
+	AnnotationSet thisUnitAnnot     = bindings.get("unit"); // this annotation above
+	AnnotationSet unitsOverlapping  = inputAS.get("Units", thisUnitAnnot.firstNode().getOffset(), thisUnitAnnot.lastNode().getOffset()); // any Units annotations that overlap
+	List<Annotation> annotsToRemove = new ArrayList<>(unitsOverlapping); // turn into a list	
+	Comparator<Annotation> c = (a1, a2) -> Integer.signum((int) // create an comparator based on the length of the Unit annotations
+			((a1.getEndNode().getOffset() - a1.getStartNode().getOffset()) - 
+			 (a2.getEndNode().getOffset() - a2.getStartNode().getOffset())));
+	annotsToRemove.sort(c.reversed()); // sort the list from longest Unit annotation to shortest
+	annotsToRemove.remove(0); // remove the longest annotation from the removals list (as we want to keep this)
+	inputAS.removeAll(annotsToRemove); // remove the rest from the input AnnotationSet
+}
+
+
+
+Phase: CleanAnatomy
+Input: Anatomy
+Options: control=Appelt negationGrouping=false
+/*
+ * Description:
+ * Here we remove anatomy within anatomy and assume that the larger spanning annotation
+ * is correct. 
+ */
+Rule: clean_anatomy
+Priority: 100
+(
+	{Anatomy}
+):anatomy
+-->
+{
+	AnnotationSet anatomyAnnots = bindings.get("anatomy");
+	
+	AnnotationSet anatomyWithin_1 = inputAS.get("Anatomy").getContained(
+			anatomyAnnots.firstNode().getOffset(),
+			anatomyAnnots.lastNode().getOffset()-1);
+	inputAS.removeAll(anatomyWithin_1);
+	
+	AnnotationSet anatomyWithin_2 = inputAS.get("Anatomy").getContained(
+			anatomyAnnots.firstNode().getOffset()+1,
+			anatomyAnnots.lastNode().getOffset());
+	inputAS.removeAll(anatomyWithin_2);
+	
+	AnnotationSet unitsWithinAnatomy = inputAS.get("Units").getContained(
+			anatomyAnnots.firstNode().getOffset(),
+			anatomyAnnots.lastNode().getOffset());
+	inputAS.removeAll(unitsWithinAnatomy);
+	
+	AnnotationSet categoricalWithin = inputAS.get("Categorical").getContained(
+			anatomyAnnots.firstNode().getOffset(),
+			anatomyAnnots.lastNode().getOffset());
+	inputAS.removeAll(categoricalWithin);
+}
+	
+
+
+Phase: CleanNumeric
+Input: Numeric Units Token Split
+Options: control=Appelt negationGrouping=false
+/*
+ * Description:
+ * Here we retag split numeric values e.g. 1m 80cm ({Numeric}{Units}{Numeric}{Units}) becomes 1.8m {Numeric}{Units}
+ * To keep it compatible with the Context:Numeric:Units matching we assign the 'value' feature of the metre annotation
+ * to a combination of the metre and cm; then remove annots from the '80' and the 'cm' so they effectively get ignored.
+ * is correct. 
+ */
+Rule: split_metric_length
+(
+	({Numeric}):metres		 
+	({Units.minorType == "m"})
+	({Numeric}):cm
+	({Units.minorType == "cm"})?
+
+):split_metric
+-->
+:split_metric{
+	
+	String metres_str = stringFor(doc, bindings.get("metres"));
+	String cm_str     = bindings.get("cm")!=null ? stringFor(doc, bindings.get("cm")) : "0";
+	String value = null;
+	try {
+		Double metres = Double.parseDouble(metres_str);
+		Double cm     = Double.parseDouble(cm_str);
+		metres = metres + (cm / 100.0);
+		value = metres.toString();
+	}catch(Exception e) {
+		return;
+	}
+	FeatureMap newFeatures = Factory.newFeatureMap();
+	newFeatures.put("value", value);
+	newFeatures.put("type", "split_value");
+	outputAS.add(bindings.get("metres").firstNode(),bindings.get("metres").lastNode(),"Numeric", newFeatures);
+
+	
+	// Since now the data lives in the new Numeric annotation's feature, we can clean up and remove the Numeric / Units annots	
+	AnnotationSet splitMetricAnnot = bindings.get("split_metric");
+	
+	FeatureMap fm_double = Factory.newFeatureMap();
+	fm_double.put("type", "double");
+	AnnotationSet doubleWithin = inputAS.get("Numeric", fm_double).getContained(
+			splitMetricAnnot.firstNode().getOffset(),
+			splitMetricAnnot.lastNode().getOffset());
+	inputAS.removeAll(doubleWithin);
+	
+	FeatureMap fm_integer = Factory.newFeatureMap();
+	fm_integer.put("type", "integer");
+	AnnotationSet integerWithin = inputAS.get("Numeric", fm_integer).getContained(
+			splitMetricAnnot.firstNode().getOffset(),
+			splitMetricAnnot.lastNode().getOffset());
+	inputAS.removeAll(integerWithin);
+	
+	FeatureMap fm_cm = Factory.newFeatureMap();
+	fm_cm.put("minorType", "cm");
+	AnnotationSet cmUnitsWithin = inputAS.get("Units", fm_cm).getContained(
+			splitMetricAnnot.firstNode().getOffset(),
+			splitMetricAnnot.lastNode().getOffset());
+	inputAS.removeAll(cmUnitsWithin);
+}
+
+
+/*
+ * Description:
+ * Here we retag Numeric annotations that should be part of a broader descriptor
+ * e.g. type 1 or type 2 etc.. 
+ */
+Rule: numeric_type_rule
+(
+	{Token.string ==~ "(?i)type"}
+	({Numeric}):value
+
+):numeric_type
+-->
+:numeric_type.Lookup = { majorType = "numeric_type", minorType = :value.Numeric.value },
+:numeric_type{
+	inputAS.remove( bindings.get("value").iterator().next() );
+}
+
+
+Phase: CleanCategorical
+Input: Categorical
+Options: control=Appelt negationGrouping=false
+/*
+ * Description:
+ * Here we remove units within Categorical annotations
+ * e.g. 'is non dilated'
+ * is         -->{Unit, minorType=="positive_assertion"}
+ * non        -->{Unit, minorType=="negative_assertion"}
+ * dilated    -->{Categorical}
+ * non dilated-->{Categorical}
+ * becomes is{Unit} non dilated{Categorical}
+ */
+Rule: clean_categorical
+Priority: 100
+(
+	{Categorical}
+):categorical
+-->
+{
+	AnnotationSet thisCategoricalAnnot = bindings.get("categorical"); // this annotation above
+	AnnotationSet unitsWithin          = inputAS.get("Units").getContained(
+											thisCategoricalAnnot.firstNode().getOffset(), 
+											thisCategoricalAnnot.lastNode().getOffset()); // any Units annotations within
+	AnnotationSet categoricalWithin1   = inputAS.get("Categorical").getContained(
+											thisCategoricalAnnot.firstNode().getOffset(), 
+											thisCategoricalAnnot.lastNode().getOffset()-1);
+	AnnotationSet categoricalWithin2   = inputAS.get("Categorical").getContained(
+											thisCategoricalAnnot.firstNode().getOffset()+1, 
+											thisCategoricalAnnot.lastNode().getOffset());
+	AnnotationSet anatomyWithin        = inputAS.get("Anatomy").getContained(
+											thisCategoricalAnnot.firstNode().getOffset(), 
+											thisCategoricalAnnot.lastNode().getOffset());
+
+	inputAS.removeAll(unitsWithin);
+	inputAS.removeAll(categoricalWithin1);
+	inputAS.removeAll(categoricalWithin2);
+	inputAS.removeAll(anatomyWithin);
+	
+}

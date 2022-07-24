@@ -1,0 +1,443 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  ecgMaxHeartRateVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: ecgMaxHeartRateVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of max Heart Rate estimated Variable relations from Lookup Annotations 
+*/
+
+Phase: ecgMaxHeartRateVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+  
+Rule: ECGMaxHeartRateValueRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE", !Lookup.majorType == Heart_Rate_Exclusion} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+
+((({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):firstvalue
+({Token.string == "-"} | {Token.string ==~ "(?i)TO"} | {Token.string == "~~"} | {Token.string == "~"} {Token.string == "~"})?
+(({Token.kind == "number"})?
+({Token.string == "."})?
+({Token.kind == "number"})?):secondValue
+):varValue
+
+
+(
+(({Token.string ==~ "(?i)BPM"} | {Token.string ==~ "(?i)BEATS"} {Token.string ==~ "(?i)PER"} {Token.string ==~ "(?i)MINUTE"}):unit)
+)
+
+
+):ECGMaxHeartRateValueGram 
+
+--> 
+:ECGMaxHeartRateValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedFirstVar=(gate.AnnotationSet) bindings.get("firstvalue");
+	
+	gate.AnnotationSet matchedSecondVar=(gate.AnnotationSet) bindings.get("secondValue");
+		
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGMaxHeartRateValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	if (matchedSecondVar != null) {
+		
+		newFeatures.put("varOrig", stringFor(doc, matchedVar));
+		newFeatures.put("varValue", stringFor(doc, matchedSecondVar));
+		newFeatures.put("unit", "bpm");
+		
+	} else {
+		String firstVarStr = stringFor(doc, matchedFirstVar);
+		double firstVarDouble = Double.parseDouble(firstVarStr);
+			    
+		newFeatures.put("varValue", String.valueOf(firstVarDouble));
+		newFeatures.put("unit", "bpm");
+	}
+	
+	newFeatures.put("varType","ECG Max HR");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	newFeatures.put("rule", "ECG Max HR normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+
+
+Rule: ECGMaxHeartRateAlternValueRule
+Priority:10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE", !Lookup.majorType == Heart_Rate_Exclusion} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+
+((({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):firstvalue
+({Token.string == "-"} | {Token.string ==~ "(?i)TO"} | {Token.string == "~~"} | {Token.string == "~"} {Token.string == "~"})?
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):secondValue
+):varValue
+
+
+(
+(({Token.string ==~ "(?i)BPM"} | {Token.string ==~ "(?i)BEATS"} {Token.string ==~ "(?i)PER"} {Token.string ==~ "(?i)MINUTE"}):unit)
+)
+
+
+):ECGMaxHeartRateAlternValueGram 
+
+--> 
+:ECGMaxHeartRateAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedFirstVar=(gate.AnnotationSet) bindings.get("firstvalue");
+	
+	gate.AnnotationSet matchedSecondVar=(gate.AnnotationSet) bindings.get("secondValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGMaxHeartRateAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	if (matchedSecondVar != null) {
+		
+		newFeatures.put("varOrig", stringFor(doc, matchedVar));
+		newFeatures.put("varValue", stringFor(doc, matchedSecondVar));
+		newFeatures.put("unit", "bpm");
+		
+	} else {
+		String firstVarStr = stringFor(doc, matchedFirstVar);
+		double firstVarDouble = Double.parseDouble(firstVarStr);
+		
+		newFeatures.put("varValue", String.valueOf(firstVarDouble));
+		newFeatures.put("unit", "bpm");
+	}
+	
+	newFeatures.put("varType","ECG Max HR");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	newFeatures.put("rule", "ECG Max HR altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+  
+Rule: ECGMaxVentricularRateValueRule
+Priority:20
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE", !Lookup.majorType == Heart_Rate_Exclusion} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+
+({Lookup.majorType == Ventricular_Rate_Terms} | {Token.string ==~ "(?i)VENTRICULAR"} )
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == ","})?
+
+((({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):firstvalue
+({Token.string == "-"} | {Token.string ==~ "(?i)TO"} | {Token.string == "~~"} | {Token.string == "~"} {Token.string == "~"})?
+(({Token.kind == "number"})?
+({Token.string == "."})?
+({Token.kind == "number"})?):secondValue
+):varValue
+
+
+(
+(({Token.string ==~ "(?i)BPM"} | {Token.string ==~ "(?i)BEATS"} {Token.string ==~ "(?i)PER"} {Token.string ==~ "(?i)MINUTE"}):unit)
+)
+
+
+):ECGMaxVentricularRateValueGram 
+
+--> 
+:ECGMaxVentricularRateValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedFirstVar=(gate.AnnotationSet) bindings.get("firstvalue");
+	
+	gate.AnnotationSet matchedSecondVar=(gate.AnnotationSet) bindings.get("secondValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGMaxVentricularRateValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	if (matchedSecondVar != null) {
+		
+		newFeatures.put("varOrig", stringFor(doc, matchedVar));
+		newFeatures.put("varValue", stringFor(doc, matchedSecondVar));
+		newFeatures.put("unit", "bpm");
+		
+	} else {
+		String firstVarStr = stringFor(doc, matchedFirstVar);
+		double firstVarDouble = Double.parseDouble(firstVarStr);
+		
+		newFeatures.put("varValue", String.valueOf(firstVarDouble));
+		newFeatures.put("unit", "bpm");
+	}
+	
+	newFeatures.put("varType","ECG Max V Rate");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	newFeatures.put("rule", "ECG Max V Rate normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+ 
+ 
+Rule: ECGMaxVentricularRateValueAlternRule
+Priority:20
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE", !Lookup.majorType == Heart_Rate_Exclusion} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+
+({Lookup.majorType == Ventricular_Rate_Terms} | {Token.string ==~ "(?i)VENTRICULAR"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == ","})?
+
+((({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):firstvalue
+({Token.string == "-"} | {Token.string ==~ "(?i)TO"} | {Token.string == "~~"} | {Token.string == "~"} {Token.string == "~"})?
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):secondValue
+):varValue
+
+
+(
+(({Token.string ==~ "(?i)BPM"} | {Token.string ==~ "(?i)BEATS"} {Token.string ==~ "(?i)PER"} {Token.string ==~ "(?i)MINUTE"}):unit)
+)
+
+
+):ECGMaxVentricularRateValueAlternGram 
+
+--> 
+:ECGMaxVentricularRateValueAlternGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedFirstVar=(gate.AnnotationSet) bindings.get("firstvalue");
+	
+	gate.AnnotationSet matchedSecondVar=(gate.AnnotationSet) bindings.get("secondValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGMaxVentricularRateValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	if (matchedSecondVar != null) {
+		
+		newFeatures.put("varOrig", stringFor(doc, matchedVar));
+		newFeatures.put("varValue", stringFor(doc, matchedSecondVar));
+		newFeatures.put("unit", "bpm");
+		
+	} else {
+		String firstVarStr = stringFor(doc, matchedFirstVar);
+		double firstVarDouble = Double.parseDouble(firstVarStr);
+		
+		newFeatures.put("varValue", String.valueOf(firstVarDouble));
+		newFeatures.put("unit", "bpm");
+	}
+	
+	newFeatures.put("varType","ECG Max V Rate");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	newFeatures.put("rule", "ECG Max V Rate altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+  
+Rule: ECGAVGAtrialRateValueRule
+Priority:20
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE", !Lookup.majorType == Heart_Rate_Exclusion} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+
+({Lookup.majorType == Atrial_Rate_Terms} | {Token.string ==~ "(?i)ATRIAL"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == ","})?
+
+((({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):firstvalue
+({Token.string == "-"} | {Token.string ==~ "(?i)TO"} | {Token.string == "~~"} | {Token.string == "~"} {Token.string == "~"})?
+(({Token.kind == "number"})?
+({Token.string == "."})?
+({Token.kind == "number"})?):secondValue
+):varValue
+
+
+(
+(({Token.string ==~ "(?i)BPM"} | {Token.string ==~ "(?i)BEATS"} {Token.string ==~ "(?i)PER"} {Token.string ==~ "(?i)MINUTE"}):unit)
+)
+
+
+):ECGAVGAtrialRateValueGram 
+
+--> 
+:ECGAVGAtrialRateValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedFirstVar=(gate.AnnotationSet) bindings.get("firstvalue");
+	
+	gate.AnnotationSet matchedSecondVar=(gate.AnnotationSet) bindings.get("secondValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAVGAtrialRateValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	if (matchedSecondVar != null) {
+		
+		newFeatures.put("varOrig", stringFor(doc, matchedVar));
+		newFeatures.put("varValue", stringFor(doc, matchedSecondVar));
+		newFeatures.put("unit", "bpm");
+		
+	} else {
+		String firstVarStr = stringFor(doc, matchedFirstVar);
+		double firstVarDouble = Double.parseDouble(firstVarStr);
+		
+		newFeatures.put("varValue", String.valueOf(firstVarDouble));
+		newFeatures.put("unit", "bpm");
+	}
+	
+	newFeatures.put("varType","ECG Max A Rate");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	newFeatures.put("rule", "ECG Max A Rate normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+
+Rule: ECGAVGAtrialRateValueAlternRule
+Priority:20
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE", !Lookup.majorType == Heart_Rate_Exclusion} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+
+({Lookup.majorType == Atrial_Rate_Terms} | {Token.string ==~ "(?i)ATRIAL"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == ","})?
+
+((({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):firstvalue
+({Token.string == "-"} | {Token.string ==~ "(?i)TO"} | {Token.string == "~~"} | {Token.string == "~"} {Token.string == "~"})?
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):secondValue
+):varValue
+
+
+(
+(({Token.string ==~ "(?i)BPM"} | {Token.string ==~ "(?i)BEATS"} {Token.string ==~ "(?i)PER"} {Token.string ==~ "(?i)MINUTE"}):unit)
+)
+
+
+):ECGAVGAtrialRateValueAlternGram 
+
+--> 
+:ECGAVGAtrialRateValueAlternGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedFirstVar=(gate.AnnotationSet) bindings.get("firstvalue");
+	
+	gate.AnnotationSet matchedSecondVar=(gate.AnnotationSet) bindings.get("secondValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAVGAtrialRateValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	if (matchedSecondVar != null) {
+		
+		newFeatures.put("varOrig", stringFor(doc, matchedVar));
+		newFeatures.put("varValue", stringFor(doc, matchedSecondVar));
+		newFeatures.put("unit", "bpm");
+		
+	} else {
+		String firstVarStr = stringFor(doc, matchedFirstVar);
+		double firstVarDouble = Double.parseDouble(firstVarStr);
+		
+		newFeatures.put("varValue", String.valueOf(firstVarDouble));
+		newFeatures.put("unit", "bpm");
+	}
+	
+	newFeatures.put("varType","ECG Max A Rate");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	newFeatures.put("rule", "ECG Max A Rate altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }

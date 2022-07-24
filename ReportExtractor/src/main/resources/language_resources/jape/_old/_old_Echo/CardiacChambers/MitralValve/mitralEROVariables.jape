@@ -1,0 +1,119 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  mitralEROVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: mitralVmaxVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of mitral valve Vmax Variable relations from Lookup Annotations 
+*/
+
+Phase: mitralVmaxVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+  
+Rule: MitralEROValueRule
+(
+(
+{Token.string ==~ "(?i)MR"}
+({Token.string ==~ "(?i)ERO[A]?"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(( ({Token.string ==~ "(?i)CM"}({Token.string == "2"})?) | ({Token.string ==~ "(?i)CM"}{Token.string == "."}{Token.string ==~ "(?i)SQ"})):unit)
+)
+
+):MitralEROValueGram 
+
+--> 
+:MitralEROValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralEROValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","MR ERO");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MR ERO normal");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: MitralEROAlternValueRule
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=ATRIUM})*
+
+):context
+)
+
+(
+( 
+({Token.string ==~ "(?i)ERO"} 
+| 
+({Token.string ==~ "(?i)EFFECTIVE"} {Token.string ==~ "(?i)REGURGITANT"} | {Token.string ==~ "(?i)ORFICE"}) 
+) 
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(( ({Token.string ==~ "(?i)CM"}({Token.string == "2"})?) | ({Token.string ==~ "(?i)CM"}{Token.string == "."}{Token.string ==~ "(?i)SQ"})):unit)
+)
+
+):MitralEROAlternValueGram 
+
+--> 
+:MitralEROAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralEROAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varType","MR ERO");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MR ERO altern");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

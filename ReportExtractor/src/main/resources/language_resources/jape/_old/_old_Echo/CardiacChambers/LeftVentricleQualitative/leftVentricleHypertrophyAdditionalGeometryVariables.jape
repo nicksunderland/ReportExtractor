@@ -1,0 +1,223 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleHypertrophyAdditionalGeometryVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleHypertrophyAdditionalGeometryVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle Hypertrophy Additional Geometry Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleHypertrophyAdditionalGeometryVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LeftVentricleHypertrophyAdditionalGeometryValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=CONCENTRIC})*
+
+):context
+)
+
+(
+(
+
+(
+(
+{Token.string ==~ "(?i)HYPERTROPHY"} 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})?
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})?
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})?
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})?
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})?
+
+(({Token.string ==~ "(?i)APEX"} | {Token.string ==~ "(?i)APICAL"}):apex | ({Token.string ==~ "(?i)BASAL"} {Token.string ==~ "(?i)SEPTAL"} | {Token.string ==~ "(?i)SIGMOID"} | {Token.string ==~ "(?i)SEPTAL"} {Token.string ==~ "(?i)BULGE"} | {Token.string ==~ "(?i)SEPTAL"} {Token.string ==~ "(?i)KNUCKLE"}):basalSeptal | ({Token.string !=~ "(?i)BASAL"} {Token.string ==~ "(?i)SEPTAL"} {Token.string !=~ "(?i)FLATTENING", Token.string !=~ "(?i)BULGE"}):asymmetricSeptal)
+) |
+(
+{Token.string ==~ "(?i)OBLITERATION"} 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})? 
+
+({Token.string ==~ "(?i)APEX"} | {Token.string ==~ "(?i)APICAL"}):apex
+) |
+(
+({Token.string ==~ "(?i)APEX"} | {Token.string ==~ "(?i)APICAL"}):apex
+{Token.string ==~ "(?i)HYPERTROPHIC"} 
+{Token.string ==~ "(?i)CARDIOMYOPATHY"} 
+) | 
+(
+({Token.string ==~ "(?i)BASAL"})?
+{Token.string ==~ "(?i)SEPTAL"} 
+{Token.string ==~ "(?i)BULGE"} 
+):basalSeptal |
+(
+{Token.string ==~ "(?i)SIGMOID"}
+{Token.string ==~ "(?i)SEPTUM"} 
+):basalSeptal |
+(
+({Token.string ==~ "(?i)NEAR"} | {Token.string ==~ "(?i)NEAR"} {Token.string ==~ "(?i)CAVITY"})
+{Token.string ==~ "(?i)OBLITERATION"} 
+):apex |
+(
+({Token.string ==~ "(?i)MID"} | {Token.string ==~ "(?i)MID"} {Token.string ==~ "(?i)CAVITY"})
+{Token.string ==~ "(?i)OBLITERATION"} 
+):midCavity |
+(
+{Token.string ==~ "(?i)SEPTAL"} {Token.string ==~ "(?i)KNUCKLE"}
+):basalSeptal
+)
+
+):context
+
+
+):LeftVentricleConcentricHypertrophyValueGram 
+
+--> 
+:LeftVentricleConcentricHypertrophyValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedapex=(gate.AnnotationSet) bindings.get("apex");
+	gate.AnnotationSet matchedbasalSeptal=(gate.AnnotationSet) bindings.get("basalSeptal");
+	gate.AnnotationSet matchedasymmetricSeptal=(gate.AnnotationSet) bindings.get("asymmetricSeptal");
+	gate.AnnotationSet matchedmidCavity=(gate.AnnotationSet) bindings.get("midCavity");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleConcentricHypertrophyValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+
+	if (matchedapex != null) {
+		newFeatures.put("varValue", "Apical");
+	} else if (matchedbasalSeptal != null) {
+		newFeatures.put("varValue", "Septal bulge");
+	} else if (matchedasymmetricSeptal != null) {
+		newFeatures.put("varValue", "Asymmetric Septal");
+	} else if (matchedmidCavity != null) {
+		newFeatures.put("varValue", "Mid Cavity");
+	}
+	
+	newFeatures.put("unit", "Levels: Asymmetric Septal, Septal bulge, Apical, Mid cavity, Unspecified");
+	newFeatures.put("varType","LVH Additional Geometry");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LVH Additional Geometry normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+ 
+ 
+Rule: LeftVentricleHypertrophyAdditionalGeometryAlternValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=CONCENTRIC})*
+
+):context
+)
+
+(
+(
+
+(
+(
+(({Token.string ==~ "(?i)APEX"} | {Token.string ==~ "(?i)APICAL"}):apex | 
+({Token.string ==~ "(?i)BASAL"} {Token.string ==~ "(?i)SEPTAL"} | {Token.string ==~ "(?i)SIGMOID"} | {Token.string ==~ "(?i)SEPTAL"} {Token.string ==~ "(?i)KNUCKLE"} | {Token.string ==~ "(?i)SEPTAL"} {Token.string ==~ "(?i)BULGE"}):basalSeptal |
+({Token.string !=~ "(?i)BASAL"} {Token.string ==~ "(?i)SEPTAL"}):asymmetricSeptal)
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})?
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})?
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})?
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})?
+({Token.kind == "word", !Lookup.majorType == Hypertrophy_Any_WordExclusion})?
+
+{Token.string ==~ "(?i)HYPERTROPHY"} 
+
+) 
+)
+
+):context
+
+
+):LeftVentricleConcentricHypertrophyAlternValueGram 
+
+--> 
+:LeftVentricleConcentricHypertrophyAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedapex=(gate.AnnotationSet) bindings.get("apex");
+	gate.AnnotationSet matchedbasalSeptal=(gate.AnnotationSet) bindings.get("basalSeptal");
+	gate.AnnotationSet matchedasymmetricSeptal=(gate.AnnotationSet) bindings.get("asymmetricSeptal");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleConcentricHypertrophyAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedapex != null) {
+		newFeatures.put("varValue", "Apical");
+	} else if (matchedbasalSeptal != null) {
+		newFeatures.put("varValue", "Septal bulge");
+	} else if (matchedasymmetricSeptal != null) {
+		newFeatures.put("varValue", "Asymmetric Septal");
+	}
+	
+	newFeatures.put("unit", "Levels: Asymmetric Septal, Septal bulge, Apical, Mid cavity, Unspecified");
+	newFeatures.put("varType","LVH Additional Geometry");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LVH Additional Geometry altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

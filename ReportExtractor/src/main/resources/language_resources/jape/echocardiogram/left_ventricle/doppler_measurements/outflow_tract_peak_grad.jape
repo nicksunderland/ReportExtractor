@@ -1,0 +1,46 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+Phase: outflow_tract_peak_gradient
+Input: Token Lookup SpaceToken
+Options: control=Appelt 
+
+
+
+Rule: lvot_peak_grad_rule_1
+Priority:1
+(
+
+	(
+		({Token.string ==~ "(?i)LVOT"})
+		({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)AR", Token.string !=~ "(?i)A[OV]", Token.string !=~ "(?i)AVA[I]?"}|{SpaceToken.string!=MAX})*
+		({Token.string ==~ "(?i)PPG"} | {Token.string ==~ "(?i)PPD"} | {Token.string ==~ "(?i)MAXPG"} | {Token.string ==~ "(?i)MAX"} {Token.string ==~ "(?i)PG"} | {Token.string ==~ "(?i)MAX"} {Token.string ==~ "(?i)PH"})
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		({Token.string ==~ "(?i)MMHG"})?
+	):unit
+	
+):lvot_peak_grad
+--> 
+:lvot_peak_grad
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "lvot_peak_grad",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }
+

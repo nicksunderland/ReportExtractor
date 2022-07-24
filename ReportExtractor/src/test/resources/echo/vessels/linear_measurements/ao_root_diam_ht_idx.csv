@@ -1,0 +1,2 @@
+var_name,text,expected_value,expected_units
+ao_root_diam_ht_idx,AORTA: root is borderline dilated 37mm (22mm/m). SUMMARY: dilated root.,2.2,cm/m

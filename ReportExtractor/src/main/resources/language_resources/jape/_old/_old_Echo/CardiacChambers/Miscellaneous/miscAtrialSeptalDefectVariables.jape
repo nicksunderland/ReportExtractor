@@ -1,0 +1,396 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  miscAtrialSeptalDefectVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: miscAtrialSeptalDefectVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Miscellaneous Atrial Septal Defect Variable relations from Lookup Annotations 
+*/
+
+Phase: miscAtrialSeptalDefectVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: MiscAtrialSeptalDefectValueRule
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", !Lookup.majorType == Atrial_Septal_Defect_Specific_WordExclusion, Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)ATRIAL"} 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Lookup.majorType == Atrial_Septal_Defect_AnyWord_Exclusion})? 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Lookup.majorType == Atrial_Septal_Defect_AnyWord_Exclusion})? 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Lookup.majorType == Atrial_Septal_Defect_AnyWord_Exclusion})? 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Lookup.majorType == Atrial_Septal_Defect_AnyWord_Exclusion})? 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Lookup.majorType == Atrial_Septal_Defect_AnyWord_Exclusion})? 
+
+({Token.string == ","})?
+
+(
+{Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)TO"} {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)SHUNT"} |
+{Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)TO"} {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)SHUNT"}
+)
+
+|
+
+(
+{Token.string ==~ "(?i)ASD"} | {Token.string ==~ "(?i)ATRIAL"} {Token.string ==~ "(?i)SEPTAL"} {Token.string ==~ "(?i)DEFECT"} 
+)
+)
+
+
+
+):context
+
+
+):MiscAtrialSeptalDefectValueGram 
+
+--> 
+:MiscAtrialSeptalDefectValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscAtrialSeptalDefectValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Unspecified");
+	
+	newFeatures.put("unit", "Levels: No ASD, PFO, Ostium Secundum, Ostium Primum, Sinus Venosus, Coronary Sinus, Unspecified, Null (assume No ASD)");
+	newFeatures.put("varType","ASD");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ASD normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  
+
+Rule: MiscAtrialSeptalDefectValueAlternRule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", !Lookup.majorType == Atrial_Septal_Defect_Specific_WordExclusion, Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string ==~ "(?i)PFO"} | {Token.string ==~ "(?i)patent"} {Token.string ==~ "(?i)foramen"} {Token.string ==~ "(?i)ovale"} | 
+{Token.string ==~ "(?i)foramen"} {Token.string ==~ "(?i)ovale"}
+)
+
+
+):context
+
+
+):MiscAtrialSeptalDefectValueAlternGram 
+
+--> 
+:MiscAtrialSeptalDefectValueAlternGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscAtrialSeptalDefectValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "PFO");
+	
+	newFeatures.put("unit", "Levels: No ASD, PFO, Ostium Secundum, Ostium Primum, Sinus Venosus, Coronary Sinus, Unspecified, Null (assume No ASD)");
+	newFeatures.put("varType","ASD");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ASD altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  
+
+Rule: MiscAtrialSeptalDefectValueAltern2Rule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", !Lookup.majorType == Atrial_Septal_Defect_Specific_WordExclusion, Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( 
+{Token.string ==~ "(?i)Ostium"} {Token.string ==~ "(?i)secundum"} | {Token.string ==~ "(?i)secundum"}
+)
+
+
+):context
+
+
+):MiscAtrialSeptalDefectValueAltern2Gram 
+
+--> 
+:MiscAtrialSeptalDefectValueAltern2Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscAtrialSeptalDefectValueAltern2Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Ostium secundum");
+	
+	newFeatures.put("unit", "Levels: No ASD, PFO, Ostium Secundum, Ostium Primum, Sinus Venosus, Coronary Sinus, Unspecified, Null (assume No ASD)");
+	newFeatures.put("varType","ASD");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ASD altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+
+Rule: MiscAtrialSeptalDefectValueAltern3Rule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", !Lookup.majorType == Atrial_Septal_Defect_Specific_WordExclusion, Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( 
+{Token.string ==~ "(?i)Ostium"} {Token.string ==~ "(?i)Primum"} | {Token.string ==~ "(?i)Primum"}
+)
+
+
+):context
+
+
+):MiscAtrialSeptalDefectValueAltern3Gram 
+
+--> 
+:MiscAtrialSeptalDefectValueAltern3Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscAtrialSeptalDefectValueAltern3Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Ostium Primum");
+	
+	newFeatures.put("unit", "Levels: No ASD, PFO, Ostium Secundum, Ostium Primum, Sinus Venosus, Coronary Sinus, Unspecified, Null (assume No ASD)");
+	newFeatures.put("varType","ASD");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ASD altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+
+Rule: MiscAtrialSeptalDefectValueAltern4Rule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", !Lookup.majorType == Atrial_Septal_Defect_Specific_WordExclusion, Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( 
+{Token.string ==~ "(?i)Sinus"} {Token.string ==~ "(?i)Venosus"} | {Token.string ==~ "(?i)Venosus"}
+)
+
+( 
+{Token.string ==~ "(?i)ASD"} | {Token.string ==~ "(?i)SHUNT"} | {Token.string ==~ "(?i)ATRIAL"} {Token.string ==~ "(?i)SEPTAL"}
+{Token.string ==~ "(?i)DEFECT"}
+)
+
+):context
+
+
+):MiscAtrialSeptalDefectValueAltern4Gram 
+
+--> 
+:MiscAtrialSeptalDefectValueAltern4Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscAtrialSeptalDefectValueAltern4Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Sinus Venosus");
+	
+	newFeatures.put("unit", "Levels: No ASD, PFO, Ostium Secundum, Ostium Primum, Sinus Venosus, Coronary Sinus, Unspecified, Null (assume No ASD)");
+	newFeatures.put("varType","ASD");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ASD altern4");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+
+
+Rule: MiscAtrialSeptalDefectValueAltern5Rule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", !Lookup.majorType == Atrial_Septal_Defect_Specific_WordExclusion, Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( 
+{Token.string ==~ "(?i)Coronary"} {Token.string ==~ "(?i)Sinus"} | {Token.string ==~ "(?i)Coronary"}
+)
+
+( 
+{Token.string ==~ "(?i)ASD"} | {Token.string ==~ "(?i)SHUNT"} | {Token.string ==~ "(?i)ATRIAL"} {Token.string ==~ "(?i)SEPTAL"}
+{Token.string ==~ "(?i)DEFECT"}
+)
+
+):context
+
+
+):MiscAtrialSeptalDefectValueAltern5Gram 
+
+--> 
+:MiscAtrialSeptalDefectValueAltern5Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscAtrialSeptalDefectValueAltern5Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Coronary Sinus");
+	
+	newFeatures.put("unit", "Levels: No ASD, PFO, Ostium Secundum, Ostium Primum, Sinus Venosus, Coronary Sinus, Unspecified, Null (assume No ASD)");
+	newFeatures.put("varType","ASD");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ASD altern5");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+
+
+Rule: MiscAtrialSeptalDefectValueAltern6Rule
+Priority: 20
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", !Lookup.majorType == Atrial_Septal_Defect_Specific_WordExclusion, Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+
+
+{Token.string ==~ "(?i)NO"}
+
+
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+
+({Token.kind == "word"})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+
+({Token.kind == "word"})?  
+
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+
+({Token.kind == "word"})?  
+
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+
+({Token.kind == "word"})?  
+
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+
+(
+{Token.string ==~ "(?i)ASD"} | {Token.string ==~ "(?i)ATRIAL"} {Token.string ==~ "(?i)SEPTAL"} {Token.string ==~ "(?i)DEFECT"} |
+{Token.string ==~ "(?i)SHUNT"}
+)
+
+):context
+
+
+):MiscAtrialSeptalDefectValueAltern6Gram 
+
+--> 
+:MiscAtrialSeptalDefectValueAltern6Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscAtrialSeptalDefectValueAltern6Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "No ASD");
+	
+	newFeatures.put("unit", "Levels: No ASD, PFO, Ostium Secundum, Ostium Primum, Sinus Venosus, Coronary Sinus, Unspecified, Null (assume No ASD)");
+	newFeatures.put("varType","ASD");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ASD altern6");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  

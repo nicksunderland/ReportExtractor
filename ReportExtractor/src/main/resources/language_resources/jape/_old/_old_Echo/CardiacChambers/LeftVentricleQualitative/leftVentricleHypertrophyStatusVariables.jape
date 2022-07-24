@@ -1,0 +1,76 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleHypertrophyStatusVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleHypertrophyStatusVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle Hypertrophy Status Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleHypertrophyStatusVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LeftVentricleHypertrophyStatusValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)CONCENTRIC"} |{SpaceToken.string!=CONCENTRIC})*
+
+):context
+)
+
+(
+(
+
+(
+({Token.string ==~ "(?i)CONCENTRIC"}):concentric |
+({Token.string ==~ "(?i)ECCENTRIC"}):eccentric |
+({Token.string ==~ "(?i)REMODELLING"} | {Token.string ==~ "(?i)RE-MODELLING"} | 
+{Token.string ==~ "(?i)RE"} {Token.string == "-"} {Token.string ==~ "(?i)MODELLING"}):remodelling
+)
+
+):context
+
+
+):LeftVentricleHypertrophyStatusValueGram 
+
+--> 
+:LeftVentricleHypertrophyStatusValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedconcentric=(gate.AnnotationSet) bindings.get("concentric");
+	gate.AnnotationSet matchedeccentric=(gate.AnnotationSet) bindings.get("eccentric");
+	gate.AnnotationSet matchedremodelling=(gate.AnnotationSet) bindings.get("remodelling");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleHypertrophyStatusValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedconcentric != null) {
+		newFeatures.put("varValue", "Concentric");
+	} else if (matchedeccentric != null) {
+		newFeatures.put("varValue", "Eccentric");
+	} else if (matchedremodelling != null) {
+		newFeatures.put("varValue", "Remodelling");
+	}
+
+	newFeatures.put("unit", "Levels: Eccentric, Concentric, Remodelling, Null (Assume no hypertrophy)");
+	newFeatures.put("varType","LVH Status");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LVH Status normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  

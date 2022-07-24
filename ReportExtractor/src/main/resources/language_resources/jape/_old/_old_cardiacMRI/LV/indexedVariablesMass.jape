@@ -1,0 +1,107 @@
+/*
+*  indexedVariablesMass.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020
+*  $Id: indexedVariablesMass.jape,v 1.0 2020/01/30 17:22:00 GMT
+*
+* The Phase separates Annotations of Mass relations from Lookup Annotations for Left Ventricle variables
+*/
+
+Phase: indexedVariablesMass
+Input: Token Lookup  
+Options: control=appelt 
+
+
+
+Rule: iLVMassValueRule
+(
+{Token.string ==~ ".*LV"}
+({Token.string !~ ".*RV"}|{SpaceToken.string!=Mass})*
+({Token.string == "Mass"}
+{Token.position == startpunct}
+{Token.string=="g"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+(
+{Token.kind == "number"}
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+)
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVMassValueGram 
+({Token.string!="number"}|{SpaceToken.string!=")"})*
+{Token.string == ")"}
+
+--> 
+:iLVMassValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVMassValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVMassValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVMassValue", newFeatures);
+  }
+  
+  
+Rule: iLVMassValueAlternRule
+(
+{Token.string ==~ ".*LV"}
+({Token.string!="RV"}|{SpaceToken.string!=Mass})*
+({Token.string == "Mass"}
+{Token.position == startpunct}
+{Token.string=="g"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVMassValueAlternGram 
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+{!Token.kind == "number"}
+
+--> 
+:iLVMassValueAlternGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVMassValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVMassValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVMassValue", newFeatures);
+  }
+  
+  
+Rule: iLVMassValueAbbrevRule
+(
+{Token.string ==~ ".*LV[E]?[F]?"} 
+({Token.string !~ "RV[E]?[F]?"}|{SpaceToken.string!=iLV})*
+{Token.string == "iLV"}
+{Token.string == "Mass"}
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVMassValueGramAbbrev 
+
+--> 
+:iLVMassValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVMassValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVMassValueAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVMassValue", newFeatures);
+  }
+  
+

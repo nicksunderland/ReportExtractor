@@ -1,0 +1,65 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  ecgAtrialFibrillationVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: ecgAtrialFibrillationVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of ECG Atrial Fibrillation Variable relations from Lookup Annotations 
+*/
+
+Phase: ecgAtrialFibrillationVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Macro: atrialFibrillationTerm
+( {Token.string ==~ "(?i)ATRIAL"} {Token.string ==~ "(?i)FIBRILLATION"} | {Token.string ==~ "(?i)AF"} | {Token.string ==~ "(?i)ATRIAL"} {Token.kind == "word"} {Token.string == "/"} {Token.string ==~ "(?i)FIBRILLATION"} 
+)
+
+Rule: ECGAtrialFibrillationValueRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+atrialFibrillationTerm
+
+
+):context
+
+
+):ECGAtrialFibrillationValueGram 
+
+--> 
+:ECGAtrialFibrillationValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGAtrialFibrillationValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	
+	newFeatures.put("unit", "1 (present), Null (assume absent)");
+	newFeatures.put("varType","ECG AF");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG AF normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  

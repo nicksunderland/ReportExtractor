@@ -1,0 +1,412 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  aorticStenosisVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: aorticStenosisVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of aortic valve stenosis Variable relations from Lookup Annotations 
+*/
+
+Phase: aorticStenosisVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: AorticStenosisValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)REPORTED", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+(
+
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+
+( {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)AS"} )
+
+
+):context
+
+
+):AorticStenosisValueGram 
+
+--> 
+:AorticStenosisValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticStenosisValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","AV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Stenosis normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: AorticStenosisAlternValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)REPORTED", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+(
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+( {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)AS"} )
+
+
+):context
+
+
+):AorticStenosisAlternValueGram 
+
+--> 
+:AorticStenosisAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticStenosisAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","AV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Stenosis altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: AorticStenosisAltern2ValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)REPORTED", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+(
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+)
+)
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+( {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)AS"} )
+
+
+):context
+
+
+):AorticStenosisAltern2ValueGram 
+
+--> 
+:AorticStenosisAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticStenosisAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","AV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Stenosis altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: AorticStenosisAltern3ValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)REPORTED", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+
+{Token.kind == "word"}
+
+( {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)AS"} )
+
+
+):context
+
+
+):AorticStenosisAltern3ValueGram 
+
+--> 
+:AorticStenosisAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticStenosisAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","AV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Stenosis altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: AorticStenosisAlternModerateValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)REPORTED", Token.string !=~ "(?i)REPORT[ED]?", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+
+( {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)AS"} )
+
+
+):context
+
+
+):AorticStenosisAlternModerateValueGram 
+
+--> 
+:AorticStenosisAlternModerateValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticStenosisAlternModerateValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2");
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","AV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Stenosis alternModerate");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: AorticStenosisUnboundedValueRule
+Priority:10
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)REPORTED", Token.string !=~ "(?i)REPORT[ED]?", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+( {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)AS"} )
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+{Token.string ==~ "(?i)AORTIC"}
+{Token.string ==~ "(?i)VALVE"}
+
+):context
+
+
+):AorticStenosisUnboundedValueGram 
+
+--> 
+:AorticStenosisUnboundedValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticStenosisUnboundedValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","AV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Stenosis Unbounded");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+Rule: AorticStenosisAlternNonValueRule
+Priority: 10
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)REPORTED", Token.string !=~ "(?i)REPORT[ED]?", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)NO[N]?"} | {Token.string ==~ "(?i)NOT"} |
+{Token.string ==~ "(?i)NO"} {Token.string ==~ "(?i)AORTIC"} 
+)
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.string == "/"})?
+
+( {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)AS"} )
+
+):context
+
+
+):AorticStenosisAlternNonValueGram 
+
+--> 
+:AorticStenosisAlternNonValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticStenosisAlternNonValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","AV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Stenosis alternNon");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

@@ -1,0 +1,83 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  mitralMVAVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: mitralMVAVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of mitral valve area Variable relations from Lookup Annotations 
+*/
+
+Phase: mitralMVAVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: MitralMVAValueRule
+(
+(
+{Token.string ==~ "(?i)MVA"}
+
+(
+{Token.position == "startpunct"}
+({Token.string ==~ "(?i)PHT"} | {Token.string ==~ "(?i)VTI"} | {Token.kind == "word"} ):method
+
+{Token.position == "endpunct"}
+)?
+
+({Token.kind == "word"})?
+
+({Token.string ==~ "(?i)PHT"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)CM"}):unit)
+)
+
+):MitralMVAValueGram 
+
+--> 
+:MitralMVAValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmethod=(gate.AnnotationSet) bindings.get("method");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralMVAValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","MVA");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	if (matchedmethod != null) {
+	newFeatures.put("method", stringFor(doc, matchedmethod));
+	}
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+
+  
+  

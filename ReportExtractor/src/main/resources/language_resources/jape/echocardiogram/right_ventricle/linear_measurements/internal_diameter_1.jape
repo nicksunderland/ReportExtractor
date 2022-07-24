@@ -1,0 +1,123 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+Phase: internal_diameter_1
+Input: Token Lookup SpaceToken
+Options: control=Appelt 
+
+
+
+Rule: rv_d1_rule_1
+(
+		
+	(
+		({Token.position == "startpunct"})?
+		({Token.string ==~ "(?i)RVD"} {Token.string == "1"} | {Token.string ==~ "(?i)RVEDD"} | {Token.string ==~ "(?i)RVIDD"})
+		({Token.position == "endpunct"})?
+		({Token.string ==~ "(?i)MEASURES"})?
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+		({Token.string == "~"})?
+		({Token.string == "~"})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"})?
+	):unit
+
+):rv_d1 
+--> 
+:rv_d1
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "rv_d1",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }
+
+
+
+Rule: rv_d1_rule_2
+(
+		
+	(
+		{Token.string ==~ "(?i)BASAL"} {Token.string ==~ "(?i)RV"}
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+		({Token.string == "~"})?
+		({Token.string == "~"})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"})?
+	):unit
+
+):rv_d1 
+--> 
+:rv_d1
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "rv_d1",
+			  				     					  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }
+  
+
+
+Rule: rv_d1_rule_3
+(
+		
+	(
+		({Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)VENTRICLE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)HEART"} |
+		{Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)SIDED"} {Token.string ==~ "(?i)STRUCTURES"} | {Token.string ==~ "(?i)RV"})
+		({Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)MISC", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)CAVA", Token.string !=~ "(?i)IVC", Token.string !=~ "(?i)PRESSURE", Token.string !=~ "(?i)LA", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)PULMONARY"} |{SpaceToken.string!=Position})*
+
+		{Token.string ==~ "(?i)POSITION"} {Token.string == "1"} ({Token.string ==~ "(?i)MEASURES"})?
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+		({Token.string == "~"})?
+		({Token.string == "~"})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"})?
+	):unit
+
+):rv_d1 
+--> 
+:rv_d1
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "rv_d1",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }

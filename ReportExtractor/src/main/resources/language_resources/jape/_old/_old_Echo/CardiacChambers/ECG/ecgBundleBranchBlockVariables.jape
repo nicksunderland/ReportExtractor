@@ -1,0 +1,240 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  ecgBundleBranchBlockVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: ecgBundleBranchBlockVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of ECG bundle branch block Variable relations from Lookup Annotations 
+*/
+
+Phase: ecgBundleBranchBlockVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+
+Rule: ECGBundleBranchBlockValueRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string ==~ "(?i)BBB"} | {Token.string ==~ "(?i)BUNDLE"} {Token.string ==~ "(?i)BRANCH"} {Token.string ==~ "(?i)BLOCK"} |
+({Token.string ==~ "(?i)INTRAVENTRICULAR"} | {Token.string ==~ "(?i)IV"}) {Token.string ==~ "(?i)CONDUCTION"} {Token.string ==~ "(?i)DELAY"}
+)
+
+
+):context
+
+
+):ECGBundleBranchBlockValueGram 
+
+--> 
+:ECGBundleBranchBlockValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGBundleBranchBlockValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Unspecified");
+	
+	newFeatures.put("unit", "Levels: Unspecified (BBB, intraventricular conduction delay), LBBB, RBBB, Bilateral BBB, Alternating BBB");
+	newFeatures.put("varType","ECG BBB");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG BBB normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+  
+Rule: ECGBundleBranchBlockValueAlternRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string ==~ "(?i)LBBB"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)BUNDLE"} {Token.string ==~ "(?i)BRANCH"} {Token.string ==~ "(?i)BLOCK"} |
+ {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)BUNDLE"} {Token.string ==~ "(?i)BLOCK"} |
+ {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)BBB"} 
+)
+
+
+):context
+
+
+):ECGBundleBranchBlockValueAlternGram 
+
+--> 
+:ECGBundleBranchBlockValueAlternGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGBundleBranchBlockValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "LBBB");
+	
+	newFeatures.put("unit", "Levels: Unspecified (BBB, intraventricular conduction delay), LBBB, RBBB, Bilateral BBB, Alternating BBB");
+	newFeatures.put("varType","ECG BBB");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG BBB altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+Rule: ECGBundleBranchBlockValueAltern2Rule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( {Token.string ==~ "(?i)RBBB"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)BUNDLE"} {Token.string ==~ "(?i)BRANCH"} {Token.string ==~ "(?i)BLOCK"} |
+ {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)BUNDLE"} {Token.string ==~ "(?i)BLOCK"} |
+ {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)BBB"} 
+)
+
+
+):context
+
+
+):ECGBundleBranchBlockValueAltern2Gram 
+
+--> 
+:ECGBundleBranchBlockValueAltern2Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGBundleBranchBlockValueAltern2Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "RBBB");
+	
+	newFeatures.put("unit", "Levels: Unspecified (BBB, intraventricular conduction delay), LBBB, RBBB, Bilateral BBB, Alternating BBB");
+	newFeatures.put("varType","ECG BBB");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG BBB altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+
+Rule: ECGBundleBranchBlockValueAltern3Rule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)BILATERAL"} 
+( {Token.string ==~ "(?i)BBB"} | {Token.string ==~ "(?i)BUNDLE"} {Token.string ==~ "(?i)BRANCH"} {Token.string ==~ "(?i)BLOCK"} |
+({Token.string ==~ "(?i)INTRAVENTRICULAR"} | {Token.string ==~ "(?i)IV"}) {Token.string ==~ "(?i)CONDUCTION"} {Token.string ==~ "(?i)DELAY"}
+) | 
+{Token.string ==~ "(?i)BBBB"} 
+)
+
+):context
+
+
+):ECGBundleBranchBlockValueAltern3Gram 
+
+--> 
+:ECGBundleBranchBlockValueAltern3Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGBundleBranchBlockValueAltern3Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Bilateral BBB");
+	
+	newFeatures.put("unit", " Levels: Unspecified (BBB, intraventricular conduction delay), LBBB, RBBB, Bilateral BBB, Alternating BBB");
+	newFeatures.put("varType","ECG BBB");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG BBB altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+
+Rule: ECGBundleBranchBlockValueAltern4Rule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)ALTERNATING"} 
+( {Token.string ==~ "(?i)BBB"} | {Token.string ==~ "(?i)BUNDLE"} {Token.string ==~ "(?i)BRANCH"} {Token.string ==~ "(?i)BLOCK"} |
+({Token.string ==~ "(?i)INTRAVENTRICULAR"} | {Token.string ==~ "(?i)IV"}) {Token.string ==~ "(?i)CONDUCTION"} {Token.string ==~ "(?i)DELAY"}
+)
+
+
+):context
+
+
+):ECGBundleBranchBlockValueAltern4Gram 
+
+--> 
+:ECGBundleBranchBlockValueAltern4Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGBundleBranchBlockValueAltern4Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Alternating BBB");
+	
+	newFeatures.put("unit", " Levels: Unspecified (BBB, intraventricular conduction delay), LBBB, RBBB, Bilateral BBB, Alternating BBB");
+	newFeatures.put("varType","ECG BBB");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG BBB altern4");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }

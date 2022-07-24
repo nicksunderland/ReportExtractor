@@ -1,0 +1,420 @@
+var_name,text,expected_value,expected_units
+height,"here is some text with a ridiculous height of 130m, and a more reasonable height of 150cm, we should chose the second value if the variable dictonary limits are set orrectly. ",150,cm
+height,STUDY_COMMENTS: H 1m 85cm,185,cm
+height,Obese pt. Tachycarida 100-110 bpm.,,
+height,Patient had  10 beats broad complax tachycardia ,,
+height,Patient comments 10 day worsening SOB.,,
+height,STUDY_COMMENTS: Patient weight 107lg,,
+height,"Normal BSA range for patient age and BSA 27-42mm.
+Ht 180cm BSA 2.0m2.",180,cm
+height,"height: 168
+AORTA: There is slight increase in SOV diameter. Sinus of Valsalva measures 4 cm; This is dilated for height and has increased from 3.1 cm",168,cm
+height,"Report:
+height: 170
+AORTA: 
+This is dilated indexed to height at 22.8 mm/m. ",170,cm
+height,Patient has an UltraCor 21mm,,
+height,"Report:
+height: 150
+AORTA: Sinus of valsalva 33.6 mm - This is dilated  for height, 22.4 mm/m.
+Proximal ascending aorta 33.2 mm - This is dilated for height, 22.2 mm/m.
+sinus of valsalva: 
+indexed sov: 
+ST junction: 
+indexed stj: 
+Ascending aorta: 3.31999993
+indexed ascending aorta: 
+SUMMARY: ECG : Sinus rhythm. HR approx. 70 bpm.",150,cm
+height,"Report:
+height: 165
+AORTA: Sino-tubular junction (31 mm;19 mm) and  (42 mm;26mm/m)proximal ascending aorta are dilated for height.
+sinus of valsalva: 3.29999995
+indexed sov: 2
+ST junction: 
+indexed stj: 1.89999998
+Ascending aorta: 4.21999979
+indexed ascending aorta: 2.5999999
+SUMMARY: ECG- Fast AF (104-141 bpm)",165,cm
+height,"Report:
+height: 173
+AORTA: Sinus of valsalva 48.5 mm - This is dilated  for height, 28.0 mm/m.
+Sinotubular junction is dilated for height = 23.6 mm/m.
+Proximal ascending aorta 40.2 mm - This is dilated for height, 23.2 mm/m.
+sinus of valsalva: 
+indexed sov: 
+ST junction: 
+indexed stj: 
+Ascending aorta: 4.01999998
+indexed ascending aorta: 2.29999995
+SUMMARY: FOCUSED REPORT :
+ECG : Sinus bradycardia. HR approx. 73bpm.",173,cm
+height,"Report:
+height: 165
+AORTA: Sino-tubular junction (31 mm;19 mm) and  (42 mm;26mm/m)proximal ascending aorta are dilated for height.
+sinus of valsalva: 3.29999995
+indexed sov: 
+ST junction: 
+indexed stj: 
+Ascending aorta: 4.21999979
+indexed ascending aorta: 
+SUMMARY: ECG- Fast AF (104-141 bpm)",165,cm
+height,"Report:
+height: 178
+AORTA: Sinus of Valsalva 45.9mm. This is dilated for height indexed 25.8mm/m. 
+Proximal ascending 41.4mm. This is dilated for height indexed 23.3mm/m. 
+sinus of valsalva: 4.5999999
+indexed sov: 
+ST junction: 
+indexed stj: 
+Ascending aorta: 4.0999999
+indexed ascending aorta: 
+SUMMARY: LV- Non dilated. Mild LVH. Overall borderline low systolic function. Visually estimated LVEF ~50%. See LV for RWMA's. ",178,cm
+height,"Report:
+height: 167
+AORTA: Sinus of valsalva 33.3 mm - This is not dilated  for height, 19.9 mm/m.
+Proximal ascending aorta 36.2 mm - This is dilated for height, 21.7 mm/m.
+sinus of valsalva: 
+indexed sov: 
+ST junction: 
+indexed stj: 
+Ascending aorta: 3.5999999
+indexed ascending aorta: 2.20000005
+SUMMARY: FOCUSED REPORT :
+ECG : Sinus rhythm. HR approx. 68 bpm.",167,cm
+height,"Report:
+height: 164
+AORTA: Sinus of valsalva 35.0 mm - This is not dilated  for height, 21.0 mm/m.
+Proximal ascending aorta 32.0 mm - This is borderline dilated for height, 20.0 mm/m.
+sinus of valsalva: 3.5
+indexed sov: 2.0999999
+ST junction: 
+indexed stj: 
+Ascending aorta: 3.23000002
+indexed ascending aorta: 2
+SUMMARY: ECG : Sinus bradycardia (BBB morphology). HR approx. 47bpm.",164,cm
+height,"Report:
+height: 173
+AORTA: Sinus of Valsalva 43.1mm. This is dilated for height indexed 24.9mm/m. 
+Sinotubular junction 28.6mm. This is non dilated for height indexed 16.5mm/m. 
+Proximal ascending aorta 31.4mm. This is non dilated for height indexed 18.1mm/m. 
+sinus of valsalva: 4.30000019
+indexed sov: 2.5
+ST junction: 
+indexed stj: 1.60000002
+Ascending aorta: 3.1400001
+indexed ascending aorta: 1.79999995
+SUMMARY: Normal biventricular size and systolic function.",173,cm
+height,"Report:
+height: 168
+AORTA: Sinus of valsalva 32.8 mm - This is not dilated  for height, 19.5 mm/m.
+Proximal ascending aorta 40.7 mm - This is dilated for height, 24.2 mm/m.
+sinus of valsalva: 
+indexed sov: 
+ST junction: 
+indexed stj: 
+Ascending aorta: 4.07000017
+indexed ascending aorta: 2.4000001
+SUMMARY: FOCUSED REPORT :
+ECG : Sinus rhythm. HR approx. 74 bpm.
+
+Tissue AVR in situ - see AV text. 
+
+Overall biventricular systolic function within normal limits. Est visual LVEF >55%. 
+
+Dilated ascending aorta. 
+AORTIC VALVE: Tissue AVR in situ. Normally functioning prosthesis. Peak PD 16mmHg and mean PD 9mmHg. No significant aortic regurgitation.",168,cm
+height,"OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 80 inches and unknown kg.  ECG - sinus rhythm. HR 75-85bpm.
+1. Non dilated LV with mildly impaired overall systolic function (see text).
+2. Normal atria.
+3. No significant valvular pathology.",203,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS: Patient approx 157cm and 84kg. BSA 1.85m_. ECG - sinus rhythm. HR approx 73bpm.",157,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS: Patient's approx H 5' 5*, W 9st 3lbs, BSA 1.64m_
+OBJ_TIMESTAMP: 522413808
+OPERATOR_ONE_ID: -1",165,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 530729049
+OPERATOR_ONE_ID: 604
+PROCEDURE_ID: 143493
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: ECG - sinus rhythm. HR approx bpm. Pt approx 5ft 3"" and 102kg. BSA 2.21m_.
+Impression LV systolic function within normal limits. 
+Moderate aortic stenosis - see text.
+Consider cardiology review.",160,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 534516833
+OPERATOR_ONE_ID: -1
+PROCEDURE_ID: 147322
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Very poor imaging due to patient body habitus - limited information obtained. No subcostal views, very off axis apical window.
+Height: 155cm,  Weight: 127kg,  BSA: 2.2m_. ECG - sinus rhythm. HR approx 90bpm.
+See text.",155,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS: Patient approx 6foot and 58kg. BSA 1.54m_.
+ECG - sinus rhythm with BBB. HR approx 70bpm.",183,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS: Height: 168cm,  Weight: 76kg,  BSA: 1.86m_
+OBJ_TIMESTAMP: 541007937",168,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 574268877
+OPERATOR_ONE_ID: 988
+PROCEDURE_ID: 180977
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 156cm and 8305kg. BSA m_.
+ECG - sinus rhythm. HR 83bpm.",156,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS: Pt reported worsening of Angina. Advised to see the GP.
+OBJ_TIMESTAMP: 591895081
+OPERATOR_ONE_ID: 833
+PROCEDURE_ID: 193080
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Focussed study for LV assessment
+Patient approx 175cm and 92kg. BSA 2.08m_.
+ECG - sinus rhythm. HR 70bpm.",175,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS: Patient approx 163cm and 97kg. BSA 2.02m_.
+ECG - sinus rhythm. HR approx 73bpm.
+OBJ_TIMESTAMP: 616067212",163,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS: Patient approx 170cm and 67kg. BSA 1.78m_.
+ECG - sinus tachycardia. HR 102bpm.",170,cm
+height,"OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Height 178cm, weight 66.8kg BSA 1.83m_
+ECG - sinus rhythm (BBB morphology). HR 65bpm.
+AV - see text. Overall impression moderate aortic stenosis.",178,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS: HT 178cm. WT 76kg. BSA 1.94m2
+OBJ_TIMESTAMP: 628699200",178,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS: Ht 175cm. Wt; 80kg. BSA 1.96m2",175,cm
+height,"OVERALL_IMPRESSION: Difficult/very poor/off axis/non-diagnostic apical images. Off axis parasternal views. 
+Patient approx 163cm and 108.2kg. BSA 2.11m_.
+ECG - sinus rhythm. HR 70bpm.",163,cm
+height,"OVERALL_IMPRESSION: Difficult/foreshortened apical views.
+Pt approx 180cm and 85.5kg. BSA 2.05m_.
+ECG - sinus rhythm (BBB morphology) with occasional VEs. HR approx 80bpm.",180,cm
+height,"OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 165cm and 64kg. BSA 1.7m_.
+ECG - sinus rhythm. HR 75bpm.",165,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS: Patient approx 177cm and 80kg. BSA 1.97m_.
+OBJ_TIMESTAMP: 556992978",177,cm
+height,"OVERALL_IMPRESSION: Herceptin protocol / limited study. Very suboptimal parasternal imaging. 
+Patient approx 168cm and 61kg. BSA 1.69m_.
+ECG sinus rhythm/bradycardia, HR approx. 55bpm",168,cm
+height,"STUDY_COMMENTS: Patient approx 160cm and 48kg. BSA 1.5m_.
+ECG - sinus rhythm with frequent ectopics HR 90 bpm.",160,cm
+height,"TTE_INDICATION
+OVERALL_IMPRESSION: ECG - sinus rhythm. HR 55bpm. Patient approx 170cm and 60kg. BSA 1.69m_.
+Biventricular systolic function appears within normal limits
+No significant valvular abnormalities detected.
+Dilated aortic root at SoV and ascending aorta. ",170,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS: HT 154cm. WT 74KG BSA 1.7msq",154,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS: Patient approx 160cm and 48.8kg. BSA 1.49m_.
+ECG - sinus rhythm. HR 75-80bpm.",160,cm
+height,"OVERALL_IMPRESSION: ECG sinus rhythm at 90bpm. Patient height 164cm, weight 124kg, BSA 2.25m_.
+Mildly hypertrophied LV with overall normal systolic function. ",164,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS: Height: 188cm,  Weight: 66kg,  BSA: 1.90m_
+OBJ_TIMESTAMP: 531479047",188,cm
+height,"OVERALL_IMPRESSION: Difficult/very suboptimal apical images.
+Pt approx 171cm and 100kg. BSA 2.11m_.
+ECG - sinus rhythm. HR approx 80bpm.
+Overall LV systolic function within normal limits. Est EF >55%
+No significant valvular abnormalities detected",171,cm
+height,"OVERALL_IMPRESSION: Patient approx 182cm and 111kg. BSA 2.31m_.
+ECG - atrial fibrillation. HR approx 55bpm.",182,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS: Reviewed on echo meeting on the 30/07/2020. ***Echogenic mobile structure adjacent to the RA to be investigated on next scan.***
+Images reviewed by OEG. Follow-up appointment given for next week.
+Focussed report.
+Patient approx 183cm and 92kg. BSA 2.14m_.
+ECG - sinus rhythm with SVEs and VEs. HR 79bpm.",183,cm
+height,"OVERALL_IMPRESSION: Patient approx 178cm and 76kg. BSA 1.94m_.
+ECG - sinus bradycardia. HR 50bpm.",178,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS: Ht 167cm. Wt 60kg. BSA 1.67m2
+OBJ_TIMESTAMP: 617224963",167,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 561463667
+OPERATOR_ONE_ID: -1
+PROCEDURE_ID: 167299
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 175cm and 76kg. BSA 1.9m_.
+ECG - sinus rhythm. HR 60bpm.",175,cm
+height,"referral_details
+TTE_INDICATION: Atrial fibrillation
+
+STUDY_COMMENTS: very limited images obtained.
+LV appears to be normal size and LV function probably within normal limits.
+RV images limited see above.
+LA not dilated.
+No significant aortic or mitral valve pathology seen 
+OBJ_TIMESTAMP: 627143024
+OPERATOR_ONE_ID: -1
+PROCEDURE_ID: 239480
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 174cm and 88kg. BSA 2.03m_.
+",174,cm
+height,"OVERALL_IMPRESSION: Herceptin protocol limited study
+Pt height 163cm and weight 91.2kg.BSA 1.96m_
+ECG - sinus rhythm. HR 65bpm.
+",163,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS: Height: 170cm
+Weight: 77kg
+BSA: 1.88m2
+OBJ_TIMESTAMP: 470755209
+OPERATOR_ONE_ID: -1",170,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 637759576
+OPERATOR_ONE_ID: -1
+PROCEDURE_ID: 244205
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 163cm and 64kg. BSA 1.69m_.
+ECG - sinus rhythm. HR bpm.",163,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS: Patient approx 180cm and 100kg. BSA 2.20m_.
+ECG - sinus rhythm. HR approx 60bpm.
+
+OBJ_TIMESTAMP: 651319206
+OPERATOR_ONE_ID: 559
+PROCEDURE_ID: 261498
+OPERATOR_TWO_ID: -1",180,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 556035208
+OPERATOR_ONE_ID: 842
+PROCEDURE_ID: 126418
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: ECG sinus rhythm/bradycardia at 55bpm. Patient height 165cm, weight 89kg, BSA 1.96m_.
+LV systolic function borderline within normal limits. Est visual EF ~55%. ",165,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 619006956
+OPERATOR_ONE_ID: -1
+PROCEDURE_ID: 168520
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Focussed study. 
+Patient approx 173cm and 64kg. BSA 1.76m_.
+ECG - sinus bradycardia. HR 55bpm.",173,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 587667188
+OPERATOR_ONE_ID: 850
+PROCEDURE_ID: 196604
+OPERATOR_TWO_ID: 559
+OVERALL_IMPRESSION: Patient approx 160 cm and 76 kg. BSA 1.79 m_.
+ECG - sinus rhythm. HR 80 bpm.
+Overall LV systolic function within normal limits. Est visual EF >55%
+No significant valvular abnormalities detected.",160,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS: Patient approx 175 cm and 76 kg. BSA 1.91m_.
+ECG - sinus rhythm. HR 70 bpm.
+
+OBJ_TIMESTAMP: 636732740
+OPERATOR_ONE_ID: 1084
+PROCEDURE_ID: 250004
+OPERATOR_TWO_ID: -1",175,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 564579028
+OPERATOR_ONE_ID: 148
+PROCEDURE_ID: 169800
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 183cm and 98.4kg. BSA 2.21m_.
+ECG - sinus rhythm. HR 75bpm.",183,cm
+height,"TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 579966200
+OPERATOR_ONE_ID: 842
+PROCEDURE_ID: 181985
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: ECG sinus rhythm at 60bpm. Patient height 157cm, weight 64kg. BSA 1.64m_.
+AVR in situ. ",157,cm
+height,"STUDY_COMMENTS: Patient approx 191 cm and 131 kg. BSA 2.57 m_.
+ECG - sinus bradycardia. HR 53 bpm.
+Difficult / sub-optimal apical images. ",191,cm
+height,"OVERALL_IMPRESSION: Pt approx 175cm and 76.5kg. BSA 1.92m_.
+ECG - sinus rhythm. HR approx 85bpm.
+Overall biventricular systolic function within normal limits.
+Unable to estimate RVSP / PA pressure by TR gradient.
+HAMB_AO_ARCH_NORMAL: F
+CHAMB_AO_ARCH_TEXT: Not clearly seen",175,cm
+height,"STUDY_COMMENTS: Patient approx 165cm and 73.5kg. BSA 1.81m_.
+ECG - sinus rhythm. HR 55bpm.
+OBJ_TIMESTAMP: 664310747
+",165,cm
+height,"STUDY_COMMENTS: Patient approx 170 cm and 73 kg. BSA 1.84 m_.
+ECG - sinus rhythm. HR 60 bpm.
+ICD in situ.",170,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 618054608
+OPERATOR_ONE_ID: 842
+PROCEDURE_ID: 229234
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: ECG - sinus rhythm. HR 60bpm. Patient approx 162.5cm and 64kg. BSA 1.69m_.
+Biventricular systolic function appears within normal limits.
+No significant valvular abnormalities detected.
+HAMB_AO_ARCH_NORMAL: F",162.5,cm
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS: Patient approx 160cm and 62kg. BSA 1.64 m_.
+ECG - sinus rhythm. HR 90 bpm.",160,cm
+height,"OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 185cm and 136kg. BSA 2.55m_.
+ECG - sinus rhythm. HR ~71bpm.
+Echogenicity in region of pacing wire(s) - see chamber comments -endocarditis cannot be exlcuded from TTE and in the presence of suboptimal/limited imaging
+Overall LV systolic function within normal limits.
+Est PASP ~48mmHg (inc RA pressure)
+HAMB_AO_ARCH_NORMAL: F",185,cm
+height,"OVERALL_IMPRESSION: Patient in NSR
+MV posterior leaflet prolapse moderate MR
+Mildly dilated LA
+HAMB_AO_ARCH_NORMAL: F
+CHAMB_AO_ARCH_TEXT
+HAMB_AO_ASC_NORMAL: F
+HAMB_AO_ASC_TEXT: Non-dilated
+CHAMB_AO_DESC_NORMAL: F
+CHAMB_AO_DESC_TEXT: Normal size/flow
+CHAMB_COMMENT: IVC normal on inspiration
+CHAMB_IAS_INTACT: F
+CHAMB_IAS_TEXT: Intact
+CHAMB_LA_NORMAL: F
+CHAMB_LA_TEXT: Mildly dilated area 26 cm2
+CHAMB_LAA_NORMAL: F",,
+height,"OVERALL_IMPRESSION: Aortic valve leaflets very mildly thickened, open well
+Mild aortic regurgitation
+Mitral valve opens well, tip of anterior leaflet mildly thickened
+Mild mitral regurgitation 2 jets
+Left atrium mildly dilated, area 23cm2
+Left ventricle not dilated, with small prominent subaortic bulge. Overall good systolic function. Patient bradycardic with frequent ectopics
+Right atrium appears long, area 16cm2, right ventricle not dilated, reasonable / good  right ventricular function",,
+height,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS: Height 1.75m, weight 98kg, BSA 2.19m2.
+ECG - sinus rhythm rate 50-60.
+Suboptimal parasternal images.",175,cm

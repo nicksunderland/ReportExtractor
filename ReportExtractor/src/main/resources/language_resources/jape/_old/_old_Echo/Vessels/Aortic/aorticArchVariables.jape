@@ -1,0 +1,83 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  aorticArchVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: aorticArchVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of aortic arch Variable relations from Lookup Annotations 
+*/
+
+Phase: aorticArchVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+  
+  
+Rule: AorticArchValueRule
+(
+(
+{Token.string ==~ "(?i)ARCH"} 
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"})?
+):context
+
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string == "cm"} | {Token.string == "mm"}):unit)
+)
+
+):AorticArchValueGram 
+
+--> 
+:AorticArchValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticArchValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","Aortic Arch");
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	String contextStr = stringFor(doc, matchedcontext);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

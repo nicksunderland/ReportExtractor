@@ -1,0 +1,556 @@
+/*
+*  nonIndexedVariablesRV.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 14 February 2020 
+*  $Id: nonIndexedVariablesRV.jape,v 1.0 2020/02/14 10:33:00 GMT
+*
+* The Phase separates Annotations of non Indexed Right Ventricle Variable relations from Lookup Annotations 
+*/
+
+Phase: nonIndexedVariablesRV
+Input: Token Lookup  
+Options: control=all 
+
+
+  
+Rule: RVEFValueRule
+(
+{Token.string =~ ".*RV"}
+({Token.string !=~ ".*LV"}|{SpaceToken.string!=End})*
+({Token.string == "Ejection"}
+{Token.string == "Fraction"}
+{Token.position == startpunct}
+{Token.string == "%"}	
+{Token.position == endpunct}	
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVEFValueGram 
+
+--> 
+:RVEFValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVEFValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVEFValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVEFValue", newFeatures);
+  }
+  
+Rule: RVEFValueAbbrevRule
+(
+{Token.string == "RVEF"}	
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVEFValueGramAbbrev 
+
+--> 
+:RVEFValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVEFValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVEFValueAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVEFValue", newFeatures);
+  }
+ 
+ 
+Rule: RVEDVValueRule
+(
+{Token.string == "RV"}
+({Token.string!="LV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Diastolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string == "ml"}
+{Token.position == endpunct}	
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVEDVValueGram 
+
+--> 
+:RVEDVValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVEDVValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVEDVValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVEDVValue", newFeatures);
+  }
+  
+Rule: RVEDVValueAlternRule
+(
+{Token.string == "RV"}
+({Token.string!="LV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Diastolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVEDVValueAlternGram 
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+(
+{Token.kind == "number"}
+{Token.position == startpunct}
+(
+({Token.string!="("}|{SpaceToken.string!=")"})*
+)
+{Token.position == endpunct}
+)
+
+--> 
+:RVEDVValueAlternGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVEDVValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVEDVValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVEDVValue", newFeatures);
+  }
+  
+  
+Rule: RVEDVValueAlternRule2
+(
+{Token.string =~ ".*RV"} 
+({Token.string !=~ ".*LV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Diastolic"}
+{Token.string == "Volume"}
+{Token.string=="ml"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVEDVValueAlternGram2 
+
+--> 
+:RVEDVValueAlternGram2
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVEDVValueAlternGram2");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVEDVValueAlternRule2");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVEDVValue", newFeatures);
+  }
+  
+
+Rule: RVEDVValueAlternRule3
+(
+{Token.string =~ ".*RV"} 
+({Token.string !=~ ".*LV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Diastolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVEDVValueAlternGram3
+{Token.position == startpunct}
+{Token.kind == "number"}
+{Token.string == ";"}
+
+--> 
+:RVEDVValueAlternGram3
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVEDVValueAlternGram3");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVEDVValueAlternRule3");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVEDVValue", newFeatures);
+  }
+  
+  
+Rule: RVEDVValueAbbrevRule
+(
+{Token.string == "RVEDV"}	
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVEDVValueGramAbbrev 
+
+--> 
+:RVEDVValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVEDVValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVEDVValueAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVEDVValue", newFeatures);
+  }
+  
+ 
+Rule: RVESVValueRule
+(
+{Token.string == "RV"}
+({Token.string!="LV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string == "ml"}	
+{Token.position == endpunct}	
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVESVValueGram 
+
+--> 
+:RVESVValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVESVValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVESVValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVESVValue", newFeatures);
+  }
+  
+  
+Rule: RVESVValueAlternRule
+(
+{Token.string == "RV"}
+({Token.string!="LV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVESVValueAlternGram 
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+(
+{Token.kind == "number"}
+{Token.position == startpunct}
+(
+({Token.string!="("}|{SpaceToken.string!=")"})*
+)
+{Token.position == endpunct}
+)
+
+
+--> 
+:RVESVValueAlternGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVESVValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVESVValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVESVValue", newFeatures);
+  }  
+
+
+Rule: RVESVValueAlternRule2
+(
+{Token.string =~ ".*RV"}
+({Token.string !=~ ".*LV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.string=="ml"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVESVValueAlternGram2 
+
+--> 
+:RVESVValueAlternGram2
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVESVValueAlternGram2");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVESVValueAlternRule2");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVESVValue", newFeatures);
+  }
+  
+
+Rule: RVESVValueAlternRule3
+(
+{Token.string =~ ".*RV"} 
+({Token.string !=~ ".*LV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVESVValueAlternGram3
+{Token.position == startpunct}
+{Token.kind == "number"}
+{Token.string == ";"}
+
+--> 
+:RVESVValueAlternGram3
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVESVValueAlternGram3");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVESVValueAlternRule3");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVESVValue", newFeatures);
+  }
+  
+  
+Rule: RVESVAbbrevRule
+(
+{Token.string == "RVESV"}
+)
+(	
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVESVValueGramAbbrev 
+
+--> 
+:RVESVValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVESVValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVESVAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVESVValue", newFeatures);
+  }
+ 
+ 
+Rule: RVSVValueRule
+(
+{Token.string =~ ".*RV"}
+({Token.string !=~ ".*LV"}|{SpaceToken.string!=End})*
+({Token.string == "Stroke"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string == "ml"}	
+{Token.position == endpunct}	
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVStrokeVolumeValueGram 
+
+--> 
+:RVStrokeVolumeValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVStrokeVolumeValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVSVValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVSVValue", newFeatures);
+  }
+  
+  
+Rule: RVSVValueAbbrevRule
+(
+{Token.string == "RVSV"}	
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVSVValueGramAbbrev 
+
+--> 
+:RVSVValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVSVValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVSVValueAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVSVValue", newFeatures);
+  }
+  
+Rule: RVCOValueRule
+(
+{Token.string =~ ".*RV"} 
+({Token.string !=~ ".*LV"}|{SpaceToken.string!=End})*
+({Token.string == "Cardiac"}
+{Token.string == "Output"}
+{Token.position == startpunct}
+({Token.string != "min"})*
+{Token.string == "min"}	
+{Token.position == endpunct}	
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVCardiacOutputValueGram 
+
+--> 
+:RVCardiacOutputValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVCardiacOutputValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVCOValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVCOValue", newFeatures);
+  }
+  
+Rule: RVCOValueAlternRule
+(
+{Token.string =~ ".*RV[E]?[F]?"} 
+({Token.string !=~ ".*LV[E]?[F]?"}|{SpaceToken.string!=Cardiac})*
+{Token.string == "Cardiac"}	
+{Token.string == "Output"}	
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVCOValueAlternGramAbbrev 
+
+--> 
+:RVCOValueAlternGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVCOValueAlternGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVCOValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVCOValue", newFeatures);
+  }
+
+
+Rule: RVMassValueAlternRule
+(
+{Token.string =~ ".*RV"} 
+({Token.string !=~ ".*LV"}|{SpaceToken.string!=End})*
+({Token.string == "Mass"}
+{Token.position == startpunct}
+{Token.string=="g"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVMassValueAlternGram 
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+(
+{Token.kind == "number"}
+{Token.position == startpunct}
+(
+({Token.string!="("}|{SpaceToken.string!=")"})*
+)
+{Token.position == endpunct}
+)
+
+--> 
+:RVMassValueAlternGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVMassValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVMassValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVMassValue", newFeatures);
+  }  
+  
+  
+Rule: RVMassValueAlternRule2
+(
+{Token.string =~ ".*RV"}
+({Token.string !=~ ".*LV"}|{SpaceToken.string!=End})*
+({Token.string == "Mass"}
+{Token.string=="g"}
+{Token.position == startpunct}
+{Token.string=="g"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVMassValueAlternGram2 
+
+--> 
+:RVMassValueAlternGram2
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVMassValueAlternGram2");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVMassValueAlternRule2");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVMassValue", newFeatures);
+  }
+  
+
+Rule: RVMassAbbrevRule
+(
+{Token.string == "RV"}
+{Token.string == "Mass"}
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):RVMassValueGramAbbrev 
+
+--> 
+:RVMassValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RVMassValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","RVMassAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"RVMassValue", newFeatures);
+  }
+  
+
+
+
+

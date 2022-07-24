@@ -1,0 +1,104 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  ecgHeartBlockUnspecifiedVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: ecgHeartBlockUnspecifiedVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of ECG Heart Block Unspecified Variable relations from Lookup Annotations 
+*/
+
+Phase: ecgHeartBlockUnspecifiedVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+Rule: ECGHeartBlockUnspecifiedValueRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)HEART"} | {Token.string ==~ "(?i)CARDIAC"}) 
+{Token.kind == "word", !Token.string ==~ "(?i)NOT"}
+({Token.string ==~ "(?i)BLOCK"} |
+{Token.string ==~ "(?i)BLOCKED"})
+
+
+):context
+
+
+):ECGHeartBlockUnspecifiedValueGram 
+
+--> 
+:ECGHeartBlockUnspecifiedValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGHeartBlockUnspecifiedValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	
+	newFeatures.put("unit", "1 (present), Null (assume absent)");
+	newFeatures.put("varType","ECG HB Unspecified");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG HB Unspecified normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+
+Rule: ECGHeartBlockUnspecifiedValueAlternRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)HEART"} | {Token.string ==~ "(?i)CARDIAC"}) 
+({Token.string ==~ "(?i)BLOCK"} |
+{Token.string ==~ "(?i)BLOCKED"})
+
+
+):context
+
+
+):ECGHeartBlockUnspecifiedValueAlternGram 
+
+--> 
+:ECGHeartBlockUnspecifiedValueAlternGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGHeartBlockUnspecifiedValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	
+	newFeatures.put("unit", "1 (present), Null (assume absent)");
+	newFeatures.put("varType","ECG HB Unspecified");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG HB Unspecified altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }

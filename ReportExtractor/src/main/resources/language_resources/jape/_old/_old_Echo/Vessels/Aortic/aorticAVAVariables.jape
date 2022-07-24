@@ -1,0 +1,78 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  aorticAVAVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: aorticAVAVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of aortic valve area Variable relations from Lookup Annotations 
+*/
+
+Phase: aorticAVAVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: AorticAVAAltern2ValueRule
+Priority:1
+(
+(
+({Token.string ==~ "(?i)LVOT"} | {Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+{Token.string ==~ "(?i)VALVE"} 
+{Token.string ==~ "(?i)AREA"} 
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+({Token.string ==~ "(?i)CM"}({Token.string == "2"})? | 
+{Token.string ==~ "(?i)CM"}{Token.string == "."}{Token.string ==~ "(?i)SQ"}):unit
+)
+
+):AorticAVAAltern2ValueGram 
+
+--> 
+:AorticAVAAltern2ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticAVAAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","AVA");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Aortic Valve area altern2");
+	
+	if (matchedunit != null) {
+		newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+
+  
+  

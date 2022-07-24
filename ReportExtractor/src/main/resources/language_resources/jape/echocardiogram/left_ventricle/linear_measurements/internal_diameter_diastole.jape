@@ -1,0 +1,43 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+Phase: internal_diameter_diastole
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: lv_lvidd_rule_1
+(
+		
+	(
+		({Token.string ==~ "(?i)lvidd"} | {Token.string ==~ "(?i)lvedd"} | {Token.string ==~ "(?i)edd"})
+		({Token.string == "="} | {Token.string == "["})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		({Token.string ==~ "(?i)mm"} | {Token.string ==~ "(?i)cm"})
+	):unit
+
+):lv_lvidd 
+--> 
+:lv_lvidd
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "lv_lvidd",
+													  doc, 
+													  bindings, 
+													  outputAS);
+  }
+  

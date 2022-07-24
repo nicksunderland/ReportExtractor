@@ -1,0 +1,64 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  ecgFascicularBlockVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: ecgFascicularBlockVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of ECG Fascicular Block Variable relations from Lookup Annotations 
+*/
+
+Phase: ecgFascicularBlockVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+Rule: ECGFascicularBlockValueRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)fascicular"} {Token.string ==~ "(?i)block"} |
+{Token.string ==~ "(?i)blocked"} {Token.string ==~ "(?i)fascicles"} |
+{Token.string ==~ "(?i)hemiblock"} | {Token.string ==~ "(?i)hemi"} {Token.string ==~ "(?i)block"} 
+)
+
+
+):context
+
+
+):ECGFascicularBlockValueGram 
+
+--> 
+:ECGFascicularBlockValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGFascicularBlockValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	
+	newFeatures.put("unit", "1 (present), Null (assume absent)");
+	newFeatures.put("varType","ECG Fascicular Block");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Fascicular Block normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  

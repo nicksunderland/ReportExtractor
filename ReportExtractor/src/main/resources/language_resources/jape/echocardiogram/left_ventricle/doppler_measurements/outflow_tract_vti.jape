@@ -1,0 +1,142 @@
+//Imports: {
+//	import static gate.Utils.*;
+//  import neoImage.v2.EchoJapeRhsProcessor;
+//}
+//
+//Phase: outflow_tract_diameter
+//Input: Token Lookup  
+//Options: control=Appelt 
+//
+//
+//
+//Rule: lvot_diam_rule_1
+//(
+//	(
+//		{Token.string ==~ "(?i)LVOT[D]?"}
+//		({Token.string ==~ "(?i)DIAM(ETER)?"})?
+//		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+//		({Token.string == "~"})?
+//		({Token.string == "~"})?
+//	):context
+//
+//	(
+//		({Token.kind == "number"})?
+//		({Token.string == "."})?
+//		{Token.kind == "number"}
+//	):value
+//
+//	(
+//		({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"})
+//	):unit
+//
+//):lvot_diam
+//(
+//	({Token.string != "/"})?
+//	({Token.string != "S"})?
+//)
+//--> 
+//:lvot_diam
+//  {
+//	gate.AnnotationSet matched_context = (gate.AnnotationSet) bindings.get("context");
+//	gate.AnnotationSet matched_value   = (gate.AnnotationSet) bindings.get("value");
+//	gate.AnnotationSet matched_unit    = (gate.AnnotationSet) bindings.get("unit");
+//    gate.AnnotationSet matched_annot   = (gate.AnnotationSet) bindings.get("lvot_diam");	
+//    
+//	gate.FeatureMap var_features = Factory.newFeatureMap();
+//	var_features.put("var_type","lvot_diam");
+//	var_features.put("context", stringFor(doc, matched_context));
+//	
+//	String unit_orig = "";
+//	if (matched_unit != null) {
+//		unit_orig = stringFor(doc, matched_unit);
+//		var_features.put("unit", unit_orig);
+//	}
+//	
+//	String value_str = stringFor(doc, matched_value);
+//	double value_dbl = Double.parseDouble(value_str);
+//	
+//	if (unit_orig.equals("mm")) {
+//		value_dbl = value_dbl / 10D;
+//		var_features.put("value_orig", value_str);
+//		var_features.put("value", String.valueOf(value_dbl));
+//		var_features.put("unit", "cm");
+//	} else {
+//		var_features.put("value", value_str);
+//	}
+//	
+//	outputAS.add(matched_annot.firstNode(),
+//			     matched_annot.lastNode(),
+//			     "echo_report_var", 
+//			     var_features);
+//  }
+//
+//
+//
+//Rule: lvot_diam_rule_2
+//(
+//		
+//	(
+//		({Token.string ==~ "(?i)LVOT"})
+//		({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)AR", Token.string !=~ "(?i)A[OV]", Token.string !=~ "(?i)AVA[I]?"}|{SpaceToken.string!=DIMENSION})*
+//	):context
+//)
+//
+//(
+//	(
+//		{Token.string ==~ "(?i)DIMENSION"}	
+//		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+//		({Token.string == "~"})?
+//		({Token.string == "~"})?
+//	):context
+//
+//	(
+//		({Token.kind == "number"})?
+//		({Token.string == "."})?
+//		{Token.kind == "number"}
+//	):value
+//
+//	(
+//		({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"})
+//	):unit
+//		
+//):lvot_diam
+//(
+//	({Token.string != "/"})?
+//	({Token.string != "S"})?
+//)
+//--> 
+//:lvot_diam
+//  {
+//	gate.AnnotationSet matched_context = (gate.AnnotationSet) bindings.get("context");
+//	gate.AnnotationSet matched_value   = (gate.AnnotationSet) bindings.get("value");
+//	gate.AnnotationSet matched_unit    = (gate.AnnotationSet) bindings.get("unit");
+//    gate.AnnotationSet matched_annot   = (gate.AnnotationSet) bindings.get("lvot_diam");	
+//    
+//	gate.FeatureMap var_features = Factory.newFeatureMap();
+//	var_features.put("var_type","lvot_diam");
+//	var_features.put("context", stringFor(doc, matched_context));
+//	
+//	String unit_orig = "";
+//	if (matched_unit != null) {
+//		unit_orig = stringFor(doc, matched_unit);
+//		var_features.put("unit", unit_orig);
+//	}
+//	
+//	String value_str = stringFor(doc, matched_value);
+//	double value_dbl = Double.parseDouble(value_str);
+//	
+//	if (unit_orig.equals("mm")) {
+//		value_dbl = value_dbl / 10D;
+//		var_features.put("value_orig", value_str);
+//		var_features.put("value", String.valueOf(value_dbl));
+//		var_features.put("unit", "cm");
+//	} else {
+//		var_features.put("value", value_str);
+//	}
+//	
+//	outputAS.add(matched_annot.firstNode(),
+//			     matched_annot.lastNode(),
+//			     "echo_report_var", 
+//			     var_features);
+//  }
+  

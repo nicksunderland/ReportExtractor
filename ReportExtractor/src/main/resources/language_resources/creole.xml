@@ -1,0 +1,23 @@
+
+<CREOLE-DIRECTORY>
+
+
+	<REQUIRES
+		GROUP="uk.ac.gate.plugins"  
+		ARTIFACT="annie"  
+		VERSION="8.6">
+	</REQUIRES>
+	
+	<REQUIRES
+		GROUP="uk.ac.gate.plugins"
+		ARTIFACT="tools" 
+		VERSION="8.6">
+	</REQUIRES>
+	
+	<REQUIRES
+		GROUP="uk.ac.gate.plugins"
+		ARTIFACT="jape-plus" 
+		VERSION="8.6">
+	</REQUIRES>
+	
+</CREOLE-DIRECTORY>

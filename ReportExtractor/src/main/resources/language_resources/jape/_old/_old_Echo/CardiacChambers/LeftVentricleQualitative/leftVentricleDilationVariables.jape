@@ -1,0 +1,308 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleDilationVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleDilationVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle dilatation Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleDilationVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LeftVentricleDilationValueRule
+Priority:10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements", Token.string !~ "(?i)ATRIUM", Token.string !~ "(?i)ATRIAL", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+(
+( 
+
+(
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)GROSS(LY)?"} | {Token.string ==~ "(?i)MARKED(LY)?"} | {Token.string ==~ "(?i)SEVERE(LY)?"}):severe
+) 
+
+ 
+({Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICULAR"} | {Token.string ==~ "(?i)LV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)HEART"} {Token.string ==~ "(?i)CHAMBER[S]?"} | {Token.string ==~ "(?i)CHAMBER[S]?"} | {Token.string ==~ "(?i)VENTRICULAR"})
+ 
+( {Token.string ==~ "(?i)DILATED"} | {Token.string ==~ "(?i)DILATATION"} | {Token.string ==~ "(?i)DILATION"} )
+
+):context
+
+
+):LeftVentricleDilationValueGram 
+(
+{Token.string !=~ "(?i)LEFT"}
+{Token.string !=~ "(?i)ATRIUM"}
+)
+
+--> 
+:LeftVentricleDilationValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleDilationValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	} else {
+		newFeatures.put("varValue", "2");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no dilation) to 3 (Severe dilation)");
+	newFeatures.put("varType","LV Dilatation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Dilatation normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+
+Rule: LeftVentricleDilationAlternValueRule
+Priority:10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements", Token.string !~ "(?i)ATRIUM", Token.string !~ "(?i)ATRIAL", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)GROSS(LY)?"} | {Token.string ==~ "(?i)MARKED(LY)?"} | {Token.string ==~ "(?i)SEVERE(LY)?"}):severe
+)
+) 
+{Token.kind == "word"}
+
+({Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICULAR"} | {Token.string ==~ "(?i)LV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)HEART"} {Token.string ==~ "(?i)CHAMBER[S]?"} | {Token.string ==~ "(?i)CHAMBER[S]?"} | {Token.string ==~ "(?i)VENTRICULAR"})
+ 
+( {Token.string ==~ "(?i)DILATED"} | {Token.string ==~ "(?i)DILATATION"} | {Token.string ==~ "(?i)DILATION"} )
+
+
+):context
+
+
+):LeftVentricleDilationAlternValueGram 
+(
+{Token.string !=~ "(?i)LEFT"}
+{Token.string !=~ "(?i)ATRIUM"}
+)
+
+--> 
+:LeftVentricleDilationAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleDilationAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	} else {
+		newFeatures.put("varValue", "2");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no dilation) to 3 (Severe dilation)");
+	newFeatures.put("varType","LV Dilatation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Dilatation altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+
+
+Rule: LeftVentricleDilationAltern2ValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements", Token.string !~ "(?i)ATRIUM", Token.string !~ "(?i)ATRIAL", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+(
+(
+ 
+( {Token.string ==~ "(?i)DILATED"} | {Token.string ==~ "(?i)DILATATION"} | {Token.string ==~ "(?i)DILATION"} )
+
+
+):context
+
+):LeftVentricleDilationAltern2ValueGram 
+(
+{Token.string !=~ "(?i)LEFT"}
+{Token.string !=~ "(?i)ATRIUM"}
+)
+
+--> 
+:LeftVentricleDilationAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleDilationAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2");
+	
+	newFeatures.put("unit", "scale 0 (no dilation) to 3 (Severe dilation)");
+	newFeatures.put("varType","LV Dilatation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Dilatation altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleDilationAltern3ValueRule
+Priority:10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements", Token.string !~ "(?i)ATRIUM", Token.string !~ "(?i)ATRIAL", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+(
+(
+(
+{Token.string ==~ "(?i)NO[NT]?"} ({Token.string == "-"})? {Token.string ==~ "(?i)DILATED"} | {Token.string =~ "(?i)NON-DILATED"} |
+{Token.string ==~ "(?i)NO"} 
+
+({Token.kind == "word", !Token.string ==~ "(?i)RIGHT", !Token.string ==~ "(?i)RV"})?
+({Token.kind == "word", !Token.string ==~ "(?i)RIGHT", !Token.string ==~ "(?i)RV"})?
+({Token.kind == "word", !Token.string ==~ "(?i)RIGHT", !Token.string ==~ "(?i)RV"})?
+({Token.kind == "word", !Token.string ==~ "(?i)RIGHT", !Token.string ==~ "(?i)RV"})?
+
+( {Token.string ==~ "(?i)DILATED"} | {Token.string ==~ "(?i)DILATATION"} | {Token.string ==~ "(?i)DILATION"} )
+):normal  
+
+):context
+
+
+):LeftVentricleDilationAltern3ValueGram 
+(
+{Token.string !=~ "(?i)LEFT"}
+{Token.string !=~ "(?i)ATRIUM"}
+)
+
+--> 
+:LeftVentricleDilationAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchednormal=(gate.AnnotationSet) bindings.get("normal");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleDilationAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "0");
+	
+	newFeatures.put("unit", "scale 0 (no dilation) to 3 (Severe dilation)");
+	newFeatures.put("varType","LV Dilatation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Dilatation altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleDilationAltern4ValueRule
+Priority:10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements", Token.string !~ "(?i)ATRIUM", Token.string !~ "(?i)ATRIAL", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)GROSS(LY)?"} | {Token.string ==~ "(?i)MARKED(LY)?"} | {Token.string ==~ "(?i)SEVERE(LY)?"}):severe
+) 
+) 
+
+( {Token.string ==~ "(?i)DILATED"} | {Token.string ==~ "(?i)DILATATION"} | {Token.string ==~ "(?i)DILATION"} )
+
+({Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICULAR"} | {Token.string ==~ "(?i)LV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)HEART"} {Token.string ==~ "(?i)CHAMBER[S]?"} | {Token.string ==~ "(?i)CHAMBER[S]?"} | {Token.string ==~ "(?i)VENTRICULAR"})
+
+):context
+
+
+):LeftVentricleDilationAltern4ValueGram 
+(
+{Token.string !=~ "(?i)LEFT"}
+{Token.string !=~ "(?i)ATRIUM"}
+)
+
+--> 
+:LeftVentricleDilationAltern4ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleDilationAltern4ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	} else {
+		newFeatures.put("varValue", "2");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no dilation) to 3 (Severe dilation)");
+	newFeatures.put("varType","LV Dilatation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Dilatation altern4");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  

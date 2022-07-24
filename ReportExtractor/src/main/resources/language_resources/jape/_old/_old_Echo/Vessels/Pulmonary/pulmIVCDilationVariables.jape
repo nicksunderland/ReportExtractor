@@ -1,0 +1,322 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  pulmIVCDilationVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: pulmIVCDilationVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Inferior Vena Cava Dilation Variable relations from Lookup Annotations 
+*/
+
+Phase: pulmIVCDilationVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+  
+Rule: PulmIVCDilationValueRule
+(
+(
+
+({Token.string ==~ "(?i)INFERIOR"})?
+(
+{Token.string ==~ "(?i)VENA"}
+{Token.string ==~ "(?i)CAVA"} |
+{Token.string ==~ "(?i)IVC"}) 
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == ","})?
+(
+({Token.string ==~ "(?i)NOT"} | {Token.string ==~ "(?i)NON[-]?"})?
+):negation
+({Token.string == "-"} | ({Token.string ==~ "(?i)NON-DILATED"}):negation)?
+(
+({Token.string ==~ "(?i)DILATED"})?
+):dilation
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == " "})?
+):context
+
+
+):PulmIVCDilationValueGram 
+
+--> 
+:PulmIVCDilationValueGram
+  {
+	
+	gate.AnnotationSet matchedDilation=(gate.AnnotationSet) bindings.get("dilation");
+	
+	gate.AnnotationSet matchedNegation=(gate.AnnotationSet) bindings.get("negation");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmIVCDilationValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String negationStr = "";
+	
+	if (matchedNegation != null) {
+		negationStr = stringFor(doc, matchedNegation);
+		newFeatures.put("negation string", negationStr);
+	}
+	
+	if (matchedDilation != null | negationStr.toLowerCase().contains("dilate") | negationStr.toLowerCase().contains("normal")) {
+
+		if (matchedNegation != null) {
+			newFeatures.put("varValue", "0");
+					
+		} else {
+			newFeatures.put("varValue", "1");
+		}	
+	
+	}
+			
+	newFeatures.put("varType","IVC Dilation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "IVC Dilation normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: PulmIVCDilationAlternValueRule
+(
+(
+
+(
+({Token.string ==~ "(?i)NORMAL"} {Token.string ==~ "(?i)SIZE"})
+):strongNegation
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+
+({Token.string ==~ "(?i)INFERIOR"})?
+(
+{Token.string ==~ "(?i)VENA"}
+{Token.string ==~ "(?i)CAVA"} |
+{Token.string ==~ "(?i)IVC"}) 
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == ","})?
+
+):context
+
+
+):PulmIVCDilationAlternValueGram 
+
+--> 
+:PulmIVCDilationAlternValueGram
+  {
+		
+	gate.AnnotationSet matcheStrongNegation=(gate.AnnotationSet) bindings.get("strongNegation");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmIVCDilationAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String strongNegationStr = "";
+	
+	if (matcheStrongNegation != null) {
+		strongNegationStr = stringFor(doc, matcheStrongNegation);
+		newFeatures.put("negation string", strongNegationStr);
+		newFeatures.put("varValue", "0");
+	}
+		
+	newFeatures.put("varType","IVC Dilation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "IVC Dilation altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: PulmIVCDilationAltern2ValueRule
+(
+(
+
+(
+{Token.string ==~ "(?i)DILATED"}
+):dilation
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+
+({Token.string ==~ "(?i)INFERIOR"})?
+(
+{Token.string ==~ "(?i)VENA"}
+{Token.string ==~ "(?i)CAVA"} |
+{Token.string ==~ "(?i)IVC"}) 
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == ","})?
+
+):context
+
+
+):PulmIVCDilationAltern2ValueGram 
+
+--> 
+:PulmIVCDilationAltern2ValueGram
+  {
+	
+	gate.AnnotationSet matchedDilation=(gate.AnnotationSet) bindings.get("dilation");
+		
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmIVCDilationAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedDilation != null) {
+		newFeatures.put("varValue", "1");
+	}		
+			
+	newFeatures.put("varType","IVC Dilation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "IVC Dilation altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: PulmIVCDilationAltern3ValueRule
+Priority: 10
+(
+(
+
+({Token.string ==~ "(?i)INFERIOR"})?
+(
+{Token.string ==~ "(?i)VENA"}
+{Token.string ==~ "(?i)CAVA"} |
+{Token.string ==~ "(?i)IVC"}) 
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == ","})?
+
+({Token.position == "startpunct"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == " "})?
+
+(({Token.kind == "number"})?
+({Token.string == "."} | {Token.string == ","})?
+{Token.kind == "number"}):varValue
+
+(
+({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"})
+)?
+
+({Token.position == "endpunct"})?
+
+(
+{Token.string ==~ "(?i)NOT"} {Token.string ==~ "(?i)DILATED"} | {Token.string ==~ "(?i)NON[-]?"} {Token.string ==~ "(?i)DILATED"} |
+{Token.string ==~ "(?i)NON-DILATED"} | {Token.string ==~ "(?i)NON"} ({Token.string == "-"}) {Token.string ==~ "(?i)DILATED"}
+):negation
+
+):context
+
+):PulmIVCDilationAltern3ValueGram 
+
+--> 
+:PulmIVCDilationAltern3ValueGram
+  {
+		
+	gate.AnnotationSet matchedNegation=(gate.AnnotationSet) bindings.get("negation");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmIVCDilationAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedNegation != null) {
+		newFeatures.put("varValue", "0");
+	} 
+	
+	newFeatures.put("varType","IVC Dilation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "IVC Dilation altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: PulmIVCDilationAltern4ValueRule
+(
+(
+
+({Token.string ==~ "(?i)INFERIOR"})?
+(
+{Token.string ==~ "(?i)VENA"}
+{Token.string ==~ "(?i)CAVA"} |
+{Token.string ==~ "(?i)IVC"}) 
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == ","})?
+
+({Token.position == "startpunct"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == " "})?
+
+(({Token.kind == "number"})?
+({Token.string == "."} | {Token.string == ","})?
+{Token.kind == "number"}):varValue
+
+(
+({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"})
+)?
+
+({Token.position == "endpunct"})?
+
+(
+({Token.string !=~ "(?i)NOT", Token.string !=~ "(?i)NON[-]?"} 
+):negation
+
+({Token.string ==~ "(?i)DILATED"}):dilation
+)
+
+):context
+
+
+):PulmIVCDilationAltern4ValueGram 
+
+--> 
+:PulmIVCDilationAltern4ValueGram
+  {
+	
+	gate.AnnotationSet matchedDilation=(gate.AnnotationSet) bindings.get("dilation");
+	
+	gate.AnnotationSet matchedNegation=(gate.AnnotationSet) bindings.get("negation");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmIVCDilationAltern4ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String negationStr = "";
+	
+	if (matchedNegation != null) {
+		negationStr = stringFor(doc, matchedNegation);
+		newFeatures.put("negation string", negationStr);
+	}
+	
+	if (matchedDilation != null | negationStr.toLowerCase().contains("dilate")) {
+
+	if (matchedNegation != null) {
+		newFeatures.put("varValue", "0");
+				
+	} else {
+		newFeatures.put("varValue", "1");
+	}	
+	
+	}
+			
+	newFeatures.put("varType","IVC Dilation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "IVC Dilation altern4");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

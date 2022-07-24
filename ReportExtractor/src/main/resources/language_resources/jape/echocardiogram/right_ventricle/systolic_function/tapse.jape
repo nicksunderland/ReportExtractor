@@ -1,0 +1,45 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+Phase: tapse
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: rv_tapse_rule_1
+(
+		
+	(
+		{Token.string ==~ "(?i)TAPSE"}
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+		({Token.string == "~"})?
+		({Token.string == "~"})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"})?
+	):unit
+
+):rv_tapse 
+--> 
+:rv_tapse
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "rv_tapse",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }
+  

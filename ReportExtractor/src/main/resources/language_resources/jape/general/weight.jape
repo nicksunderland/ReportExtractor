@@ -1,0 +1,242 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+
+
+Phase: TagVarSentence
+Input: Sentence Lookup
+Options: control=Appelt negationGrouping=false
+/*
+ * Description:
+ * Tag sentences that contain a mention of weight, or simply 'patient',
+ * e.g. weight is 150kg
+ * e.g. the patient is 159kg
+ */
+Rule: var_sentence
+(
+	{Sentence, 
+		Sentence contains {Lookup.minorType == "weight"},
+		Sentence notContains Anatomy} |
+	{Sentence,
+		Sentence contains {Lookup.minorType == "patient"}, 
+		Sentence notContains Anatomy}
+	
+):var_sentence
+-->
+:var_sentence.VarSentence = {type = "weight"}
+
+
+
+Phase: PatientWeight
+Input: Token VarSentence Anatomy Numeric Units Lookup ImperialMeasurement ReportSection Measurement
+Options: control=Appelt negationGrouping=false
+
+Macro: CONTEXT
+(
+	{Lookup,
+		Lookup within {VarSentence.type == "weight"}, 
+		Lookup.minorType == "weight"}
+)
+
+Macro: FILTER
+(
+	//Blocking rules (pure negation doesn't work with JAPE Plus Transducer)
+	({Token, 
+		Token within {VarSentence.type == "weight"},
+		!Lookup.minorType == "indexed",
+		!ReportSection, 
+		!Anatomy, 
+		!Measurement})[0,8]
+)
+
+Macro: METRIC_WEIGHT
+(
+	{Numeric, 
+		Numeric within {VarSentence.type == "weight"},
+		Numeric.type == "double"} |
+	{Numeric,
+		Numeric within {VarSentence.type == "weight"}, 
+		Numeric.type == "integer"}
+)
+
+Macro: IMPERIAL_WEIGHT
+(
+	{ImperialMeasurement, 
+		ImperialMeasurement within {VarSentence.type == "weight"}, 
+		ImperialMeasurement.majorType == "mass"}
+)
+
+Macro: METRIC_MASS_UNITS
+(
+	{Units,
+		Units within {VarSentence.type == "weight"},
+		Units.majorType == "mass"}
+)
+
+/*
+ * Description:
+ * Block things such as: 
+ * 'the patient's weight decreased 7 stone'
+ * 'patient reports 20kg weight loss'
+ */
+Rule: blocker_1
+Priority: 103
+(
+	( CONTEXT | {Lookup,
+					Lookup within {VarSentence.type == "weight"}, 
+					Lookup.minorType == "patient"} )
+	
+	( FILTER )
+	
+	( (METRIC_WEIGHT METRIC_MASS_UNITS) | (IMPERIAL_WEIGHT) )
+	
+	({Lookup,
+		Lookup within {VarSentence.type == "weight"},
+		Lookup.majorType == "weight"})?
+	{Lookup, 
+		Lookup.majorType == "quantity_change"}
+		
+):blocker
+-->
+:blocker.Blocked = {type = "weight"}
+
+/*
+ * Description:
+ * Block things such as: 
+ * 'patient's BSA (6.0kg)'
+ */
+Rule: blocker_2
+Priority: 102
+(
+	( CONTEXT | {Lookup,
+					Lookup within {VarSentence.type == "weight"}, 
+					Lookup.minorType == "patient"} )
+	
+	( FILTER )
+	
+	(
+		{Lookup.minorType == "height"} |
+		{Lookup.minorType == "body_surface_area"}
+	)
+		
+	({Token.kind == "punctuation"} | {Token.kind == "symbol"})[0,1]
+	
+	( (METRIC_WEIGHT METRIC_MASS_UNITS) | (IMPERIAL_WEIGHT) )
+			
+):blocker
+-->
+:blocker.Blocked = {type = "weight"}
+
+/* Description:
+* Block things such as: 
+* 'the patient's weight decreased 7 stone'
+* 'patient admits to putting at least 3 stone of weight on'
+*/
+Rule: blocker_3
+Priority: 101
+(
+	( CONTEXT | {Lookup,
+					Lookup within {VarSentence.type == "weight"}, 
+					Lookup.minorType == "patient"} )
+	
+	( FILTER )
+	
+	{Token within Lookup.majorType == "quantity_change"}
+	
+	({Token})[0,2]
+	
+	( (METRIC_WEIGHT METRIC_MASS_UNITS) | (IMPERIAL_WEIGHT) )
+	
+	({Token})[0,2]
+	
+	({Lookup.minorType == "preposition"})?
+	
+):blocker
+-->
+:blocker.Blocked = {type = "weight"}
+
+/*
+ * Description:
+ * Of the form...
+ * e.g. 'weight is 170kg'
+ * e.g. 'patient is 170kg'
+ */
+Rule: weight_1
+Priority: 100
+(	
+	( CONTEXT | {Lookup,
+					Lookup within {VarSentence.type == "weight"}, 
+					Lookup.minorType == "patient"} ):context
+	
+	( FILTER )
+	
+	( METRIC_WEIGHT ):value
+	
+	( METRIC_MASS_UNITS ):unit
+
+):weight 
+--> 
+:weight
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "weight", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * Of the form...
+ * e.g. 'weight is 8 stone 5 pounds'
+ */
+Rule: weight_2
+Priority: 99
+(
+	( CONTEXT | {Lookup,
+					Lookup within {VarSentence.type == "weight"}, 
+					Lookup.minorType == "patient"} ):context
+	
+	( FILTER )
+	
+	( IMPERIAL_WEIGHT ):value
+
+):weight 
+--> 
+:weight
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "weight", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * 
+ * e.g. 'weight is 70' 
+ */
+Rule: weight_3
+Priority: 98
+(	
+	( CONTEXT ):context
+	
+	( {Token within {VarSentence.type == "weight"}} )[0,1]
+			
+	( METRIC_WEIGHT ):value
+	
+	{!Units}
+
+):weight 
+--> 
+:weight
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "weight", doc, bindings, outputAS);
+}

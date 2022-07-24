@@ -1,0 +1,63 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleTrabeculationVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleTrabeculationVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle Trabeculation Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleTrabeculationVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LeftVentricleTrabeculationValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=MEASUREMENTS})*
+
+):context
+)
+
+(
+(
+
+
+({Token.string ==~ "(?i)TRABECULATION[S]?"})
+
+
+):context
+
+
+):LeftVentricleTrabeculationValueGram 
+
+--> 
+:LeftVentricleTrabeculationValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleTrabeculationValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "Levels: NULL (Absent) to 1 (Present)");
+	newFeatures.put("varType","LV Trabeculation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Trabeculation normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  

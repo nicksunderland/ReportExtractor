@@ -1,0 +1,60 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  aorticBicuspidVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: aorticBicuspidVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of aortic valve bicuspid Variable relations from Lookup Annotations 
+*/
+
+Phase: aorticBicuspidVariables
+Input: Token Lookup  
+Options: control=appelt 
+
+
+
+Rule: AorticBicuspidValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)BICUSPID", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+
+( {Token.string ==~ "(?i)BICUSPID"} | {Token.string ==~ "(?i)BAOV"} | {Token.string ==~ "(?i)BAV"} )
+
+):context
+
+
+):AorticBicuspidValueGram 
+
+--> 
+:AorticBicuspidValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticBicuspidValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "0 (Tricuspid) to 1 (Bicuspid)");
+	newFeatures.put("varType","AV Bicuspid");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Bicuspid normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+

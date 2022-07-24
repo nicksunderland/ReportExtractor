@@ -1,0 +1,132 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  lvotMaxPGVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: lvotMaxPGVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of LVOT Max Pressure Gradient or Peak Pressure Difference Variable relations from Lookup Annotations 
+*/
+
+Phase: lvotMaxPGVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LvotMaxPGValueRule
+Priority:1
+(
+(
+({Token.string ==~ "(?i)LVOT"})
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)AR", Token.string !=~ "(?i)A[OV]", Token.string !=~ "(?i)AVA[I]?"}|{SpaceToken.string!=MAX})*
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)PPD"} | {Token.string ==~ "(?i)MAXPG"} | {Token.string ==~ "(?i)MAX"} {Token.string ==~ "(?i)PG"} |
+{Token.string ==~ "(?i)MAX"} {Token.string ==~ "(?i)PH"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):LvotMaxPGValueGram 
+
+--> 
+:LvotMaxPGValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LvotMaxPGValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","LVOT max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","LVOT max PG normal");
+	
+	if (matchedunit != null) {
+		newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+
+Rule: LvotMaxPGAlternValueRule
+(
+(
+({Token.string ==~ "(?i)LVOT"})
+({Token.string ==~ "(?i)VMAX"})?
+({Token.string == ":"})?
+
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+
+
+({Token.string ==~ "(?i)M"}
+{Token.string == "/"}
+{Token.string ==~ "(?i)S"}
+)
+
+({Token.string == ","})?
+
+):context
+)
+
+(
+
+({Token.position == "startpunct"})?
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+	
+):LvotMaxPGAlternValueGram 
+
+--> 
+:LvotMaxPGAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LvotMaxPGAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","LVOT max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","LVOT max PG Altern");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  

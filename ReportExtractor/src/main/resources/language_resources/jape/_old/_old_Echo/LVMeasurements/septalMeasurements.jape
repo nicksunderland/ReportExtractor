@@ -1,0 +1,187 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  septalMeasurements.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: septalMeasurements.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of LV Measurement Variable relations from Lookup Annotations 
+*/
+
+Phase: septalMeasurements
+Input: Token Lookup
+Options: control=Appelt 
+
+
+
+Rule: SeptalEVelocityValueRule
+(
+( 
+(({Token.string ==~ "(?i)Septal"} | {Token.string ==~ "(?i)Sept"})
+({Token.string =~ "(?i)peak"})?
+{Token.string ==~ "(?i)E"}
+({Token.string == "'"} | {Token.string ==~ "(?i)Prime"})?
+({Token.string =~ "(?i)velocity"})? | {Token.string =~ "(?i)TDI"} {Token.string ==~ "(?i)E"}
+{Token.string =~ "(?i)waves"} {Token.string == ":"} {Token.string =~ "(?i)Septal"})
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+(
+(({Token.string == "cm"} | {Token.string == "m"}):unit)?
+)
+
+):SeptalEVelocityValueGram 
+
+--> 
+:SeptalEVelocityValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("SeptalEVelocityValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("m")) {
+	
+		varDouble = varDouble * 100D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","Septal E' Velocity");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+  
+Rule: SeptalEVelocityAlternValueRule
+(
+{Token.string ==~ "(?i)Septal"}
+({Token.string !~ "(?i)Lateral"}|{SpaceToken.string!=E})*
+{Token.string !~ "(?i)lateral", Token.string != "/"}
+):context
+(
+( 
+(
+{Token.string ==~ "(?i)E"}
+({Token.string == "'"} | {Token.string ==~ "(?i)Prime"})?
+({Token.string =~ "(?i)velocity"})? )
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+(
+(({Token.string == "cm"} | {Token.string == "m"}):unit)?
+)
+
+):SeptalEVelocityAlternValueGram 
+
+--> 
+:SeptalEVelocityAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("SeptalEVelocityAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("m")) {
+	
+		varDouble = varDouble * 100D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","Septal E' Velocity");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+
+
+Rule: SeptalERatioValueRule
+(
+(
+{Token.string ==~ "(?i)Septal"} 
+{Token.string ==~ "(?i)E"}
+{Token.string == "/"}
+{Token.string ==~ "(?i)E"}
+({Token.string == "'"} | {Token.string ==~ "(?i)Prime"})?
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number", Token.string !~ "(?i)cm", Token.string !~ "(?i)m"}):varValue
+
+):SeptalERatioValueGram 
+
+--> 
+:SeptalERatioValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("SeptalERatioValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","Septal E/E'");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+		
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+  }
+  
+

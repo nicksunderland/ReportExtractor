@@ -1,0 +1,576 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+Phase: ejection_fraction
+Input: Token Lookup SpaceToken
+Options: control=Appelt 
+
+
+
+Rule: lv_ef_simpsons_rule_1
+Priority:100
+( 
+	
+	( 
+		({Token.string ==~ "(?i)simpsons"} | {Token.string ==~ "(?i)simpson"})
+		({Token.string == "'"} {Token.string == "s"})?
+		({Token.string == "'s"})?
+				
+		({Token.string =~ "(?i)EF"} | {Token.string ==~ "(?i)ejection"} {Token.string ==~ "(?i)fraction"})?
+		({Token.string =~ "(?i)biplane"} | {Token.string =~ "(?i)BP"})?
+		({Token.string =~ "(?i)derived"})?
+		({Token.string =~ "(?i)EF"} | {Token.string ==~ "(?i)ejection"} {Token.string ==~ "(?i)fraction"})?
+		
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+		({Token.string == "~"})? ({Token.string == "~"})?
+		
+		({Token.string == ">"})?
+		
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		{Token.string == "-"}
+	)?
+	
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		({Token.kind == "number"})?
+	):value_2
+
+	(
+		({Token.string == "%"})?
+	):unit
+
+):lv_ef_simpsons 
+--> 
+:lv_ef_simpsons
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "lv_ef_simpsons",
+													  doc, 
+													  bindings, 
+													  outputAS);
+  }
+
+  
+  
+Rule: lv_ef_simpsons_rule_2 
+(
+
+	(
+		({Token.string ==~ "(?i)EF"})
+		({Token.position == "startpunct"})?
+		({Token.string ==~ "(?i)Simpsons"} | {Token.string ==~ "(?i)Simpson"})?
+		({Token.string == "'"} {Token.string == "s"})?
+		({Token.string == "'s"})?
+		({Token.string =~ "(?i)Biplane"} | {Token.string =~ "(?i)BP"})?
+		({Token.position == "endpunct"})?
+		
+		({Token.string ==~ "(?i)of"})?
+		
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+		({Token.string == "~"})?
+		({Token.string == "~"})?
+		({Token.string == ">"})?
+		
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		{Token.string == "-"}
+	)?
+	
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		({Token.kind == "number"})?
+	):value_2
+
+	(
+		({Token.string == "%"})?
+	):unit
+
+	(
+		({Token.string ==~ "(?i)by"} | {Token.string ==~ "(?i)using"} | {Token.string ==~ "(?i)with"})?
+		({Token.position == "startpunct"})?
+		({Token.string ==~ "(?i)Simpsons"} | {Token.string ==~ "(?i)Simpson"})?
+		({Token.string == "'"} {Token.string == "s"})?
+		({Token.string == "'s"})?
+		({Token.string =~ "(?i)Biplane"} | {Token.string =~ "(?i)BP"})?
+		({Token.position == "endpunct"})?
+	)
+
+):lv_ef_simpsons 
+--> 
+:lv_ef_simpsons
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "lv_ef_simpsons",
+													  doc, 
+													  bindings, 
+													  outputAS);
+  }
+  
+  
+ 
+Rule: lv_ef_auto_rule_1 
+Priority:10
+(
+		
+	(
+		({Token.string ==~ "(?i)Auto"} | {Token.string ==~ "(?i)AutoEF"} | {Token.string ==~ "(?i)Automated"})
+		({Token.string =~ "(?i)Biplane"} | {Token.string =~ "(?i)BP"})?
+		({Token.string ==~ "(?i)EF"})?
+		({Token.string =~ "(?i)Biplane"} | {Token.string =~ "(?i)BP"})?
+		
+		({Token.kind != "number"} | {SpaceToken.string!=number})*
+		
+		({Token.string ==~ "(?i)Ejection"})?
+		({Token.string ==~ "(?i)fraction"})?
+		
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+		({Token.string == "~"})?
+		({Token.string == "~"})?
+		({Token.string == ">"})?
+	):context
+	
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		{Token.string == "-"}
+	)?
+			
+	(	
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		({Token.kind == "number"})?
+	):value_2
+
+	(
+		({Token.string == "%"})?
+	):unit
+
+):lv_ef_auto 
+--> 
+:lv_ef_auto
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "lv_ef_auto",
+													  doc, 
+													  bindings, 
+													  outputAS);
+}
+
+
+
+Rule: lv_ef_visual_rule_1
+Priority:5
+( 
+		
+	( 
+		({Token.string ==~ "(?i)Visual"} | {Token.string ==~ "(?i)Visually"})?
+		({Token.string ==~ "(?i)estimate[ds]"})?
+		({Token.string ==~ "(?i)EF"} | {Token.string ==~ "(?i)LVEF"})
+		({Token.string ==~ "(?i)estimate[ds]"})?
+				
+		({Token.string ==~ "(?i)Visual"} | {Token.string ==~ "(?i)Visually"})?
+		({Token.string ==~ "(?i)at"})?
+				
+		(
+		({Token.position == "startpunct"})
+		({Token.position != "endpunct"}|{SpaceToken.string!=endpunct})*
+		({Token.position == "endpunct"})
+		)?
+		
+		({Token.string ==~ "(?i)in"})?
+		({Token.string ==~ "(?i)excess"})?
+		({Token.string ==~ "(?i)of"})?
+		
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+		({Token.string == "~"})?
+		({Token.string == "~"})?
+		({Token.string == "-"} | {Token.string == ">"} | {Token.string == "<"})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+	
+	({Token.string == "-"} | {Token.string ==~ "(?i)to"})?
+			
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		({Token.kind == "number"})?
+	):value_2
+
+	(
+		({Token.string == "%"})?
+	):unit
+
+):lv_ef_visual 
+--> 
+:lv_ef_visual
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "lv_ef_visual",
+													  doc, 
+													  bindings, 
+													  outputAS);
+}
+
+
+
+Rule: lv_ef_visual_rule_2
+Priority:6
+( 
+		
+	( 
+		({Token.string ==~ "(?i)Visual"} | {Token.string ==~ "(?i)Visually"})
+		({Token.string == "~"})?
+		({Token.string == "~"})?
+		(
+			({Token.string == "-"} | {Token.string == ">"} | {Token.string == "<"})?
+		):value_sign
+	):context
+
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	({Token.string == "-"} | {Token.string ==~ "(?i)to"})?
+			
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		({Token.kind == "number"})?
+	):value_2
+
+	(
+		({Token.string == "%"})?
+	):unit
+
+):lv_ef_visual 
+--> 
+:lv_ef_visual
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "lv_ef_visual",
+													  doc, 
+													  bindings, 
+													  outputAS);
+}
+
+
+//
+//Rule: VisualEFCheckboxValueRule
+//(
+//(
+//{Token.string ==~ "(?i)Greater"}
+//{Token.string ==~ "(?i)than"}
+//{Token.string == "50"}
+//{Token.string == "%"}
+//({Token.string == "["})?
+//):context
+//
+//({Token.string ==~ "(?i)X"}):varValue
+//):VisualEFCheckboxValueGram 
+//
+//--> 
+//:VisualEFCheckboxValueGram
+//  {
+//	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+//	
+//	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+//	
+//    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("VisualEFCheckboxValueGram");	
+//	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+//	newFeatures.put("varType","Visual EF");
+//	newFeatures.put("varValue", "51");
+//	newFeatures.put("context", stringFor(doc, matchedcontext));
+//	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+//  }
+//  
+//Rule: VisualEFCheckbox2ValueRule
+//(
+//(
+//{Token.string == "45"}
+//{Token.string ==~ "(?i)To"}
+//{Token.string == "50"}
+//{Token.string == "%"}
+//({Token.string == "["})?
+//):context
+//
+//({Token.string ==~ "(?i)X"}):varValue
+//):VisualEFCheckbox2ValueGram 
+//
+//--> 
+//:VisualEFCheckbox2ValueGram
+//  {
+//	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+//	
+//	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+//	
+//    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("VisualEFCheckbox2ValueGram");	
+//	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+//	newFeatures.put("varType","Visual EF");
+//	newFeatures.put("varValue", "47.5");
+//	newFeatures.put("context", stringFor(doc, matchedcontext));
+//	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+//  }
+//  
+  
+//Rule: VisualEFCheckbox3ValueRule
+//(
+//(
+//{Token.string == "36"}
+//{Token.string ==~ "(?i)To"}
+//{Token.string == "45"}
+//{Token.string == "%"}
+//({Token.string == "["})?
+//):context
+//
+//({Token.string ==~ "(?i)X"}):varValue
+//):VisualEFCheckbox3ValueGram 
+//
+//--> 
+//:VisualEFCheckbox3ValueGram
+//  {
+//	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+//	
+//	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+//	
+//    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("VisualEFCheckbox3ValueGram");	
+//	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+//	newFeatures.put("varType","Visual EF");
+//	newFeatures.put("varValue", "40.5");
+//	newFeatures.put("context", stringFor(doc, matchedcontext));
+//	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+//  }
+//  
+//
+//Rule: VisualEFCheckbox4ValueRule
+//(
+//(
+//{Token.string ==~ "(?i)Less"}
+//{Token.string ==~ "(?i)Than"}
+//{Token.string == "35"}
+//{Token.string == "%"}
+//({Token.string == "["})?
+//):context
+//
+//({Token.string ==~ "(?i)X"}):varValue
+//):VisualEFCheckbox4ValueGram 
+//
+//--> 
+//:VisualEFCheckbox4ValueGram
+//  {
+//	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+//	
+//	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+//	
+//    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("VisualEFCheckbox4ValueGram");	
+//	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+//	newFeatures.put("varType","Visual EF");
+//	newFeatures.put("varValue", "34");
+//	newFeatures.put("context", stringFor(doc, matchedcontext));
+//	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+//  }
+//  
+//  
+//Rule: TeichEFValueRule 
+//(
+//(
+//({Token.string ==~ "(?i)2[D]?"} | {Token.string ==~ "(?i)Two"})
+//({Token.string =~ "(?i)D"})?
+//({Token.string =~ "(?i)[D]?Teich"})
+//  
+//({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+//({Token.string == "~"})?
+//({Token.string == "~"})?
+//(({Token.string == ">"})?):greaterSign
+//
+//):context1
+//
+//(({Token.kind == "number"})?
+//({Token.string == "."})?
+//{Token.kind == "number"}):varValue1
+//
+//({Token.string == "-"})?
+//((
+//({Token.kind == "number"})?
+//({Token.string == "."})?
+//{Token.kind == "number"})?):varValue2
+//
+//(
+//(({Token.string == "%"}):unit)?
+//)
+//
+//):TeichEFValueGram 
+//
+//--> 
+//:TeichEFValueGram
+//  {
+//	gate.AnnotationSet matchedVar1=(gate.AnnotationSet) bindings.get("varValue1");
+//	gate.AnnotationSet matchedVar2=(gate.AnnotationSet) bindings.get("varValue2");
+//	
+//	gate.AnnotationSet matchedcontext1=(gate.AnnotationSet) bindings.get("context1");
+//	
+//	gate.AnnotationSet matchedGreaterSign =(gate.AnnotationSet) bindings.get("greaterSign");
+//	
+//	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+//	
+//    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TeichEFValueGram");	
+//	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+//	newFeatures.put("varType","2D Teich EF");
+//	
+//	if (matchedVar2 != null) {
+//		newFeatures.put("varValue1", stringFor(doc, matchedVar1));
+//		newFeatures.put("varValue2", stringFor(doc, matchedVar2));
+//
+//		Double value1 = Double.parseDouble(stringFor(doc, matchedVar1)); 
+//		Double value2 = Double.parseDouble(stringFor(doc, matchedVar2)); 
+//		Double varValue = (value1 + value2)/2;
+//		
+//		newFeatures.put("varValue", String.valueOf(varValue));
+//	
+//	} else if (matchedGreaterSign != null) {
+//		Double value1 = Double.parseDouble(stringFor(doc, matchedVar1)); 
+//		
+//		Double varValue = value1 + 1; 
+//		newFeatures.put("varValue", String.valueOf(varValue));
+//	} else {
+//		newFeatures.put("varValue", stringFor(doc, matchedVar1));
+//	}
+//	
+//	newFeatures.put("context", stringFor(doc, matchedcontext1));
+//	if (matchedunit != null) {
+//	newFeatures.put("unit", stringFor(doc, matchedunit));
+//	}
+//	
+//	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+//  }
+
+
+
+
+//Rule: simpsonsEFMonoplaneValueRule
+//( 
+//( 
+//({Token.string =~ "(?i)uniplane"} | {Token.string =~ "(?i)Monoplane"})?
+//({Token.string ==~ "(?i)Simpsons"} | {Token.string ==~ "(?i)Simpson"})
+//({Token.string == "'"} {Token.string == "s"})?
+//({Token.string == "'s"})?
+//({Token.string ==~ "(?i)EF"})?
+//({Token.string =~ "(?i)uniplane"} | {Token.string =~ "(?i)Monoplane"})?
+//({Token.string =~ "(?i)derived"})?
+//({Token.string ==~ "(?i)EF"})?
+//
+//({Token.position == "startpunct"})?
+//({Token.string ==~ "(?i)auto"})?
+//({Token.string ==~ "(?i)EF"})?
+//({Token.position == "endpunct"})?
+//
+//({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+//({Token.string == "~"})?
+//({Token.string == "~"})?
+//(({Token.string == ">"})?):greaterSign
+//
+//):context
+//
+//(({Token.kind == "number"})?
+//({Token.string == "."})?
+//{Token.kind == "number"}):varValue1
+//
+//({Token.string == "-"})?
+//((
+//({Token.kind == "number"})?
+//({Token.string == "."})?
+//{Token.kind == "number"})?):varValue2
+//
+//(
+//(({Token.string == "%"}):unit)?
+//)
+//
+//):simpsonsEFMonoplaneValueGram 
+//
+//--> 
+//:simpsonsEFMonoplaneValueGram
+//{
+//	gate.AnnotationSet matchedVar1=(gate.AnnotationSet) bindings.get("varValue1");
+//	gate.AnnotationSet matchedVar2=(gate.AnnotationSet) bindings.get("varValue2");
+//	
+//	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+//	
+//	gate.AnnotationSet matchedGreaterSign =(gate.AnnotationSet) bindings.get("greaterSign");
+//	
+//	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+//	
+//  gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("simpsonsEFMonoplaneValueGram");	
+//	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+//	newFeatures.put("varType","Simpsons EF");
+//	
+//	if (matchedVar2 != null) {
+//		newFeatures.put("varValue1", stringFor(doc, matchedVar1));
+//		newFeatures.put("varValue2", stringFor(doc, matchedVar2));
+//
+//		Double value1 = Double.parseDouble(stringFor(doc, matchedVar1)); 
+//		Double value2 = Double.parseDouble(stringFor(doc, matchedVar2)); 
+//		Double varValue = (value1 + value2)/2;
+//		
+//		newFeatures.put("varValue", String.valueOf(varValue));
+//	
+//	} else if (matchedGreaterSign != null) {
+//		Double value1 = Double.parseDouble(stringFor(doc, matchedVar1)); 
+//		
+//		Double varValue = value1 + 1; 
+//		newFeatures.put("varValue", String.valueOf(varValue));
+//	} else {
+//		newFeatures.put("varValue", stringFor(doc, matchedVar1));
+//	}
+//	
+//	newFeatures.put("context", stringFor(doc, matchedcontext));
+//	if (matchedunit != null) {
+//	newFeatures.put("unit", stringFor(doc, matchedunit));
+//	}
+//	
+//	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"echo_variable", newFeatures);
+//}

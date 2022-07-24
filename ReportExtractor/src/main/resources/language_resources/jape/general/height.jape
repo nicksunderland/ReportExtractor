@@ -1,0 +1,213 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+
+
+Phase: TagVarSentence
+Input: Sentence Lookup
+Options: control=Appelt negationGrouping=false
+/*
+ * Description:
+ * Tag sentences that contain a mention of height, or simply 'patient',
+ * e.g. height is 150cm
+ * e.g. the patient is 159cm
+ */
+Rule: var_sentence
+(
+	{Sentence,
+		Sentence contains {Lookup.minorType == "height"},
+		Sentence notContains Anatomy} |
+	{Sentence, 
+		Sentence contains {Lookup.minorType == "patient"},
+		Sentence notContains Anatomy}
+	
+):var_sentence
+-->
+:var_sentence.VarSentence = {type = "height"}
+
+
+
+Phase: PatientHeight
+Input: Token VarSentence Anatomy Numeric Units Lookup ImperialMeasurement ReportSection Measurement Categorical
+Options: control=first negationGrouping=false
+
+Macro: CONTEXT
+(
+	{Lookup,
+		Lookup within {VarSentence.type == "height"}, 
+		Lookup.minorType == "height"}
+)
+
+Macro: FILTER
+(
+	//Blocking rules (pure negation doesn't work with JAPE Plus Transducer)
+	({Token, 
+		Token within {VarSentence.type == "height"},
+		!Lookup.minorType == "indexed",
+		!ReportSection, 
+		!Anatomy,
+		!Measurement})[0,8]
+)
+
+Macro: METRIC_LENGTH
+(
+	{Numeric, 
+		Numeric within {VarSentence.type == "height"},
+		Numeric.type == "double"} |
+	{Numeric,
+		Numeric within {VarSentence.type == "height"}, 
+		Numeric.type == "integer"} |
+	{Numeric,
+		Numeric within {VarSentence.type == "height"}, 
+		Numeric.type == "split_value"} //e.g. 1m 56cm
+)
+
+Macro: IMPERIAL_LENGTH
+(
+	{ImperialMeasurement, 
+		ImperialMeasurement within {VarSentence.type == "height"}, 
+		ImperialMeasurement.majorType == "length"}
+)
+
+Macro: METRIC_LENGTH_UNITS
+(
+	{Units,
+		Units within {VarSentence.type == "height"},
+		Units.majorType == "length",
+		!Units.minorType == "mm"}
+)
+
+/*
+ * Description:
+ * Block things such as: 
+ * 'indexed to height 22mm'
+ * 'dilated for height'
+ */
+Rule: blocker_1
+Priority: 102
+(
+	({Lookup, // indexed to....
+		Lookup within {VarSentence.type == "height"},
+		Lookup.minorType == "indexed"} |
+	 {Categorical, // (non)dilated for/to...
+		Categorical within {VarSentence.type == "height"},
+		Categorical.majorType == "size_category"})
+		
+	({Token})[0,1]
+			
+	( CONTEXT )
+		
+):blocker
+-->
+:blocker.Blocked = {type = "height"}
+
+/*
+ * Description:
+ * Block things such as: 
+ * 'patient's BSA (6.0cm)'
+ */
+Rule: blocker_2
+Priority: 101
+(
+	( CONTEXT | {Lookup,
+					Lookup within {VarSentence.type == "height"}, 
+					Lookup.minorType == "patient"} )
+			
+	( FILTER )
+	
+	(
+		{Lookup.minorType == "weight"} |
+		{Lookup.minorType == "body_surface_area"}
+	)
+	
+	({Token.kind == "punctuation"} | {Token.kind == "symbol"})[0,1]
+			
+	( (METRIC_LENGTH  METRIC_LENGTH_UNITS) | IMPERIAL_LENGTH )
+		
+):blocker
+-->
+:blocker.Blocked = {type = "height"}
+
+/*
+ * Description:
+ * This rule allows more stuff between the context and value, but enforces the units (metric)
+ * e.g. 'height is loads of other text 170cm' 
+ */
+Rule: height_1
+Priority: 100
+(	
+	( CONTEXT | {Lookup,
+					Lookup within {VarSentence.type == "height"}, 
+					Lookup.minorType == "patient"} ):context
+	
+	( FILTER )
+	
+	( METRIC_LENGTH ):value
+	
+	( METRIC_LENGTH_UNITS ):unit
+	
+):height 
+--> 
+:height
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "height", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * This rule allows more stuff between the context and value, but enforces the units (imperial)
+ * e.g. 'height is loads of other text 170cm' 
+ */
+Rule: height_2
+Priority: 99
+(	
+	( CONTEXT | {Lookup,
+					Lookup within {VarSentence.type == "height"}, 
+					Lookup.minorType == "patient"} ):context
+	
+	( FILTER )
+	
+	( IMPERIAL_LENGTH ):value
+
+):height 
+--> 
+:height
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "height", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * e.g. 'height is 170' 
+ */
+Rule: height_3
+Priority: 98
+(	
+	( CONTEXT ):context
+	
+	( {Token within {VarSentence.type == "height"}} )[0,1]
+			
+	( METRIC_LENGTH ):value
+	
+	{!Units} // Negative lookahead
+
+):height 
+--> 
+:height
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "height", doc, bindings, outputAS);
+}

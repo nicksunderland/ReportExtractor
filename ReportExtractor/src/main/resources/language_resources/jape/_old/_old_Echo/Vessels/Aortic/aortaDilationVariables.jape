@@ -1,0 +1,102 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  aortaDilationVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: aortaDilationVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of left atrium dilation Variable relations from Lookup Annotations 
+*/
+
+Phase: aortaDilationVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: AortaDilationValueRule
+(
+(
+({Token.string ==~ "(?i)AORTA"} {Token.string == ":"})
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+( 
+(
+
+( {Token.string ==~ "(?i)DILATED"} | {Token.string ==~ "(?i)DILATION"} )
+
+
+):context
+
+
+):AortaDilationValueGram 
+
+--> 
+:AortaDilationValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AortaDilationValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	
+	newFeatures.put("unit", "Levels: 0 (no dilation) to 1 (dilated)");
+	newFeatures.put("varType","Aorta Dilation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Aorta Dilation normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+   
+  
+Rule: AortaDilationAlternValueRule
+Priority:10
+(
+(
+({Token.string ==~ "(?i)AORTA"} {Token.string == ":"})
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+(
+{Token.string ==~ "(?i)NO[NT]?"} ({Token.string == "-"})? {Token.string ==~ "(?i)DILATED"} | {Token.string ==~ "(?i)NORMAL"} {Token.string !=~ "(?i)FLOW"} | {Token.string =~ "(?i)NON-DILATED"} | {Token.string ==~ "(?i)NO"} {Token.string ==~ "(?i)DIL(AT)?ATION"} ):normal  
+
+
+):context
+
+
+):AortaDilationAlternValueGram 
+
+--> 
+:AortaDilationAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AortaDilationAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "0");
+	
+	newFeatures.put("unit", "Levels: 0 (no dilation) to 1 (dilated)");
+	newFeatures.put("varType","Aorta Dilation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Aorta Dilation altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  

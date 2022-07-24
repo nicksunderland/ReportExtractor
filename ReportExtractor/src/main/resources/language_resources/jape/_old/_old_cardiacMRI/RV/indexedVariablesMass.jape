@@ -1,0 +1,136 @@
+/*
+*  indexedVariablesMass.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020
+*  $Id: indexedVariablesMass.jape,v 1.0 2020/02/17 11:26:00 GMT
+*
+* The Phase separates Annotations of Mass relations from Lookup Annotations for Right Ventricle variables
+*/
+
+Phase: indexedVariablesMass
+Input: Token Lookup  
+Options: control=appelt 
+
+
+
+Rule: iRVMassValueRule
+(
+{Token.string ==~ ".*RV"}
+({Token.string !~ ".*LV"}|{SpaceToken.string!=Mass})*
+({Token.string == "Mass"}
+{Token.position == startpunct}
+{Token.string=="g"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+(
+{Token.kind == "number"}
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+)
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iRVMassValueGram 
+({Token.string!="number"}|{SpaceToken.string!=")"})*
+{Token.string == ")"}
+
+--> 
+:iRVMassValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iRVMassValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iRVMassValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"IRVMassValue", newFeatures);
+  }
+  
+  
+Rule: iRVMassValueAlternRule
+(
+{Token.string ==~ ".*RV"}
+({Token.string !~ ".*LV"}|{SpaceToken.string!=End})*
+({Token.string == "Mass"}
+{Token.position == startpunct}
+{Token.string=="g"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iRVMassValueAlternGram 
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+{!Token.kind == "number"}
+
+--> 
+:iRVMassValueAlternGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iRVMassValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iRVMassValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"IRVMassValue", newFeatures);
+  }
+  
+  
+Rule: iRVMassValueAbbrevRule
+(
+{Token.string ==~ ".*RV[E]?[F]?"} 
+({Token.string !~ "LV[E]?[F]?"}|{SpaceToken.string!=iRV})*
+{Token.string == "iRV"}
+{Token.string == "Mass"}
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iRVMassValueGramAbbrev 
+
+--> 
+:iRVMassValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iRVMassValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iRVMassValueAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"IRVMassValue", newFeatures);
+  }
+  
+
+Rule: iRVMassValueAlternRule2
+(
+{Token.string ==~ ".*RV"}
+({Token.string !~ ".*LV"}|{SpaceToken.string!=End})*
+({Token.string == "Mass"}
+{Token.string=="g"}
+{Token.position == startpunct}
+{Token.string=="g"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+{Token.kind == "number"}	
+{Token.position == startpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iRVMassValueAlternGram2 
+
+--> 
+:iRVMassValueAlternGram2
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iRVMassValueAlternGram2");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iRVMassValueAlternRule2");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"IRVMassValue", newFeatures);
+  }

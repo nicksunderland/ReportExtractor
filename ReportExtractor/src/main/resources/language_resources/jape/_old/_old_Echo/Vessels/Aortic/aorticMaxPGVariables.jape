@@ -1,0 +1,139 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  aorticMaxPGVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: aorticMaxPGVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of aortic Max Pressure Gradient or Peak Pressure Difference Variable relations from Lookup Annotations 
+*/
+
+Phase: aorticMaxPGVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: AorticMaxPGValueRule
+Priority:1
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | ({Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} ))
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.position != "startpunct", Token.string !=~ "(?i)AVA[I]?", Token.string !=~ "(?i)TR", Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)PPD"} | {Token.string ==~ "(?i)MAXPG"} | {Token.string ==~ "(?i)MAX"} {Token.string ==~ "(?i)PG"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):AorticMaxPGValueGram 
+
+--> 
+:AorticMaxPGValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticMaxPGValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","AV max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","AV Max PG normal");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: AorticMaxPGAlternValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"})
+
+( 
+({Token.string ==~ "(?i)PEAK"} ({Token.string ==~ "(?i)DOPPLER"})? 
+({Token.string ==~ "(?i)VELOCITY[-]?"} | {Token.string ==~ "(?i)VEL[.]?"} | {Token.string ==~ "(?i)V[.]?"})
+({Token.string == "-"})?)
+| 
+({Token.string ==~ "(?i)V"} {Token.string ==~ "(?i)M[A]?X"} | {Token.string ==~ "(?i)VM[A]?X"}) 
+) 
+
+({Token.string == ":"} | {Token.string ==~ "(?i)IS"})?
+
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+
+
+({Token.string ==~ "(?i)M"}
+{Token.string == "/"}
+{Token.string ==~ "(?i)S"}
+)
+
+({Token.string == ","} | {Token.position == "startpunct"})?
+
+):context
+)
+
+(
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):AorticMaxPGAlternValueGram 
+
+--> 
+:AorticMaxPGAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticMaxPGAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","AV max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","AV Max PG Altern");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  

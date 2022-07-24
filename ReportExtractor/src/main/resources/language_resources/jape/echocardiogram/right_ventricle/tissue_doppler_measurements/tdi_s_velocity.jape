@@ -1,0 +1,47 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+Phase: rv_tdi_s_velocity
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: rv_tdi_s_rule_1
+(
+		
+	(
+		{Token.string ==~ "(?i)S"} ({Token.string ==~ "(?i)prime"} | {Token.string == "'"})
+		{Token.string ==~ "(?i)RV"} 
+		({Token.string ==~ "(?i)free"} {Token.string ==~ "(?i)wall"})?
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+	):context
+	
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		({Token.string ==~ "(?i)M"} | {Token.string ==~ "(?i)CM"})
+	):unit //capture unit
+		({Token.string == "/"} | {Token.string == "."})
+		{Token.string ==~ "(?i)S"} //end complete unit
+
+):rv_tdi_s 
+--> 
+:rv_tdi_s
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "rv_tdi_s",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }
+  

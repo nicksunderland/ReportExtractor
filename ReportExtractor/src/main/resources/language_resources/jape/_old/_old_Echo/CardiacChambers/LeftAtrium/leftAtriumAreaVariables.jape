@@ -1,0 +1,235 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftAtriumAreaVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftAtriumAreaVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of left atrium area Variable relations from Lookup Annotations 
+*/
+
+Phase: leftAtriumAreaVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+   
+Rule: LeftAtriumAreaValueRule
+(
+(
+({Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIUM"} | {Token.string ==~ "(?i)LA"} )
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)VENTRICLE"} | {SpaceToken.string!=AORTIC})*
+
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)AREA"} 
+
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+	
+(
+(( ({Token.string ==~ "(?i)CM"}({Token.string == "2"})?) | ({Token.string ==~ "(?i)CM"}{Token.string == "."}{Token.string ==~ "(?i)SQ"})):unit)
+)
+
+
+):LeftAtriumAreaValueGram 
+
+
+--> 
+:LeftAtriumAreaValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftAtriumAreaValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varType","LA Area");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LA Area normal");
+	
+	if (matchedunit != null) {
+		newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+  
+Rule: LeftAtriumAreaAlternValueRule
+(
+(
+({Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIUM"} | {Token.string ==~ "(?i)LA"} )
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)VENTRICLE"} | {SpaceToken.string!=AORTIC})*
+
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)AREA"} 
+
+
+(
+{Token.position == "startpunct"}
+( {Token.string ==~ "(?i)APICAL"} | {Token.string ==~ "(?i)A4C"} | {Token.string ==~ "(?i)APICAL"} {Token.string == "4"} | {Token.kind == "word"} ({Token.kind == "number"})? ({Token.kind == "word"})?)
+{Token.position == "endpunct"} |
+{Token.kind == "word"} 
+)
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+	
+(
+(( ({Token.string ==~ "(?i)CM"}({Token.string == "2"})?) | ({Token.string ==~ "(?i)CM"}{Token.string == "."}{Token.string ==~ "(?i)SQ"})):unit)
+)
+
+
+):LeftAtriumAreaAlternValueGram 
+
+
+--> 
+:LeftAtriumAreaAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftAtriumAreaAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varType","LA Area");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LA Area altern");
+	
+	if (matchedunit != null) {
+		newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LeftAtriumAreaAltern2ValueRule
+(
+(
+({Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIUM"} | {Token.string ==~ "(?i)LA"} )
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)VENTRICLE"} | {SpaceToken.string!=AORTIC})*
+
+):context
+)
+
+(
+
+({Token.kind == "number"}
+{Token.string == "."}
+{Token.kind == "number"}):varValue
+	
+(
+(( ({Token.string ==~ "(?i)CM"}{Token.string == "2"}) | ({Token.string ==~ "(?i)CM"}{Token.string == "."}{Token.string ==~ "(?i)SQ"})):unit)
+)
+
+
+):LeftAtriumAreaAltern2ValueGram 
+
+
+--> 
+:LeftAtriumAreaAltern2ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftAtriumAreaAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varType","LA Area");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LA Area altern2");
+	
+	if (matchedunit != null) {
+		newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LeftAtriumAreaAltern3ValueRule
+(
+(
+({Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIUM"} | {Token.string ==~ "(?i)LA"} )
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)VENTRICLE"} | {SpaceToken.string!=AORTIC})*
+
+):context
+)
+
+(
+
+({Token.kind == "number"}):varValue
+	
+(
+(( ({Token.string ==~ "(?i)CM"}{Token.string == "2"}) | ({Token.string ==~ "(?i)CM"}{Token.string == "."}{Token.string ==~ "(?i)SQ"})):unit)
+)
+
+
+):LeftAtriumAreaAltern3ValueGram 
+
+
+--> 
+:LeftAtriumAreaAltern3ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftAtriumAreaAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varType","LA Area");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LA Area altern3");
+	
+	if (matchedunit != null) {
+		newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

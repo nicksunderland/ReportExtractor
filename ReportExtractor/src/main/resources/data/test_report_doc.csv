@@ -1,0 +1,188 @@
+id,datetime,report_text
+ID_1040798,2013-07-26,"referral_details: 
+TTE_INDICATION: 
+STUDY_COMMENTS: Technically difficult study - Suggest alternative imaging modality to assess Aorta and RV further
+OBJ_TIMESTAMP: 428503006
+OPERATOR_ONE_ID: -1
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: ECG : Sinus rhythm approx  90-100 bpm
+Good left ventricular systolic function
+Very poorly seen RV, appears dilated with impaired function - see text
+Dilated Aortic root - see text
+PROCEDURE_ID: 70423
+HAMB_AO_ARCH_NORMAL: F
+CHAMB_AO_ARCH_TEXT: 
+HAMB_AO_ASC_NORMAL: F
+HAMB_AO_ASC_TEXT: Dilated Aortic root
+Sinus of valsalva 4.4cm (normal range for BSA 2.8-3.8cm)
+Sino-tubular junction 3.5cm (normal range for BSA 2.4-3.2cm)
+Proximal ascending aorta 4.0cm
+
+CHAMB_AO_DESC_NORMAL: F
+CHAMB_AO_DESC_TEXT: Dilated at 3.3cm
+Normal doppler study
+CHAMB_COMMENT: 
+CHAMB_IAS_INTACT: F
+CHAMB_IAS_TEXT: Not clearly seen 
+CHAMB_LA_NORMAL: F
+CHAMB_LA_TEXT: Does not appears dilated
+CHAMB_LAA_NORMAL: F
+CHAMB_LAA_TEXT: 
+CHAMB_LV_NORMAL: F
+CHAMB_LV_TEXT: LV not dilated. Overall systolic function within normal limits. Est EF >55%
+
+CHAMB_NORMAL: F
+CHAMB_RA_NORMAL: F
+CHAMB_RA_TEXT: Not dilated from limited views
+
+CHAMB_RV_NORMAL: F
+CHAMB_RV_TEXT: Very poorly seen in apical views, images are off axis ?misleading
+From the views obtained the RV appears dilated with impaired function at the mid and apical regions 
+Long axis function appears good by eye
+There are also prominent trabeculations seen. 
+Difficult to determine whether the appearance is solely down to the poor image quality 
+??for alternative imaging modailty to rule out RV abnormality
+DOPP_AR_DESC_T: 
+DOPP_AR_SLOPE: 
+DOPP_AREA_AORTIC: 
+DOPP_AREA_MITRAL: 
+DOPP_AREA_PULM: 
+DOPP_AREA_TRI: 
+DOPP_ARP12T: 
+DOPP_EA_RATIO: 0.77
+DOPP_IVRT: 
+DOPP_MITRAL_E_SLOPE: 183
+OPP_MPGRAD_AORTIC: 
+DOPP_MPGRAD_LVOT: 
+DOPP_MPGRAD_MITRAL: 
+DOPP_MPGRAD_PULM: 
+DOPP_MPGRAD_TRI: 
+DOPP_MV2DAREA: 
+DOPP_MVEL_AORTIC: 
+DOPP_MVEL_LVOT: 
+DOPP_MVEL_MITRAL: 
+DOPP_MVEL_PULM: 
+DOPP_MVEL_TRI: 
+DOPP_MVP12T: 
+DOPP_PEAK_A: 0.83
+DOPP_PEAK_E: 0.64
+DOPP_PPGRAD_AORTIC: 
+DOPP_PPGRAD_LVOT: 
+DOPP_PPGRAD_MITRAL: 
+DOPP_PPGRAD_PULM: 
+DOPP_PPGRAD_TRI: 
+DOPP_PVEL_AORTIC: 1
+DOPP_PVEL_LVOT: 0.75
+DOPP_PVEL_MITRAL: 
+DOPP_PVEL_PULM: 0.85
+DOPP_PVEL_TRI: 
+DOPP_RVSP: 
+
+DOPP_VTI_AORTIC: 
+DOPP_VTI_LVOT: 
+DOPP_VTI_MITRAL: 
+DOPP_VTI_PULM: 
+DOPP_VTI_TRI: 
+INISH_TIME: 
+FS: 
+INTUBATION:  
+INTUBATIONTEXT: 
+LA_LENGTH: 
+MITRAL_A_DEC_TIME: 
+MM_ABDOMINAL_AO: 
+MM_AO_ARCH: 
+MM_AO_CUSP_SEP: 
+MM_AO_ROOT: 
+MM_AORTIC_ANNULUS: 2.4
+MM_DESCENDING_AORTA: 
+MM_EJ_MANUAL_ENTRY: T
+MM_ESTIMATED_EJ: 
+Mm_FS_Manual_Entry: T
+MM_IVS: 0.9
+MM_LA: 
+MM_LVED: 4.4
+MM_LVES: 2.6
+MM_LVOT_D: 
+MM_PA: 
+MM_PW: 0.9
+MM_RV: 
+MM_SINOTUBULAR_JUNCTION: 3.5
+MM_SINUS_OF_VALSALVA: 4.4
+NORMAL_STUDY: F
+PV_AO_RESISTANCE_MANUAL: F
+PV_AORTIC_AO_MEAN: 
+PV_AORTIC_AO_MNPR: 
+PV_AORTIC_AO_PKPR: 
+PV_AORTIC_AO_VMAX: 
+PV_AORTIC_AO_VTI: 
+PV_AORTIC_EJT: 
+PV_AORTIC_EOA: 
+PV_AORTIC_LVOT_DIAM: 
+PV_AORTIC_LVOT_MNPR: 
+PV_AORTIC_LVOT_VMAX: 
+PV_AORTIC_LVOT_VTI: 
+PV_AORTIC_PP:  
+PV_AORTIC_REGURGITATION:  
+PV_AORTIC_RESISTANCE: 
+PV_AORTIC_RR_INTERVAL: 
+PV_AORTIC_THROUGH:  
+PV_AORTIC_UNDEFINED:  
+PV_COMMENTS: 
+PV_MITRAL_DTI: 
+PV_MITRAL_EOA: 
+PV_MITRAL_LVOT_DIAM: 
+PV_MITRAL_LVOT_VTI: 
+PV_MITRAL_MEAN: 
+PV_MITRAL_MNPR: 
+PV_MITRAL_PHT: 
+PV_MITRAL_PP:  
+PV_MITRAL_REGURGITATION:  
+PV_MITRAL_RR_INTERVAL: 
+PV_MITRAL_THROUGH:  
+PV_MITRAL_UNDEFINED:  
+PV_MITRAL_VMAX: 
+
+PV_MITRAL_VTI: 
+PV_PULM_PA_MEAN: 
+PV_PULM_PA_MNPR: 
+PV_PULM_PA_PKPR: 
+PV_PULM_PA_VMAX: 
+PV_PULM_PA_VTI: 
+PV_PULM_PP:  
+PV_PULM_REGURGITATION:  
+PV_PULM_THROUGH:  
+PV_PULM_UNDEFINED:  
+PV_TRI_MEAN: 
+PV_TRI_MNPR: 
+PV_TRI_PHT: 
+PV_TRI_PP:  
+PV_TRI_REGURGITATION:  
+PV_TRI_THROUGH:  
+PV_TRI_UNDEFINED:  
+PV_TRI_VMAX: 
+RA_LENGTH: 
+START_NO:           
+START_TIME: 
+TAPE_NO:  
+TOE_INDICATION: 
+TOE_MAXIMUM: 
+TOE_POSTSO2: 
+TOE_PRESO2: 
+TOE_SERIAL_NUMBER_ID: 
+TOE_SO2: 
+TTE_INDICATION: 
+TTOE_WINDOW_QUALITY_ID: -1
+VALVE_AORTIC_NORMAL: F
+VALVE_AORTIC_TEXT: Tri-foliate/tri-leaflet, good opening, no significant AR detected
+
+VALVE_COMMENT: 
+VALVE_MITRAL_NORMAL: F
+VALVE_MITRAL_TEXT: Minimally thickened annulus, opens well, trivial MR
+VALVE_NORMAL: F
+VALVE_PULM_NORMAL: F
+VALVE_PULM_TEXT: Normal forward flow, trace pulmonary regurgitation
+
+VALVE_TRI_NORMAL: F
+VALVE_TRI_TEX: Opens well, mild TR. Unable to estimate PA pressure.
+
+"

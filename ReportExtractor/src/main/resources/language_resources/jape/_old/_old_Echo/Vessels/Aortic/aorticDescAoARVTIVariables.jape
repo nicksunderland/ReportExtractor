@@ -1,0 +1,174 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  aorticDescAoARVTIVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: aorticDescAoARVTIVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Aortic Regurgitation: Flow reversal in the descending aorta, arch and abdominal aorta Variable relations from Lookup Annotations. Separately, AR VTI varType represents VTI taken at LVOT level 
+*/
+
+Phase: aorticDescAoARVTIVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: AorticDescAoARVTIValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV[A]?"} | {Token.string ==~ "(?i)AORTA"} | 
+({Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} ))
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=VENTRICLE} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)FLOW"} {Token.string ==~ "(?i)REVERSAL"} | {Token.string ==~ "(?i)REVERSAL"} {Token.string ==~ "(?i)FLOW"} )
+
+({Token.string !~ "(?i)AV", Token.string !=~ "(?i)AO", Token.string !~ "(?i)LVOT", Token.string != ":", Token.string !~ "(?i)RIGHT", Token.string !~ "(?i)VENTRICLE", Token.string !~ "(?i)TRICUSPID", Token.string !~ "(?i)ATRIUM"}|{SpaceToken.string!=VTI})*
+
+({Token.position == "startpunct"})?
+({Token.string ==~ "(?i)VTI"} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AO(RTA)?"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)M"} | {Token.string ==~ "(?i)CM"}):unit)
+)
+
+):AorticDescAoARVTIValueGram 
+
+--> 
+:AorticDescAoARVTIValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticDescAoARVTIValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("m")) {
+	
+		varDouble = varDouble * 100D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","dAo AR VTI");
+	newFeatures.put("rule","dAo AR VTI Normal");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: AorticDescAoARVTIAlternValueRule
+(
+(
+({Token.string ==~ "(?i)DESC(ENDING)?"})?
+({Token.string ==~ "(?i)AORTA"})?
+
+{Token.string ==~ "(?i)AR"} 
+{Token.string ==~ "(?i)VTI"}
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)M"} | {Token.string ==~ "(?i)CM"}):unit)
+)
+
+(
+({Token.string ==~  "(?i)IN"} | {Token.string ==~ "(?i)OF"})
+({Token.string ==~  "(?i)THE"})?
+({Token.string ==~  "(?i)DESCENDING"} | {Token.string ==~  "(?i)ABDOMINAL"} )?
+({Token.string ==~  "(?i)AORTA"} | {Token.string ==~  "(?i)AORTIC"} )?
+({Token.string ==~  "(?i)ARCH"})?
+):context 
+
+):AorticDescAoARVTIAlternValueGram 
+
+--> 
+:AorticDescAoARVTIAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticDescAoARVTIAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("m")) {
+	
+		varDouble = varDouble * 100D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","dAo AR VTI");
+	newFeatures.put("rule","dAo AR VTI Altern");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+  
+  

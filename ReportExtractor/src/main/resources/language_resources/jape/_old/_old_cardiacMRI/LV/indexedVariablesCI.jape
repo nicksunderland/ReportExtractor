@@ -1,0 +1,67 @@
+/*
+*  indexedVariablesCI.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020
+*  $Id: indexedVariablesCI.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of CI relations from Lookup Annotations 
+*/
+
+Phase: indexedVariablesCI
+Input: Token Lookup  
+Options: control=all 
+
+
+Rule: LVCIValueRule
+(
+{Token.string =~ ".*LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "Cardiac"}
+{Token.string == "Index"}
+{Token.position == startpunct}
+({Token.string != "min"})*	
+{Token.string == "min"}	
+{Token.string == "/"}
+{Token.string == "m"}{Token.string == "2"}
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVCardiacIndexValueGram 
+
+--> 
+:LVCardiacIndexValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVCardiacIndexValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVCIValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVCIValue", newFeatures);
+  }
+  
+
+Rule: LVCIValueAlternRule
+(
+{Token.string =~ ".*LV[E]?[F]?"} 
+({Token.string !~ "RV[E]?[F]?"}|{SpaceToken.string!=Cardiac})*
+{Token.string == "Cardiac"}	
+{Token.string == "index"}	
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVCIValueAlternGramAbbrev 
+
+--> 
+:LVCIValueAlternGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVCIValueAlternGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVCIValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVCIValue", newFeatures);
+  }
+

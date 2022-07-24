@@ -1,0 +1,45 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+Phase: area_2d
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: ra_area_2d_rule_1
+(
+
+	(
+		({Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIUM"} | {Token.string ==~ "(?i)RA"})
+		({Token.string ==~ "(?i)AREA"})
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)AT"} | {Token.string == ","})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		({Token.string ==~ "(?i)CM"})?
+	):unit
+		({Token.string == "2"} | {Token.string == "."}{Token.string ==~ "(?i)SQ"})?
+	
+):ra_area
+--> 
+:ra_area
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ra_area",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }
+

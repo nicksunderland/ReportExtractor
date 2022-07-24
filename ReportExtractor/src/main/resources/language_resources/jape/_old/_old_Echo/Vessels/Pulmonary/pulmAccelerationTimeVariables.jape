@@ -1,0 +1,225 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  pulmAccelerationTimeVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: pulmAccelerationTimeVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of pulm Valve Acceleration Time Variable relations from Lookup Annotations 
+*/
+
+Phase: pulmAccelerationTimeVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+  
+Rule: PulmAccelerationTimeValueRule
+Priority:10
+(
+(
+{Token.string ==~ "(?i)PULMONARY"} 
+{Token.string ==~ "(?i)VALVE"}
+{Token.string ==~ "(?i)ACCELERATION"} 
+{Token.string ==~ "(?i)TIME"}
+
+({Token.kind == "word"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == ","}  | {Token.string ==~ "(?i)IS"} | {Token.string == "-"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MS"} | {Token.string ==~ "(?i)S"} | {Token.string ==~ "(?i)SEC"}):unit)
+)
+
+
+):PulmAccelerationTimeValueGram 
+
+--> 
+:PulmAccelerationTimeValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmAccelerationTimeValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("s") || unitOrig.equals("sec")) {
+	
+		varDouble = varDouble * 1000D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "ms");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","PV AccT");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PV AccT normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: PulmAccelerationTimeAlternValueRule
+Priority:10
+(
+(
+({Token.string ==~ "(?i)PV"} {Token.string ==~ "(?i)ACC[T]?"} | {Token.string ==~ "(?i)PVAT"} | 
+{Token.string ==~ "(?i)PV"} {Token.string ==~ "(?i)AT"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == ","}  | {Token.string ==~ "(?i)IS"} | {Token.string == "-"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MS"} | {Token.string ==~ "(?i)S"} | {Token.string ==~ "(?i)SEC"}):unit)
+)?
+
+
+):PulmAccelerationTimeAlternValueGram 
+
+--> 
+:PulmAccelerationTimeAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmAccelerationTimeAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("s") || unitOrig.equals("sec")) {
+	
+		varDouble = varDouble * 1000D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "ms");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","PV AccT");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PV AccT altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: PulmAccelerationTimeAltern2ValueRule
+Priority:1
+(
+(
+({Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)PV"} )
+({Token.string != "PERICARDIUM", Token.string !=~ "(?i)SUMMARY", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)RVOT", Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)TR", Token.string !=~ "(?i)PR"}|{SpaceToken.string!=LVOT})*
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)ACCEL"} | {Token.string ==~ "(?i)ACCT"} | {Token.string ==~ "(?i)ACCELERATION"} {Token.string ==~ "(?i)TIME"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string == "-"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MS"} | {Token.string ==~ "(?i)S"} | {Token.string ==~ "(?i)SEC"}):unit)
+)?
+
+
+):PulmAccelerationTimeAltern2ValueGram 
+
+--> 
+:PulmAccelerationTimeAltern2ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmAccelerationTimeAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("s") || unitOrig.equals("sec")) {
+	
+		varDouble = varDouble * 1000D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "ms");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("varType","PV AccT");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PV AccT altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

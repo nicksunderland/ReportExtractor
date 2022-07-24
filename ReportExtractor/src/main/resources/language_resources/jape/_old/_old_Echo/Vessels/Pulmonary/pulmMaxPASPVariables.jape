@@ -1,0 +1,195 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  pulmMaxPASPVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: pulmMaxPASPVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of max pulmonary artery systolic pressure estimated Variable relations from Lookup Annotations 
+*/
+
+Phase: pulmMaxPASPVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+  
+Rule: pulmMaxPASPValueRule
+Priority:10
+(
+(
+{Token.string ==~ "(?i)PULMONARY"}
+{Token.string ==~ "(?i)ARTERY"}
+{Token.string ==~ "(?i)SYSTOLIC"}
+{Token.string ==~ "(?i)PRESSURE"}
+{Token.string ==~ "(?i)(UNDER)?ESTIMATED"}
+({Token.kind == "word"})?
+({Token.string ==~ "(?i)AT"}
+({Token.kind == "word"} | {Token.string ==~ "(?i)LEAST"})?):greaterSign
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == " "})?
+
+(({Token.string == ">"}):greaterSign | ({Token.string == "<"}):lessSign )?
+):context
+
+((({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):firstvalue
+({Token.string == "-"} | {Token.string ==~ "(?i)TO"})?
+(({Token.kind == "number"})?
+({Token.string == "."})?
+({Token.kind == "number"})?):secondValue
+):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)?
+)
+
+
+):pulmMaxPASPValueGram 
+
+--> 
+:pulmMaxPASPValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedFirstVar=(gate.AnnotationSet) bindings.get("firstvalue");
+	
+	gate.AnnotationSet matchedSecondVar=(gate.AnnotationSet) bindings.get("secondValue");
+	
+	gate.AnnotationSet matchedGreaterSign=(gate.AnnotationSet) bindings.get("greaterSign");
+	gate.AnnotationSet matchedLessSign=(gate.AnnotationSet) bindings.get("lessSign");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("pulmMaxPASPValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	if (matchedSecondVar != null) {
+		
+		newFeatures.put("varOrig", stringFor(doc, matchedVar));
+		newFeatures.put("varValue", stringFor(doc, matchedSecondVar));
+		newFeatures.put("unit", "mmHg");
+		
+	} else {
+		String firstVarStr = stringFor(doc, matchedFirstVar);
+		double firstVarDouble = Double.parseDouble(firstVarStr);
+		
+		if (matchedGreaterSign != null) {
+			String greaterStr = stringFor(doc, matchedGreaterSign);
+			
+			if (greaterStr.equals(">") || greaterStr.toLowerCase().equals("at least")) {
+				firstVarDouble = firstVarDouble + 1;
+			} else if (matchedLessSign != null) {
+				firstVarDouble = firstVarDouble - 1;
+			}
+		}
+	    
+		newFeatures.put("varValue", String.valueOf(firstVarDouble));
+		newFeatures.put("unit", "mmHg");
+	}
+	
+	newFeatures.put("varType","Max PASP Est.");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	newFeatures.put("rule", "Max PASP Est. normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: pulmMaxPASPAlternValueRule
+(
+(
+(
+{Token.string ==~ "(?i)ESTIMATED"}
+({Token.string ==~ "(?i)PA[S]?"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)ARTERY"} {Token.string ==~ "(?i)SYSTOLIC"})
+{Token.string ==~ "(?i)PRESSURE"} | 
+{Token.string ==~ "(?i)PASP"}
+)
+
+({Token.kind == "word"})?
+(({Token.string ==~ "(?i)AT"}
+{Token.string ==~ "(?i)LEAST"}):greaterSign)?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"})?
+
+(({Token.string == ">"}):greaterSign | ({Token.string == "<"}):lessSign )?
+):context
+
+((({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):firstvalue
+({Token.string == "-"} | {Token.string ==~ "(?i)TO"})?
+(({Token.kind == "number"})?
+({Token.string == "."})?
+({Token.kind == "number"})?):secondValue
+):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+
+):pulmMaxPASPAlternValueGram 
+(
+{Token.string != "+"}
+)
+
+--> 
+:pulmMaxPASPAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedFirstVar=(gate.AnnotationSet) bindings.get("firstvalue");
+	
+	gate.AnnotationSet matchedSecondVar=(gate.AnnotationSet) bindings.get("secondValue");
+	
+	gate.AnnotationSet matchedGreaterSign=(gate.AnnotationSet) bindings.get("greaterSign");
+	gate.AnnotationSet matchedLessSign=(gate.AnnotationSet) bindings.get("lessSign");
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("pulmMaxPASPAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	if (matchedSecondVar != null) {
+		
+		newFeatures.put("varOrig", stringFor(doc, matchedVar));
+		newFeatures.put("varValue", stringFor(doc, matchedSecondVar));
+		newFeatures.put("unit", "mmHg");
+		
+	} else {
+		String firstVarStr = stringFor(doc, matchedFirstVar);
+		double firstVarDouble = Double.parseDouble(firstVarStr);
+		
+		if (matchedGreaterSign != null) {
+			firstVarDouble = firstVarDouble + 1;
+		} else if (matchedLessSign != null) {
+			firstVarDouble = firstVarDouble - 1;
+		}
+		
+		newFeatures.put("varValue", String.valueOf(firstVarDouble));
+		newFeatures.put("unit", "mmHg");
+	}
+	
+	newFeatures.put("varType","Max PASP Est.");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	newFeatures.put("rule", "Max PASP Est. altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+  

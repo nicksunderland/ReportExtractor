@@ -1,0 +1,66 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleDyssynchronyVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleDyssynchronyVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle Dyssynchrony Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleDyssynchronyVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LeftVentricleDyssynchronyValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Measurements})*
+
+):context
+)
+
+(
+(
+
+
+({Token.string ==~ "(?i)DYSSYNCHRONY"} | {Token.string ==~ "(?i)DYSSYNCHRONY-"} | 
+{Token.string ==~ "(?i)DYSSYNCHRONY"} | {Token.string ==~ "(?i)DYSYNCHRONOUS"} | 
+{Token.string ==~ "(?i)DYSSYNCHRONOUS"} | {Token.string ==~ "(?i)DYSSYNCHRONUS"} | 
+{Token.string ==~ "(?i)DYSYNCHRONUS"})
+
+
+):context
+
+
+):LeftVentricleDyssynchronyValueGram 
+
+--> 
+:LeftVentricleDyssynchronyValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleDyssynchronyValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "scale NULL (Assume Absent) to 1 (Present)");
+	newFeatures.put("varType","LV Dyssynchrony");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Dyssynchrony normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  

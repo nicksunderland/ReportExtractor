@@ -1,0 +1,491 @@
+/*
+*  nonIndexedVariablesLV.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: nonIndexedVariablesLV.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of non Indexed Left Ventricle Variable relations from Lookup Annotations 
+*/
+
+Phase: nonIndexedVariablesLV
+Input: Token Lookup  
+Options: control=all 
+
+
+  
+Rule: LVEFValueRule
+(
+{Token.string ==~ ".*LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "Ejection"}
+{Token.string == "Fraction"}
+{Token.position == startpunct}
+{Token.string == "%"}	
+{Token.position == endpunct}	
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVEFValueGram 
+
+--> 
+:LVEFValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVEFValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVEFValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVEFValue", newFeatures);
+  }
+  
+Rule: LVEFValueAbbrevRule
+(
+{Token.string == "LVEF"}	
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVEFValueGramAbbrev 
+
+--> 
+:LVEFValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVEFValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVEFValueAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVEFValue", newFeatures);
+  }
+ 
+ 
+Rule: LVEDVValueRule
+(
+{Token.string == "LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Diastolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string == "ml"}
+{Token.position == endpunct}	
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVEDVValueGram 
+
+--> 
+:LVEDVValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVEDVValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVEDVValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVEDVValue", newFeatures);
+  }
+  
+Rule: LVEDVValueAlternRule
+(
+{Token.string == "LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Diastolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVEDVValueAlternGram 
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+(
+{Token.kind == "number"}
+{Token.position == startpunct}
+(
+({Token.string!="("}|{SpaceToken.string!=")"})*
+)
+{Token.position == endpunct}
+)
+
+--> 
+:LVEDVValueAlternGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVEDVValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVEDVValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVEDVValue", newFeatures);
+  }
+  
+  
+Rule: LVEDVValueAlternRule2
+(
+{Token.string ==~ ".*LV"} 
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Diastolic"}
+{Token.string == "Volume"}
+{Token.string=="ml"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVEDVValueAlternGram2 
+
+--> 
+:LVEDVValueAlternGram2
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVEDVValueAlternGram2");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVEDVValueAlternRule2");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVEDVValue", newFeatures);
+  }
+  
+  
+  
+Rule: LVEDVValueAbbrevRule
+(
+{Token.string == "LVEDV"}	
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVEDVValueGramAbbrev 
+
+--> 
+:LVEDVValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVEDVValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVEDVValueAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVEDVValue", newFeatures);
+  }
+  
+ 
+Rule: LVESVValueRule
+(
+{Token.string == "LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string == "ml"}	
+{Token.position == endpunct}	
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVESVValueGram 
+
+--> 
+:LVESVValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVESVValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVESVValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVESVValue", newFeatures);
+  }
+  
+  
+Rule: LVESVValueAlternRule
+(
+{Token.string == "LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVESVValueAlternGram 
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+(
+{Token.kind == "number"}
+{Token.position == startpunct}
+(
+({Token.string!="("}|{SpaceToken.string!=")"})*
+)
+{Token.position == endpunct}
+)
+
+
+--> 
+:LVESVValueAlternGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVESVValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVESVValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVESVValue", newFeatures);
+  }  
+
+
+Rule: LVESVValueAlternRule2
+(
+{Token.string ==~ ".*LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.string=="ml"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVESVValueAlternGram2 
+
+--> 
+:LVESVValueAlternGram2
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVESVValueAlternGram2");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVESVValueAlternRule2");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVESVValue", newFeatures);
+  }
+  
+  
+Rule: LVESVAbbrevRule
+(
+{Token.string == "LVESV"}
+)
+(	
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVESVValueGramAbbrev 
+
+--> 
+:LVESVValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVESVValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVESVAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVESVValue", newFeatures);
+  }
+ 
+ 
+Rule: LVSVValueRule
+(
+{Token.string ==~ ".*LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "Stroke"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string == "ml"}	
+{Token.position == endpunct}	
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVStrokeVolumeValueGram 
+
+--> 
+:LVStrokeVolumeValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVStrokeVolumeValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVSVValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVSVValue", newFeatures);
+  }
+  
+  
+Rule: LVSVValueAbbrevRule
+(
+{Token.string == "LVSV"}	
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVSVValueGramAbbrev 
+
+--> 
+:LVSVValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVSVValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVSVValueAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVSVValue", newFeatures);
+  }
+  
+Rule: LVCOValueRule
+(
+{Token.string ==~ ".*LV"} 
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "Cardiac"}
+{Token.string == "Output"}
+{Token.position == startpunct}
+({Token.string != "min"})*
+{Token.string == "min"}	
+{Token.position == endpunct}	
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVCardiacOutputValueGram 
+
+--> 
+:LVCardiacOutputValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVCardiacOutputValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVCOValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVCOValue", newFeatures);
+  }
+  
+Rule: LVCOValueAlternRule
+(
+{Token.string ==~ ".*LV[E]?[F]?"} 
+({Token.string !~ ".*RV[E]?[F]?"}|{SpaceToken.string!=Cardiac})*
+{Token.string == "Cardiac"}	
+{Token.string == "Output"}	
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVCOValueAlternGramAbbrev 
+
+--> 
+:LVCOValueAlternGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVCOValueAlternGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVCOValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVCOValue", newFeatures);
+  }
+
+
+Rule: LVMassValueAlternRule
+(
+{Token.string ==~ ".*LV"} 
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "Mass"}
+{Token.position == startpunct}
+{Token.string=="g"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVMassValueAlternGram 
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+(
+{Token.kind == "number"}
+{Token.position == startpunct}
+(
+({Token.string!="("}|{SpaceToken.string!=")"})*
+)
+{Token.position == endpunct}
+)
+
+--> 
+:LVMassValueAlternGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVMassValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVMassValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVMassValue", newFeatures);
+  }  
+  
+  
+Rule: LVMassValueAlternRule2
+(
+{Token.string ==~ ".*LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "Mass"}
+{Token.string=="g"}
+{Token.position == startpunct}
+{Token.string=="g"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVMassValueAlternGram2 
+
+--> 
+:LVMassValueAlternGram2
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVMassValueAlternGram2");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVMassValueAlternRule2");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVMassValue", newFeatures);
+  }
+  
+
+Rule: LVMassAbbrevRule
+(
+{Token.string == "LV"}
+{Token.string == "Mass"}
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):LVMassValueGramAbbrev 
+
+--> 
+:LVMassValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LVMassValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","LVMassAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"LVMassValue", newFeatures);
+  }
+  
+
+
+
+

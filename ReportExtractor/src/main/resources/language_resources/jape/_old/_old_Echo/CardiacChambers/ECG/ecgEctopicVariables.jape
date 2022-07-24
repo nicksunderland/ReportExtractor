@@ -1,0 +1,160 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  ecgEctopicVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: ecgEctopicVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of ECG Ectopics or Premature Contraction Variable relations from Lookup Annotations 
+*/
+
+Phase: ecgEctopicVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Macro: ectopicTerm
+( {Token.string ==~ "(?i)ECTOPICS"} | {Token.string ==~ "(?i)ECTOPIC"} | {Token.string ==~ "(?i)ECTOPY"} | 
+{Token.string ==~ "(?i)extrasystole"} | {Token.string ==~ "(?i)extra"} {Token.string ==~ "(?i)systole"} |
+{Token.string ==~ "(?i)premature"} {Token.string ==~ "(?i)BEAT[S]?"} | {Token.string ==~ "(?i)PREMATURE"} {Token.string ==~ "(?i)CONTRACTION[S]?"} 
+| {Token.string ==~ "(?i)premature"} {Token.string ==~ "(?i)COMPLEX(ES)?"} 
+)
+
+Rule: ECGEctopicValueRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+ectopicTerm
+
+
+):context
+
+
+):ECGEctopicValueGram 
+
+--> 
+:ECGEctopicValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGEctopicValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Unspecified");
+	
+	newFeatures.put("unit", " Levels: Unspecified, PVC (Premature ventricular contraction), PAC (Premature atrial contraction), Null (assume no ectopics)");
+	newFeatures.put("varType","ECG Ectopics");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Ectopics normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+  
+Rule: ECGEctopicValueAlternRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)VENTRICULAR"}
+ectopicTerm |
+{Token.string ==~ "(?i)premature"} {Token.string ==~ "(?i)VENTRICULAR"} {Token.string ==~ "(?i)COMPLEX(ES)?"} | 
+{Token.string ==~ "(?i)premature"} {Token.string ==~ "(?i)VENTRICULAR"} {Token.string ==~ "(?i)CONTRACTION[S]?"} |
+{Token.string ==~ "(?i)VPC[S]?"} | {Token.string ==~ "(?i)PVC[S]?"} | {Token.string ==~ "(?i)VPB[S]?"} |
+{Token.string ==~ "(?i)VES[S]?"} | {Token.string ==~ "(?i)VE[S]?"} 
+) 
+ 
+):context
+
+
+):ECGEctopicValueAlternGram 
+
+--> 
+:ECGEctopicValueAlternGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGEctopicValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "PVC");
+	
+	newFeatures.put("unit", " Levels: Unspecified, PVC (Premature ventricular contraction), PAC (Premature atrial contraction), Null (assume no ectopics)");
+	newFeatures.put("varType","ECG Ectopics");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Ectopics altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+Rule: ECGEctopicValueAltern2Rule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+(
+({Token.string ==~ "(?i)ATRIAL"} | {Token.string ==~ "(?i)Supraventricular"})
+ectopicTerm |
+{Token.string ==~ "(?i)premature"} {Token.string ==~ "(?i)ATRIAL"} {Token.string ==~ "(?i)COMPLEX(ES)?"} | 
+{Token.string ==~ "(?i)premature"} {Token.string ==~ "(?i)ATRIAL"} {Token.string ==~ "(?i)CONTRACTION[S]?"} |
+{Token.string ==~ "(?i)APC[S]?"} | {Token.string ==~ "(?i)PAC[S]?"} | {Token.string ==~ "(?i)APB[S]?"} |
+{Token.string ==~ "(?i)SVES[S]?"}
+)
+ 
+):context
+
+
+):ECGEctopicValueAltern2Gram 
+
+--> 
+:ECGEctopicValueAltern2Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGEctopicValueAltern2Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "PAC");
+	
+	newFeatures.put("unit", " Levels: Unspecified, PVC (Premature ventricular contraction), PAC (Premature atrial contraction), Null (assume no ectopics)");
+	newFeatures.put("varType","ECG Ectopics");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Ectopics altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }

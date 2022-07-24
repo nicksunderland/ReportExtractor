@@ -1,0 +1,110 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleThrombusRiskVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleThrombusRiskVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle Thrombus Risk Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleThrombusRiskVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LeftVentricleThrombusRiskValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Measurements})*
+
+):context
+)
+
+(
+(
+
+
+({Token.string ==~ "(?i)THROMBUS"} | {Token.string ==~ "(?i)THROMBI"})
+
+
+):context
+
+
+):LeftVentricleThrombusRiskValueGram 
+
+--> 
+:LeftVentricleThrombusRiskValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleThrombusRiskValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "scale NULL (Absent) to 1 (Present)");
+	newFeatures.put("varType","LV Thrombus");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Thrombus normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LeftVentricleThrombusAlternNonValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Measurements})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)NO[N]?"} | {Token.string ==~ "(?i)NOT"} |
+{Token.string ==~ "(?i)NO"} {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICULAR"}
+)
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.string == "/"})?
+
+({Token.string ==~ "(?i)THROMBUS"} | {Token.string ==~ "(?i)THROMBI"})
+
+):context
+
+
+):LeftVentricleThrombusAlternNonValueGram 
+
+--> 
+:LeftVentricleThrombusAlternNonValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleThrombusAlternNonValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "1 (Present or Possibly Present), 0 (Absent), Null (Assume 0)");
+	newFeatures.put("varType","LV Thrombus");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Thrombus alternNon");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

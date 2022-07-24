@@ -1,0 +1,354 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  miscVentricularSeptalDefectVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: miscVentricularSeptalDefectVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Miscellaneous Ventricular Septal Defect Variable relations from Lookup Annotations 
+*/
+
+Phase: miscVentricularSeptalDefectVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: MiscVentricularSeptalDefectValueRule
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", !Lookup.majorType == Ventricular_SeptalDefect_Specific_Word_Exclusion, Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)VENTRICULAR"} 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Lookup.majorType == Ventricular_SeptalDefect_AnyWordExclusion})? 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Lookup.majorType == Ventricular_SeptalDefect_AnyWordExclusion})? 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Lookup.majorType == Ventricular_SeptalDefect_AnyWordExclusion})? 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Lookup.majorType == Ventricular_SeptalDefect_AnyWordExclusion})? 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Lookup.majorType == Ventricular_SeptalDefect_AnyWordExclusion})? 
+
+({Token.string == ","})?
+
+(
+{Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)TO"} {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)SHUNT"} |
+{Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)TO"} {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)SHUNT"}
+)
+
+|
+
+(
+{Token.string ==~ "(?i)VSD"} | {Token.string ==~ "(?i)VENTRICULAR"} {Token.string ==~ "(?i)SEPTAL"} {Token.string ==~ "(?i)DEFECT"} 
+)
+)
+
+
+
+):context
+
+
+):MiscVentricularSeptalDefectValueGram 
+
+--> 
+:MiscVentricularSeptalDefectValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscVentricularSeptalDefectValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Unspecified");
+	
+	newFeatures.put("unit", "Levels: No VSD, Conoventricular, Perimembranous, Inlet, Muscular, Unspecified, Null (assume No VSD)");
+	newFeatures.put("varType","VSD");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "VSD normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  
+
+Rule: MiscVentricularSeptalDefectValueAlternRule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( 
+{Token.string ==~ "(?i)Conoventricular"} 
+)
+
+
+):context
+
+
+):MiscVentricularSeptalDefectValueAlternGram 
+
+--> 
+:MiscVentricularSeptalDefectValueAlternGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscVentricularSeptalDefectValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Conoventricular");
+	
+	newFeatures.put("unit", "Levels: No VSD, Conoventricular, Perimembranous, Inlet, Muscular, Unspecified, Null (assume No VSD)");
+	newFeatures.put("varType","VSD");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "VSD altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  
+
+Rule: MiscVentricularSeptalDefectValueAltern2Rule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( 
+{Token.string ==~ "(?i)Perimembranous"} 
+)
+
+
+):context
+
+
+):MiscVentricularSeptalDefectValueAltern2Gram 
+
+--> 
+:MiscVentricularSeptalDefectValueAltern2Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscVentricularSeptalDefectValueAltern2Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Perimembranous");
+	
+	newFeatures.put("unit", "Levels: No VSD, Conoventricular, Perimembranous, Inlet, Muscular, Unspecified, Null (assume No VSD)");
+	newFeatures.put("varType","VSD");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "VSD altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  
+
+Rule: MiscVentricularSeptalDefectValueAltern3Rule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( 
+{Token.string ==~ "(?i)Inlet"} 
+)
+
+( 
+{Token.string ==~ "(?i)VSD"} | {Token.string ==~ "(?i)SHUNT"} | {Token.string ==~ "(?i)VENTRICULAR"} {Token.string ==~ "(?i)SEPTAL"}
+{Token.string ==~ "(?i)DEFECT"}
+)
+
+):context
+
+
+):MiscVentricularSeptalDefectValueAltern3Gram 
+
+--> 
+:MiscVentricularSeptalDefectValueAltern3Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscVentricularSeptalDefectValueAltern3Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Inlet");
+	
+	newFeatures.put("unit", "Levels: No VSD, Conoventricular, Perimembranous, Inlet, Muscular, Unspecified, Null (assume No VSD)");
+	newFeatures.put("varType","VSD");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "VSD altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  
+
+Rule: MiscVentricularSeptalDefectValueAltern4Rule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+( 
+{Token.string ==~ "(?i)Muscular"} 
+)
+
+( 
+{Token.string ==~ "(?i)VSD"} | {Token.string ==~ "(?i)SHUNT"} | {Token.string ==~ "(?i)VENTRICULAR"} {Token.string ==~ "(?i)SEPTAL"}
+{Token.string ==~ "(?i)DEFECT"}
+)
+
+):context
+
+
+):MiscVentricularSeptalDefectValueAltern4Gram 
+
+--> 
+:MiscVentricularSeptalDefectValueAltern4Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscVentricularSeptalDefectValueAltern4Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Muscular");
+	
+	newFeatures.put("unit", "Levels: No VSD, Conoventricular, Perimembranous, Inlet, Muscular, Unspecified, Null (assume No VSD)");
+	newFeatures.put("varType","VSD");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "VSD altern4");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+
+
+
+Rule: MiscVentricularSeptalDefectValueAltern5Rule
+Priority: 20
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+({Token.string !=~ "(?i)Summary", !Lookup.majorType == Atrial_Septal_Defect_Specific_WordExclusion, Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+
+{Token.string ==~ "(?i)NO"}
+
+
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+
+({Token.kind == "word"})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+
+({Token.kind == "word"})?  
+
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+
+({Token.kind == "word"})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+
+({Token.kind == "word"})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+({Token.string == ","} | {Token.string ==~ "(?i)OR"})?
+
+(
+{Token.string ==~ "(?i)VSD"} | {Token.string ==~ "(?i)VENTRICULAR"} {Token.string ==~ "(?i)SEPTAL"} {Token.string ==~ "(?i)DEFECT"} |
+{Token.string ==~ "(?i)SHUNT"}
+)
+
+):context
+
+
+):MiscVentricularSeptalDefectValueAltern5Gram 
+
+--> 
+:MiscVentricularSeptalDefectValueAltern5Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscVentricularSeptalDefectValueAltern5Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "No VSD");
+	
+	newFeatures.put("unit", "Levels: No VSD, Conoventricular, Perimembranous, Inlet, Muscular, Unspecified, Null (assume No VSD)");
+	newFeatures.put("varType","VSD");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "VSD altern5");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  

@@ -1,0 +1,207 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleRadialDysfunctionVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleRadialDysfunctionVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle Radial Dysfunction Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleRadialDysfunctionVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LeftVentricleRadialDysfunctionValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+
+({Token.string ==~ "(?i)IMPAIRED"} | {Token.string ==~ "(?i)REDUCED"} | {Token.string ==~ "(?i)IMPAIR[E]?MENT"})
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+
+({Token.string ==~ "(?i)RADIAL"} | {Token.string ==~ "(?i)RADIAL"} {Token.string ==~ "(?i)FUNCTION"} | 
+{Token.string ==~ "(?i)LV"} {Token.string ==~ "(?i)RADIAL"} {Token.string ==~ "(?i)AXIS"} | 
+{Token.string ==~ "(?i)LV"} {Token.string ==~ "(?i)RADIAL"} {Token.string ==~ "(?i)FUNCTION"} )
+ 
+
+
+):context
+
+
+):LeftVentricleRadialDysfunctionValueGram 
+
+--> 
+:LeftVentricleRadialDysfunctionValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleRadialDysfunctionValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "scale 0 (no dysfunction) to 1 (dysfunctional)");
+	newFeatures.put("varType","LV Radial Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Radial Dysfunction normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleRadialDysfunctionAlternValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+
+({Token.string ==~ "(?i)RADIAL"} | {Token.string ==~ "(?i)RADIAL"} {Token.string ==~ "(?i)FUNCTION"} | 
+{Token.string ==~ "(?i)LV"} {Token.string ==~ "(?i)RADIAL"} {Token.string ==~ "(?i)AXIS"} | 
+{Token.string ==~ "(?i)LV"} {Token.string ==~ "(?i)RADIAL"} {Token.string ==~ "(?i)FUNCTION"} )
+ 
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+
+({Token.string ==~ "(?i)IMPAIRED"} | {Token.string ==~ "(?i)REDUCED"} | {Token.string ==~ "(?i)IMPAIR[E]?MENT"})
+
+):context
+
+
+):LeftVentricleRadialDysfunctionAlternValueGram 
+
+--> 
+:LeftVentricleRadialDysfunctionAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleRadialDysfunctionAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "scale 0 (no dysfunction) to 1 (dysfunctional)");
+	newFeatures.put("varType","LV Radial Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Radial Dysfunction altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LeftVentricleRadialDysfunctionAltern2ValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)GOOD"} | {Token.string ==~ "(?i)PRESERVED"} | {Token.string ==~ "(?i)REASONABLE"} | {Token.string ==~ "(?i)NORMAL"})
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+
+({Token.string ==~ "(?i)RADIAL"} | {Token.string ==~ "(?i)RADIAL"} {Token.string ==~ "(?i)FUNCTION"} | 
+{Token.string ==~ "(?i)LV"} {Token.string ==~ "(?i)RADIAL"} {Token.string ==~ "(?i)AXIS"} | 
+{Token.string ==~ "(?i)LV"} {Token.string ==~ "(?i)RADIAL"} {Token.string ==~ "(?i)FUNCTION"} )
+ 
+
+):context
+
+
+):LeftVentricleRadialDysfunctionAltern2ValueGram 
+
+--> 
+:LeftVentricleRadialDysfunctionAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleRadialDysfunctionAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "scale 0 (no dysfunction) to 1 (dysfunctional)");
+	newFeatures.put("varType","LV Radial Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Radial Dysfunction altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleRadialDysfunctionAltern3ValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)RADIAL"} | {Token.string ==~ "(?i)RADIAL"} {Token.string ==~ "(?i)FUNCTION"} | 
+{Token.string ==~ "(?i)LV"} {Token.string ==~ "(?i)RADIAL"} {Token.string ==~ "(?i)AXIS"} | 
+{Token.string ==~ "(?i)LV"} {Token.string ==~ "(?i)RADIAL"} {Token.string ==~ "(?i)FUNCTION"} )
+ 
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?	
+
+({Token.string ==~ "(?i)GOOD"} | {Token.string ==~ "(?i)PRESERVED"} | {Token.string ==~ "(?i)REASONABLE"} | {Token.string ==~ "(?i)NORMAL"})
+
+):context
+
+
+):LeftVentricleRadialDysfunctionAltern3ValueGram 
+
+--> 
+:LeftVentricleRadialDysfunctionAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleRadialDysfunctionAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "scale 0 (no dysfunction) to 1 (dysfunctional)");
+	newFeatures.put("varType","LV Radial Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Radial Dysfunction altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

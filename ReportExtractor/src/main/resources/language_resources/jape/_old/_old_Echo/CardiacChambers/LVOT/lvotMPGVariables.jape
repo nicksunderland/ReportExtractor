@@ -1,0 +1,108 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  lvotMPGVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: lvotMPGVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of LVOT MPG Variable relations from Lookup Annotations 
+*/
+
+Phase: lvotMPGVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LvotMPGValueRule
+(
+(
+({Token.string ==~ "(?i)LVOT"})
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)AR", Token.string !=~ "(?i)A[OV]", Token.string !=~ "(?i)AVA[I]?"}|{SpaceToken.string!=MPD})*
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)LVOT"})?
+({Token.string ==~ "(?i)MEANPG"} | {Token.string ==~ "(?i)MEAN"} | {Token.string ==~ "(?i)MPD"} | ({Token.string ==~ "(?i)MEAN"} {Token.string ==~ "(?i)PG"} ))
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):LvotMPGValueGram 
+
+--> 
+:LvotMPGValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LvotMPGValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","LVOT MPG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("unit", "mmHg");
+	newFeatures.put("rule","LVOT MPG normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+
+Rule: LvotMPGAlternValueRule
+Priority:10
+(
+(
+{Token.string ==~ "(?i)LVOT"}
+({Token.string ==~ "(?i)MEANPG"} | {Token.string ==~ "(?i)MPD"} | {Token.string ==~ "(?i)MEAN"} {Token.string ==~ "(?i)PG"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)?
+)
+
+):LvotMPGAlternValueGram 
+
+--> 
+:LvotMPGAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LvotMPGAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","LVOT MPG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("unit", "mmHg");
+	newFeatures.put("rule","LVOT MPG altern");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+  
+  

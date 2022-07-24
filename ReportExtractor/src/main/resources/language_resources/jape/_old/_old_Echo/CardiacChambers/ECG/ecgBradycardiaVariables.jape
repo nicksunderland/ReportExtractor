@@ -1,0 +1,106 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  ecgBradycardiaVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: ecgBradycardiaVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of ECG Bradycardia Variable relations from Lookup Annotations 
+*/
+
+Phase: ecgBradycardiaVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Macro: bradycardiaTerm
+( {Token.string ==~ "(?i)BRADYCARDIC"} | {Token.string ==~ "(?i)BRADYCARDIA"} | {Token.string ==~ "(?i)BRADYCARDIAC"} | {Token.string ==~ "(?i)BRADYARRHYTHMIA"} 
+)
+
+Rule: ECGBradycardiaValueRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+bradycardiaTerm
+
+
+):context
+
+
+):ECGBradycardiaValueGram 
+
+--> 
+:ECGBradycardiaValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGBradycardiaValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Unspecified");
+	
+	newFeatures.put("unit", "Levels: Unspecified, Sinus Bradycardia");
+	newFeatures.put("varType","ECG Bradycardia");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Bradycardia normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  
+  
+Rule: ECGBradycardiaValueAlternRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)SINUS"} 
+bradycardiaTerm
+
+
+):context
+
+
+):ECGBradycardiaValueAlternGram 
+
+--> 
+:ECGBradycardiaValueAlternGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGBradycardiaValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Sinus Bradycardia");
+	
+	newFeatures.put("unit", "Levels: Unspecified, Sinus Bradycardia");
+	newFeatures.put("varType","ECG Bradycardia");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Bradycardia altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }

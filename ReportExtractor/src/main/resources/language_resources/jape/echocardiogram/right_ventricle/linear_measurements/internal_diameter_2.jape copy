@@ -1,0 +1,65 @@
+Imports: {
+	import static gate.Utils.*;
+}
+
+Phase: internal_diameter_diastole
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: lv_lvidd_rule_1
+(
+		
+	(
+		({Token.string == "LVIDd"} | {Token.string == "LVEDD"})
+		({Token.string == "="} | {Token.string == "["})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"})
+	):unit
+
+):lv_lvidd 
+--> 
+:lv_lvidd
+  {
+	gate.AnnotationSet matched_context = (gate.AnnotationSet) bindings.get("context");
+	gate.AnnotationSet matched_value   = (gate.AnnotationSet) bindings.get("value");
+	gate.AnnotationSet matched_unit    = (gate.AnnotationSet) bindings.get("unit");
+    gate.AnnotationSet matched_annot   = (gate.AnnotationSet) bindings.get("lv_lvidd");	
+    
+	gate.FeatureMap var_features = Factory.newFeatureMap();
+	var_features.put("var_type","lv_lvidd");
+	var_features.put("context", stringFor(doc, matched_context));
+	
+	String unit_orig = "";
+	if (matched_unit != null) {
+		unit_orig = stringFor(doc, matched_unit);
+		var_features.put("unit", unit_orig);
+	}
+	
+	String value_str = stringFor(doc, matched_value);
+	double value_dbl = Double.parseDouble(value_str);
+	
+	if (unit_orig.equals("mm")) {
+		value_dbl = value_dbl / 10D;
+		var_features.put("value_orig", value_str);
+		var_features.put("value", String.valueOf(value_dbl));
+		var_features.put("unit", "cm");
+	} else {
+		var_features.put("value", value_str);
+	}
+	
+	outputAS.add(matched_annot.firstNode(),
+			     matched_annot.lastNode(),
+			     "echo_variable", 
+			     var_features);
+  }
+  

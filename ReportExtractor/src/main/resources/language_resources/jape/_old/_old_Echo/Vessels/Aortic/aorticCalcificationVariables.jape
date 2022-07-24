@@ -1,0 +1,415 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  aorticCalcificationVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: aorticCalcificationVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of aortic valve calcification Variable relations from Lookup Annotations 
+*/
+
+Phase: aorticCalcificationVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: AorticCalcificationValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MINIMAL"} | {Token.string ==~ "(?i)MINIMUM"}  | {Token.string ==~ "(?i)SMALL"} | {Token.string ==~ "(?i)TRIVIAL"}):trivial | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+
+( {Token.string ==~ "(?i)CALCIFICATION"} | {Token.string ==~ "(?i)CALCIFIED"} )
+
+
+):context
+
+
+):AorticCalcificationValueGram 
+
+--> 
+:AorticCalcificationValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticCalcificationValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "Levels: 0 (no Calcification) to 4 (Severely calcified)");
+	newFeatures.put("varType","AV Calcification");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Calcification normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: AorticCalcificationAlternValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MINIMAL"} | {Token.string ==~ "(?i)MINIMUM"}  | {Token.string ==~ "(?i)SMALL"} | {Token.string ==~ "(?i)TRIVIAL"}):trivial | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"}):severe
+) 
+)
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+( {Token.string ==~ "(?i)CALCIFICATION"} | {Token.string ==~ "(?i)CALCIFIED"} )
+
+
+):context
+
+
+):AorticCalcificationAlternValueGram 
+
+--> 
+:AorticCalcificationAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticCalcificationAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "Levels: 0 (no Calcification) to 4 (Severely calcified)");
+	newFeatures.put("varType","AV Calcification");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Calcification altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: AorticCalcificationAltern2ValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MINIMAL"} | {Token.string ==~ "(?i)MINIMUM"}  | {Token.string ==~ "(?i)SMALL"} | {Token.string ==~ "(?i)TRIVIAL"}):trivial | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"}):severe
+) 
+)
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+( {Token.string ==~ "(?i)CALCIFICATION"} | {Token.string ==~ "(?i)CALCIFIED"} )
+
+
+):context
+
+
+):AorticCalcificationAltern2ValueGram 
+
+--> 
+:AorticCalcificationAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticCalcificationAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "Levels: 0 (no Calcification) to 4 (Severely calcified)");
+	newFeatures.put("varType","AV Calcification");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Calcification altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: AorticCalcificationAltern3ValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MINIMAL"} | {Token.string ==~ "(?i)MINIMUM"}  | {Token.string ==~ "(?i)SMALL"} | {Token.string ==~ "(?i)TRIVIAL"}):trivial | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"}):severe
+) 
+)
+
+{Token.kind == "word"}
+
+( {Token.string ==~ "(?i)CALCIFICATION"} | {Token.string ==~ "(?i)CALCIFIED"} )
+
+
+):context
+
+
+):AorticCalcificationAltern3ValueGram 
+
+--> 
+:AorticCalcificationAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticCalcificationAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "Levels: 0 (no Calcification) to 4 (Severely calcified)");
+	newFeatures.put("varType","AV Calcification");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Calcification altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: AorticCalcificationAlternModerateValueRule
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+
+( {Token.string ==~ "(?i)CALCIFICATION"} | {Token.string ==~ "(?i)CALCIFIED"} )
+
+
+):context
+
+
+):AorticCalcificationAlternModerateValueGram 
+
+--> 
+:AorticCalcificationAlternModerateValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticCalcificationAlternModerateValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "3");
+	
+	newFeatures.put("unit", "Levels: 0 (no Calcification) to 4 (Severely calcified)");
+	newFeatures.put("varType","AV Calcification");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Calcification alternModerate");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: AorticCalcificationUnboundedValueRule
+Priority:10
+(
+
+(
+( 
+(
+({Token.string ==~ "(?i)MINIMAL"} | {Token.string ==~ "(?i)MINIMUM"}  | {Token.string ==~ "(?i)SMALL"} | {Token.string ==~ "(?i)TRIVIAL"}):trivial | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"}):severe
+) 
+)
+( {Token.string ==~ "(?i)CALCIFICATION"} | {Token.string ==~ "(?i)CALCIFIED"} )
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+{Token.string ==~ "(?i)AORTIC"}
+{Token.string ==~ "(?i)VALVE"}
+
+):context
+
+
+):AorticCalcificationUnboundedValueGram 
+
+--> 
+:AorticCalcificationUnboundedValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticCalcificationUnboundedValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "Levels: 0 (no Calcification) to 4 (Severely calcified)");
+	newFeatures.put("varType","AV Calcification");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Calcification unbounded");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: AorticCalcificationAltern4ValueRule
+Priority: 20
+(
+(
+({Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} | {Token.string ==~ "(?i)AO"} | {Token.string ==~ "(?i)AORTIC"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)AORTA", !Lookup.majorType == aortic_TricuspidValve_Exclusion, Token.string !=~ "(?i)LAVV", Token.string !=~ "(?i)RAVV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)LVOT", Token.string !=~ "(?i)VENTRICLE"}|{SpaceToken.string!=LVOT} | {Token.string ==~ "(?i)DESCENDING"} {Token.string ==~ "(?i)AORTA"})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)NO[N]?"} | {Token.string ==~ "(?i)NOT"} |
+{Token.string ==~ "(?i)NO"} {Token.string ==~ "(?i)AORTIC"} 
+)
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.string == "/"})?
+
+( {Token.string ==~ "(?i)CALCIFICATION"} | {Token.string ==~ "(?i)CALCIFIED"} )
+
+):context
+
+
+):AorticCalcificationAltern4NonValueGram 
+
+--> 
+:AorticCalcificationAltern4NonValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("AorticCalcificationAltern4NonValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "Levels: 0 (no Calcification) to 4 (Severely calcified)");
+	newFeatures.put("varType","AV Calcification");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "AV Calcification altern4");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

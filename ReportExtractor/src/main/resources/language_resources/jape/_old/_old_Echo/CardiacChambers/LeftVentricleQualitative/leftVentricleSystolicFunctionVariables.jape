@@ -1,0 +1,859 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleSystolicFunctionVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleSystolicFunctionVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle Systolic Function Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleSystolicFunctionVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+Macro: lvSystolicFunctionLevel
+(
+({Token.string ==~ "(?i)HYPERDYNAMIC"}):hyper |  
+({Token.string ==~ "(?i)NORMAL"} | {Token.string ==~ "(?i)GOOD"} | {Token.string ==~ "(?i)GOOD"} {Token.string ==~ "(?i)POST-OP"} | {Token.string ==~ "(?i)PRESERVED"}):normal |  
+({Lookup.majorType == severity_Level_Borderline}):borderline |  
+({Token.string ==~ "(?i)MILD"} | 
+{Token.string ==~ "(?i)MILDLY"}):mild | 
+({Lookup.majorType == severity_Level_MildModerate}):mildMod | 
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MODERATELY"}):moderate |
+({Lookup.majorType == severity_Level_ModerateSevere}):moderateSevere |
+({Token.string ==~ "(?i)HEAVY"} | {Token.string ==~ "(?i)MARKED"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)SEVERE"} | {Token.string ==~ "(?i)SEVERELY"}):severe
+)
+
+Macro: lvSystolicFunctionContext
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+({Token.string !=~ "(?i)Measurements", !Lookup.majorType == severity_Level_MildModerate, !Lookup.majorType == severity_Level_Borderline, !Lookup.majorType == severity_Level_ModerateSevere, Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)SUMMARY"} |{SpaceToken.string!=HYPERTROPHY})*
+
+):context
+)
+
+Rule: LeftVentricleSystolicFunctionValueRule
+
+lvSystolicFunctionContext
+
+(
+(
+
+lvSystolicFunctionLevel
+
+{Lookup.majorType == LV_Systolic_Function_Terms}
+
+({Lookup.majorType == Systolic_Dysfunction_Terms})?
+
+
+
+):context
+
+
+):LeftVentricleSystolicFunctionValueGram 
+
+--> 
+:LeftVentricleSystolicFunctionValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedhyper=(gate.AnnotationSet) bindings.get("hyper");
+	gate.AnnotationSet matchednormal=(gate.AnnotationSet) bindings.get("normal");
+	gate.AnnotationSet matchedborderline=(gate.AnnotationSet) bindings.get("borderline");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmildMod=(gate.AnnotationSet) bindings.get("mildMod");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedmoderateSev=(gate.AnnotationSet) bindings.get("moderateSevere");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleSystolicFunctionValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedhyper != null) {
+		newFeatures.put("varValue", "Hyperdynamic");
+	} else if (matchednormal != null) {
+		newFeatures.put("varValue", "Normal");
+	} else if (matchedborderline != null) {
+		newFeatures.put("varValue", "Borderline");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "Mildly reduced");
+	} else if (matchedmildMod != null) {
+		newFeatures.put("varValue", "Mild-Moderately reduced");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "Moderately reduced");
+	} else if (matchedmoderateSev != null) {
+		newFeatures.put("varValue", "Moderate-Severely reduced");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "Severely reduced");
+	} else {
+		newFeatures.put("varValue", "Normal");
+	}
+	
+	newFeatures.put("unit", "Levels: Hyperdynamic, Normal, Borderline, Mild, Mild-Moderate, Moderate, Moderate-Severe, Severe");
+	newFeatures.put("varType","LV Systolic Function");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Systolic Function normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LeftVentricleSystolicFunctionAbbrevValueRule
+
+lvSystolicFunctionContext
+
+(
+(
+
+lvSystolicFunctionLevel 
+
+
+{Token.string ==~ "(?i)LVSD"} 
+
+
+):context
+
+
+):LeftVentricleSystolicFunctionAbbrevValueGram 
+
+--> 
+:LeftVentricleSystolicFunctionAbbrevValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedhyper=(gate.AnnotationSet) bindings.get("hyper");
+	gate.AnnotationSet matchednormal=(gate.AnnotationSet) bindings.get("normal");
+	gate.AnnotationSet matchedborderline=(gate.AnnotationSet) bindings.get("borderline");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmildMod=(gate.AnnotationSet) bindings.get("mildMod");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedmoderateSev=(gate.AnnotationSet) bindings.get("moderateSevere");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleSystolicFunctionAbbrevValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedhyper != null) {
+		newFeatures.put("varValue", "Hyperdynamic");
+	} else if (matchednormal != null) {
+		newFeatures.put("varValue", "Normal");
+	} else if (matchedborderline != null) {
+		newFeatures.put("varValue", "Borderline");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "Mildly reduced");
+	} else if (matchedmildMod != null) {
+		newFeatures.put("varValue", "Mild-Moderately reduced");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "Moderately reduced");
+	} else if (matchedmoderateSev != null) {
+		newFeatures.put("varValue", "Moderate-Severely reduced");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "Severely reduced");
+	} else {
+		newFeatures.put("varValue", "Normal");
+	}
+	
+	newFeatures.put("unit", "Levels: Hyperdynamic, Normal, Borderline, Mild, Mild-Moderate, Moderate, Moderate-Severe, Severe");
+	newFeatures.put("varType","LV Systolic Function");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Systolic Function abbrev");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+
+Rule: LeftVentricleSystolicFunctionAlternValueRule
+
+lvSystolicFunctionContext
+
+(
+(
+
+lvSystolicFunctionLevel
+
+({Token.kind == "word", !Lookup.majorType == Systolic_Dysfunction_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Systolic_Dysfunction_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Systolic_Dysfunction_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Systolic_Dysfunction_AnyWord_Exclusion})?
+
+{Lookup.majorType == LV_Systolic_Function_Terms}
+
+{Lookup.majorType == Systolic_Dysfunction_Terms}
+
+
+
+):context
+
+
+):LeftVentricleSystolicFunctionAlternValueGram 
+
+--> 
+:LeftVentricleSystolicFunctionAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedhyper=(gate.AnnotationSet) bindings.get("hyper");
+	gate.AnnotationSet matchednormal=(gate.AnnotationSet) bindings.get("normal");
+	gate.AnnotationSet matchedborderline=(gate.AnnotationSet) bindings.get("borderline");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmildMod=(gate.AnnotationSet) bindings.get("mildMod");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedmoderateSev=(gate.AnnotationSet) bindings.get("moderateSevere");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleSystolicFunctionAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedhyper != null) {
+		newFeatures.put("varValue", "Hyperdynamic");
+	} else if (matchednormal != null) {
+		newFeatures.put("varValue", "Normal");
+	} else if (matchedborderline != null) {
+		newFeatures.put("varValue", "Borderline");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "Mildly reduced");
+	} else if (matchedmildMod != null) {
+		newFeatures.put("varValue", "Mild-Moderately reduced");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "Moderately reduced");
+	} else if (matchedmoderateSev != null) {
+		newFeatures.put("varValue", "Moderate-Severely reduced");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "Severely reduced");
+	} else {
+		newFeatures.put("varValue", "Normal");
+	}
+	
+	newFeatures.put("unit", "Levels: Hyperdynamic, Normal, Borderline, Mild, Mild-Moderate, Moderate, Moderate-Severe, Severe");
+	newFeatures.put("varType","LV Systolic Function");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Systolic Function altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+
+Rule: LeftVentricleSystolicFunctionAltern2ValueRule
+Priority: 20
+
+lvSystolicFunctionContext
+
+(
+(
+
+lvSystolicFunctionLevel
+
+{Lookup.majorType == Systolic_Dysfunction_Terms}
+
+
+{Lookup.majorType == LV_Systolic_Function_Terms}
+
+
+
+):context
+
+
+):LeftVentricleSystolicFunctionAltern2ValueGram 
+
+--> 
+:LeftVentricleSystolicFunctionAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedhyper=(gate.AnnotationSet) bindings.get("hyper");
+	gate.AnnotationSet matchednormal=(gate.AnnotationSet) bindings.get("normal");
+	gate.AnnotationSet matchedborderline=(gate.AnnotationSet) bindings.get("borderline");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmildMod=(gate.AnnotationSet) bindings.get("mildMod");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedmoderateSev=(gate.AnnotationSet) bindings.get("moderateSevere");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleSystolicFunctionAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedhyper != null) {
+		newFeatures.put("varValue", "Hyperdynamic");
+	} else if (matchednormal != null) {
+		newFeatures.put("varValue", "Normal");
+	} else if (matchedborderline != null) {
+		newFeatures.put("varValue", "Borderline");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "Mildly reduced");
+	} else if (matchedmildMod != null) {
+		newFeatures.put("varValue", "Mild-Moderately reduced");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "Moderately reduced");
+	} else if (matchedmoderateSev != null) {
+		newFeatures.put("varValue", "Moderate-Severely reduced");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "Severely reduced");
+	} else {
+		newFeatures.put("varValue", "Normal");
+	}
+	
+	newFeatures.put("unit", "Levels: Hyperdynamic, Normal, Borderline, Mild, Mild-Moderate, Moderate, Moderate-Severe, Severe");
+	newFeatures.put("varType","LV Systolic Function");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Systolic Function altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+
+Rule: LeftVentricleSystolicFunctionAltern3ValueRule
+
+lvSystolicFunctionContext
+
+(
+(
+
+lvSystolicFunctionLevel
+
+{Lookup.majorType == LV_Systolic_Function_Terms}
+
+{Lookup.majorType == Systolic_Dysfunction_Terms}
+
+
+
+):context
+
+
+):LeftVentricleSystolicFunctionAltern3ValueGram 
+
+--> 
+:LeftVentricleSystolicFunctionAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedhyper=(gate.AnnotationSet) bindings.get("hyper");
+	gate.AnnotationSet matchednormal=(gate.AnnotationSet) bindings.get("normal");
+	gate.AnnotationSet matchedborderline=(gate.AnnotationSet) bindings.get("borderline");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmildMod=(gate.AnnotationSet) bindings.get("mildMod");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedmoderateSev=(gate.AnnotationSet) bindings.get("moderateSevere");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleSystolicFunctionAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedhyper != null) {
+		newFeatures.put("varValue", "Hyperdynamic");
+	} else if (matchednormal != null) {
+		newFeatures.put("varValue", "Normal");
+	} else if (matchedborderline != null) {
+		newFeatures.put("varValue", "Borderline");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "Mildly reduced");
+	} else if (matchedmildMod != null) {
+		newFeatures.put("varValue", "Mild-Moderately reduced");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "Moderately reduced");
+	} else if (matchedmoderateSev != null) {
+		newFeatures.put("varValue", "Moderate-Severely reduced");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "Severely reduced");
+	} else {
+		newFeatures.put("varValue", "Normal");
+	}
+	
+	newFeatures.put("unit", "Levels: Hyperdynamic, Normal, Borderline, Mild, Mild-Moderate, Moderate, Moderate-Severe, Severe");
+	newFeatures.put("varType","LV Systolic Function");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Systolic Function altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+Rule: LeftVentricleSystolicFunctionAltern4ValueRule
+
+lvSystolicFunctionContext
+
+(
+(
+(
+
+{Lookup.majorType == LV_Systolic_Function_Terms}
+
+{Lookup.majorType == Systolic_Dysfunction_Terms}
+
+{Token.kind == "word", Token.string !=~ "(?i)WITH", Token.string !=~ "(?i)RADIAL", Token.string !=~ "(?i)LONGITUDINAL"}  
+
+lvSystolicFunctionLevel
+   
+)
+
+
+):context
+
+
+):LeftVentricleSystolicFunctionAltern4ValueGram 
+
+--> 
+:LeftVentricleSystolicFunctionAltern4ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedhyper=(gate.AnnotationSet) bindings.get("hyper");
+	gate.AnnotationSet matchednormal=(gate.AnnotationSet) bindings.get("normal");
+	gate.AnnotationSet matchedborderline=(gate.AnnotationSet) bindings.get("borderline");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmildMod=(gate.AnnotationSet) bindings.get("mildMod");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedmoderateSev=(gate.AnnotationSet) bindings.get("moderateSevere");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleSystolicFunctionAltern4ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedhyper != null) {
+		newFeatures.put("varValue", "Hyperdynamic");
+	} else if (matchednormal != null) {
+		newFeatures.put("varValue", "Normal");
+	} else if (matchedborderline != null) {
+		newFeatures.put("varValue", "Borderline");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "Mildly reduced");
+	} else if (matchedmildMod != null) {
+		newFeatures.put("varValue", "Mild-Moderately reduced");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "Moderately reduced");
+	} else if (matchedmoderateSev != null) {
+		newFeatures.put("varValue", "Moderate-Severely reduced");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "Severely reduced");
+	} else {
+		newFeatures.put("varValue", "Normal");
+	}
+	
+	newFeatures.put("unit", "Levels: Hyperdynamic, Normal, Borderline, Mild, Mild-Moderate, Moderate, Moderate-Severe, Severe");
+	newFeatures.put("varType","LV Systolic Function");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Systolic Function altern4");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+Rule: LeftVentricleSystolicFunctionAltern5ValueRule
+
+lvSystolicFunctionContext
+
+(
+(
+
+lvSystolicFunctionLevel
+
+{Token.kind == "word", Token.string !=~ "(?i)WITH", Token.string !=~ "(?i)RADIAL", Token.string !=~ "(?i)LONGITUDINAL"} 
+
+{Lookup.majorType == LV_Systolic_Function_Terms}
+
+{Lookup.majorType == Systolic_Dysfunction_Terms}
+
+
+
+):context
+
+
+):LeftVentricleSystolicFunctionAltern5ValueGram 
+
+--> 
+:LeftVentricleSystolicFunctionAltern5ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedhyper=(gate.AnnotationSet) bindings.get("hyper");
+	gate.AnnotationSet matchednormal=(gate.AnnotationSet) bindings.get("normal");
+	gate.AnnotationSet matchedborderline=(gate.AnnotationSet) bindings.get("borderline");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmildMod=(gate.AnnotationSet) bindings.get("mildMod");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedmoderateSev=(gate.AnnotationSet) bindings.get("moderateSevere");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleSystolicFunctionAltern5ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedhyper != null) {
+		newFeatures.put("varValue", "Hyperdynamic");
+	} else if (matchednormal != null) {
+		newFeatures.put("varValue", "Normal");
+	} else if (matchedborderline != null) {
+		newFeatures.put("varValue", "Borderline");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "Mildly reduced");
+	} else if (matchedmildMod != null) {
+		newFeatures.put("varValue", "Mild-Moderately reduced");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "Moderately reduced");
+	} else if (matchedmoderateSev != null) {
+		newFeatures.put("varValue", "Moderate-Severely reduced");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "Severely reduced");
+	} else {
+		newFeatures.put("varValue", "Normal");
+	}
+	
+	newFeatures.put("unit", "Levels: Hyperdynamic, Normal, Borderline, Mild, Mild-Moderate, Moderate, Moderate-Severe, Severe");
+	newFeatures.put("varType","LV Systolic Function");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Systolic Function altern5");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleSystolicFunctionAltern6ValueRuleValueRule
+
+lvSystolicFunctionContext
+
+(
+(
+
+lvSystolicFunctionLevel
+
+{Lookup.majorType == LV_Systolic_Function_Terms}
+
+{Lookup.majorType == Systolic_Dysfunction_Terms}
+
+
+
+):context
+
+
+):LeftVentricleSystolicFunctionAltern6ValueGramValueGram 
+
+--> 
+:LeftVentricleSystolicFunctionAltern6ValueGramValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedhyper=(gate.AnnotationSet) bindings.get("hyper");
+	gate.AnnotationSet matchednormal=(gate.AnnotationSet) bindings.get("normal");
+	gate.AnnotationSet matchedborderline=(gate.AnnotationSet) bindings.get("borderline");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmildMod=(gate.AnnotationSet) bindings.get("mildMod");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedmoderateSev=(gate.AnnotationSet) bindings.get("moderateSevere");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleSystolicFunctionAltern6ValueGramValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedhyper != null) {
+		newFeatures.put("varValue", "Hyperdynamic");
+	} else if (matchednormal != null) {
+		newFeatures.put("varValue", "Normal");
+	} else if (matchedborderline != null) {
+		newFeatures.put("varValue", "Borderline");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "Mildly reduced");
+	} else if (matchedmildMod != null) {
+		newFeatures.put("varValue", "Mild-Moderately reduced");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "Moderately reduced");
+	} else if (matchedmoderateSev != null) {
+		newFeatures.put("varValue", "Moderate-Severely reduced");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "Severely reduced");
+	} else {
+		newFeatures.put("varValue", "Normal");
+	}
+	
+	newFeatures.put("unit", "Levels: Hyperdynamic, Normal, Borderline, Mild, Mild-Moderate, Moderate, Moderate-Severe, Severe");
+	newFeatures.put("varType","LV Systolic Function");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Systolic Function altern6");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+Rule: LeftVentricleSystolicFunctionAltern7ValueRule
+
+lvSystolicFunctionContext
+
+(
+(
+
+{Lookup.majorType == LV_Systolic_Function_Terms}
+
+({Token.kind == "word", !Lookup.majorType == Systolic_Dysfunction_AnyWord_Exclusion})?	
+({Token.kind == "word", !Lookup.majorType == Systolic_Dysfunction_AnyWord_Exclusion})?	
+({Token.kind == "word", !Lookup.majorType == Systolic_Dysfunction_AnyWord_Exclusion})?	
+
+lvSystolicFunctionLevel
+
+
+):context
+
+
+):LeftVentricleSystolicFunctionAltern7ValueGram 
+
+--> 
+:LeftVentricleSystolicFunctionAltern7ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedhyper=(gate.AnnotationSet) bindings.get("hyper");
+	gate.AnnotationSet matchednormal=(gate.AnnotationSet) bindings.get("normal");
+	gate.AnnotationSet matchedborderline=(gate.AnnotationSet) bindings.get("borderline");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmildMod=(gate.AnnotationSet) bindings.get("mildMod");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedmoderateSev=(gate.AnnotationSet) bindings.get("moderateSevere");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleSystolicFunctionAltern7ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedhyper != null) {
+		newFeatures.put("varValue", "Hyperdynamic");
+	} else if (matchednormal != null) {
+		newFeatures.put("varValue", "Normal");
+	} else if (matchedborderline != null) {
+		newFeatures.put("varValue", "Borderline");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "Mildly reduced");
+	} else if (matchedmildMod != null) {
+		newFeatures.put("varValue", "Mild-Moderately reduced");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "Moderately reduced");
+	} else if (matchedmoderateSev != null) {
+		newFeatures.put("varValue", "Moderate-Severely reduced");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "Severely reduced");
+	} else {
+		newFeatures.put("varValue", "Normal");
+	}
+	
+	newFeatures.put("unit", "Levels: Hyperdynamic, Normal, Borderline, Mild, Mild-Moderate, Moderate, Moderate-Severe, Severe");
+	newFeatures.put("varType","LV Systolic Function");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Systolic Function altern7");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LeftVentricleSystolicFunctionAltern7bValueRule
+
+lvSystolicFunctionContext
+
+(
+(
+
+{Lookup.majorType == LV_Systolic_Function_Terms}
+
+({Token.kind == "word", Token.string !=~ "(?i)WITH", Token.string !=~ "(?i)RADIAL", Token.string !=~ "(?i)LONGITUDINAL"} )?	
+({Token.kind == "word", Token.string !=~ "(?i)WITH", Token.string !=~ "(?i)RADIAL", Token.string !=~ "(?i)LONGITUDINAL"} )?
+({Token.kind == "word", Token.string !=~ "(?i)WITH", Token.string !=~ "(?i)RADIAL", Token.string !=~ "(?i)LONGITUDINAL"})?
+({Token.kind == "word", Token.string !=~ "(?i)WITH", Token.string !=~ "(?i)RADIAL", Token.string !=~ "(?i)LONGITUDINAL"})?
+
+lvSystolicFunctionLevel
+
+
+):context
+
+
+):LeftVentricleSystolicFunctionAltern7bValueGram 
+
+--> 
+:LeftVentricleSystolicFunctionAltern7bValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedhyper=(gate.AnnotationSet) bindings.get("hyper");
+	gate.AnnotationSet matchednormal=(gate.AnnotationSet) bindings.get("normal");
+	gate.AnnotationSet matchedborderline=(gate.AnnotationSet) bindings.get("borderline");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmildMod=(gate.AnnotationSet) bindings.get("mildMod");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedmoderateSev=(gate.AnnotationSet) bindings.get("moderateSevere");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleSystolicFunctionAltern7bValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedhyper != null) {
+		newFeatures.put("varValue", "Hyperdynamic");
+	} else if (matchednormal != null) {
+		newFeatures.put("varValue", "Normal");
+	} else if (matchedborderline != null) {
+		newFeatures.put("varValue", "Borderline");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "Mildly reduced");
+	} else if (matchedmildMod != null) {
+		newFeatures.put("varValue", "Mild-Moderately reduced");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "Moderately reduced");
+	} else if (matchedmoderateSev != null) {
+		newFeatures.put("varValue", "Moderate-Severely reduced");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "Severely reduced");
+	} else {
+		newFeatures.put("varValue", "Normal");
+	}
+	
+	newFeatures.put("unit", "Levels: Hyperdynamic, Normal, Borderline, Mild, Mild-Moderate, Moderate, Moderate-Severe, Severe");
+	newFeatures.put("varType","LV Systolic Function");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Systolic Function altern7b");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+  
+Rule: LeftVentricleSystolicFunctionAltern8ValueRule
+Priority: 10
+
+lvSystolicFunctionContext
+
+(
+(
+
+lvSystolicFunctionLevel
+
+{Token.kind == "word", Token.string !=~ "(?i)WITH", Token.string !=~ "(?i)RADIAL", Token.string !=~ "(?i)LONGITUDINAL"} 	
+
+{Lookup.majorType == Systolic_Dysfunction_Terms}
+
+
+{Lookup.majorType == LV_Systolic_Function_Terms}
+
+
+
+
+):context
+
+
+):LeftVentricleSystolicFunctionAltern8ValueGram 
+
+--> 
+:LeftVentricleSystolicFunctionAltern8ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedhyper=(gate.AnnotationSet) bindings.get("hyper");
+	gate.AnnotationSet matchednormal=(gate.AnnotationSet) bindings.get("normal");
+	gate.AnnotationSet matchedborderline=(gate.AnnotationSet) bindings.get("borderline");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmildMod=(gate.AnnotationSet) bindings.get("mildMod");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedmoderateSev=(gate.AnnotationSet) bindings.get("moderateSevere");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleSystolicFunctionAltern8ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedhyper != null) {
+		newFeatures.put("varValue", "Hyperdynamic");
+	} else if (matchednormal != null) {
+		newFeatures.put("varValue", "Normal");
+	} else if (matchedborderline != null) {
+		newFeatures.put("varValue", "Borderline");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "Mildly reduced");
+	} else if (matchedmildMod != null) {
+		newFeatures.put("varValue", "Mild-Moderately reduced");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "Moderately reduced");
+	} else if (matchedmoderateSev != null) {
+		newFeatures.put("varValue", "Moderate-Severely reduced");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "Severely reduced");
+	} else {
+		newFeatures.put("varValue", "Normal");
+	}
+	
+	newFeatures.put("unit", "Levels: Hyperdynamic, Normal, Borderline, Mild, Mild-Moderate, Moderate, Moderate-Severe, Severe");
+	newFeatures.put("varType","LV Systolic Function");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Systolic Function altern8");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleSystolicFunctionAltern9ValueRule
+Priority: 10
+
+lvSystolicFunctionContext
+
+(
+(
+
+({Token.string ==~ "(?i)HYPERDYNAMIC"}):hyper 
+
+{Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} 
+
+
+):context
+
+
+):LeftVentricleSystolicFunctionAltern9ValueGram 
+
+--> 
+:LeftVentricleSystolicFunctionAltern9ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedhyper=(gate.AnnotationSet) bindings.get("hyper");
+	gate.AnnotationSet matchednormal=(gate.AnnotationSet) bindings.get("normal");
+	gate.AnnotationSet matchedborderline=(gate.AnnotationSet) bindings.get("borderline");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmildMod=(gate.AnnotationSet) bindings.get("mildMod");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedmoderateSev=(gate.AnnotationSet) bindings.get("moderateSevere");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleSystolicFunctionAltern9ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedhyper != null) {
+		newFeatures.put("varValue", "Hyperdynamic");
+	} else if (matchednormal != null) {
+		newFeatures.put("varValue", "Normal");
+	} else if (matchedborderline != null) {
+		newFeatures.put("varValue", "Borderline");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "Mildly reduced");
+	} else if (matchedmildMod != null) {
+		newFeatures.put("varValue", "Mild-Moderately reduced");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "Moderately reduced");
+	} else if (matchedmoderateSev != null) {
+		newFeatures.put("varValue", "Moderate-Severely reduced");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "Severely reduced");
+	} else {
+		newFeatures.put("varValue", "Normal");
+	}
+	
+	newFeatures.put("unit", "Levels: Hyperdynamic, Normal, Borderline, Mild, Mild-Moderate, Moderate, Moderate-Severe, Severe");
+	newFeatures.put("varType","LV Systolic Function");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Systolic Function altern9");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

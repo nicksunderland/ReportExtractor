@@ -1,0 +1,64 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleBandingVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleBandingVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle banding Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleBandingVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LeftVentricleBandingValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Measurements})*
+
+):context
+)
+
+(
+(
+
+
+({Token.string ==~ "(?i)BANDING"} | {Token.string ==~ "(?i)BAND"} | {Token.string ==~ "(?i)BANDS"} |
+{Token.string ==~ "(?i)FALSE"} {Token.string ==~ "(?i)TENDON"})
+
+
+):context
+
+
+):LeftVentricleBandingValueGram 
+
+--> 
+:LeftVentricleBandingValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleBandingValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "scale NULL (Absent) to 1 (Present)");
+	newFeatures.put("varType","LV Banding");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Banding normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  

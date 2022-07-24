@@ -1,0 +1,110 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  pulmMPGVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: pulmMPGVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of pulm Valve Mean Pressure Gradient Variable relations from Lookup Annotations 
+*/
+
+Phase: pulmMPGVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+  
+Rule: pulmMPGValueRule
+Priority:10
+(
+(
+({Token.string ==~ "(?i)PV"})
+({Token.string ==~ "(?i)MEANPG"} | {Token.string ==~ "(?i)MPD"} | ({Token.string ==~ "(?i)MEAN"} {Token.string ==~ "(?i)PG"} ))
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)?
+)
+
+
+):pulmMPGValueGram 
+
+--> 
+:pulmMPGValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("pulmMPGValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","PV meanPG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("unit", "mmHg");
+	newFeatures.put("rule", "PV meanPG normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: PulmMPGAlternValueRule
+Priority:1
+(
+(
+({Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)PV"} )
+({Token.string != "PERICARDIUM", Token.string !=~ "(?i)SUMMARY", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)RVOT", Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)TR", Token.string !=~ "(?i)PR"}|{SpaceToken.string!=LVOT})*
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)MEANPG"} | {Token.string ==~ "(?i)MPD"} | ({Token.string ==~ "(?i)MEAN"} {Token.string ==~ "(?i)PG"} ))
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string == "-"}
+| {Token.string == "."})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)?
+)
+
+):PulmMPGAlternValueGram 
+
+--> 
+:PulmMPGAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmMPGAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","PV meanPG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("unit", "mmHg");
+	newFeatures.put("rule", "PV meanPG altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

@@ -1,0 +1,110 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  tricuspidMPGVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: tricuspidMPGVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of tricuspid Mean Pressure Gradient Variable relations from Lookup Annotations 
+*/
+
+Phase: tricuspidMPGVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: TricuspidMPGValueRule
+(
+
+(
+(
+{Token.string ==~ "(?i)TVMEANPG"} |
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string ==~ "(?i)MEANPG"} | {Token.string ==~ "(?i)MPD"} | {Token.string ==~ "(?i)MEAN"} {Token.string ==~ "(?i)PG"} )
+)
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)?
+)
+
+):TricuspidMPGValueGram 
+
+--> 
+:TricuspidMPGValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidMPGValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","TV MPG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("unit", "mmHg");
+	newFeatures.put("rule","TV MPG normal");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+
+Rule: TricuspidMPGAlternValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_Specific_Word_Exclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)MEANPG"} | {Token.string ==~ "(?i)MEAN"} | {Token.string ==~ "(?i)MPD"} | ({Token.string ==~ "(?i)MEAN"} {Token.string ==~ "(?i)P[GD]?"} ))
+
+({Token.kind == "word"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):TricuspidMPGAlternValueGram 
+
+--> 
+:TricuspidMPGAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidMPGAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","TV MPG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("unit", "mmHg");
+	newFeatures.put("rule","TV MPG altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  

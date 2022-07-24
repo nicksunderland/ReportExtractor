@@ -1,0 +1,62 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  ecgPacedRhythmVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: ecgPacedRhythmVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of ECG Paced Rhythm Variable relations from Lookup Annotations 
+*/
+
+Phase: ecgPacedRhythmVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+Rule: ECGPacedRhythmValueRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)PACED"} | {Token.string ==~ "(?i)PACING"} | {Token.string ==~ "(?i)PM"} | 
+{Token.string ==~ "(?i)PACE"} {Token.string ==~ "(?i)MAKER"}
+)
+
+):context
+
+
+):ECGPacedRhythmValueGram 
+
+--> 
+:ECGPacedRhythmValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGPacedRhythmValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	
+	newFeatures.put("unit", "Levels: 1 (present), Null (assume absent)");
+	newFeatures.put("varType","ECG Paced Rhythm");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Paced Rhythm normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  

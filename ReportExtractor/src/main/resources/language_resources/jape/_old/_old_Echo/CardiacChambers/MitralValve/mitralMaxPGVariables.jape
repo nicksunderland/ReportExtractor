@@ -1,0 +1,145 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  mitralMaxPGVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: mitralMaxPGVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of mitral Max Pressure Gradient or Peak Pressure Difference Variable relations from Lookup Annotations 
+* Note: One of the Max PG rules is in the Mitral MPG Variables file to activate priority. 
+*/
+
+Phase: mitralMaxPGVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: MitralMaxPGValueRule
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !~ "(?i)AORTIC"} | {SpaceToken.string!=VTI})*
+
+{Token.string !=~ "(?i)MR"}
+):context
+)
+
+(
+(
+({Token.string ==~ "(?i)PPD"} | {Token.string ==~ "(?i)PEAK"} | {Token.string ==~ "(?i)MAXPG"} | {Token.string ==~ "(?i)MAX"} {Token.string ==~ "(?i)PG"})
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)IS"} | {Token.string ==~ "(?i)OF"} | {Token.string == " "})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):MitralMaxPGValueGram 
+
+--> 
+:MitralMaxPGValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralMaxPGValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","MV max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","MV Max PG normal");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: MitralMaxPGAltern2ValueRule
+(
+(
+({Token.string ==~ "(?i)MITRAL"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"}
+{Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)MV"} | {Token.string ==~ "(?i)LAVV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"})
+({Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)AORTIC"} | {SpaceToken.string!=ATRIUM})*
+
+({Token.string !=~ "(?i)AVERAGE[D]?", Token.string !=~ "(?i)MEAN", Token.string !=~ "(?i)AVG[.]?", Token.string !=~ "(?i)MR"})
+
+):context
+)
+
+(
+(
+( 
+({Token.string ==~ "(?i)PEAK"} ({Token.string ==~ "(?i)DOPPLER"})? 
+({Token.string ==~ "(?i)VELOCITY[-]?"} | {Token.string ==~ "(?i)VEL[.]?"} | {Token.string ==~ "(?i)V[.]?"})
+({Token.string == "-"})?)
+| 
+({Token.string ==~ "(?i)V"} {Token.string ==~ "(?i)M[A]?X"} | {Token.string ==~ "(?i)VM[A]?X"}) 
+) 
+
+({Token.string == ":"} | {Token.string ==~ "(?i)IS"})?
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"})
+
+(	
+({Token.string ==~ "(?i)M"} | {Token.string ==~ "(?i)CM"})
+{Token.string == "/"}
+{Token.string ==~ "(?i)S"}
+)
+
+({Token.string == ","} | {Token.position == "startpunct"})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MMHG"}):unit)
+)
+
+):MitralMaxPGAltern2ValueGram 
+
+--> 
+:MitralMaxPGAltern2ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralMaxPGAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","MV max PG");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","MV Max PG altern2");
+	
+	if (matchedunit != null) {
+	newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

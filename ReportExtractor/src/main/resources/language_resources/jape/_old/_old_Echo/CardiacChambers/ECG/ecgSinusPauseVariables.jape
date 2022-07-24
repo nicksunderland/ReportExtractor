@@ -1,0 +1,65 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  ecgSinusPauseVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: ecgSinusPauseVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of ECG Sinus Pause Variable relations from Lookup Annotations 
+*/
+
+Phase: ecgSinusPauseVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Macro: sinusPauseTerm
+( {Token.string ==~ "(?i)SINUS"} {Token.string ==~ "(?i)PAUSE"} | {Token.string ==~ "(?i)SINUS"} {Token.string ==~ "(?i)ARREST"} | {Token.string ==~ "(?i)SINOATRIAL"} {Token.string ==~ "(?i)PAUSE"} | {Token.string ==~ "(?i)SINOATRIAL"} {Token.string ==~ "(?i)ARREST"} 
+)
+
+Rule: ECGSinusPauseValueRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+sinusPauseTerm
+
+
+):context
+
+
+):ECGSinusPauseValueGram 
+
+--> 
+:ECGSinusPauseValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGSinusPauseValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	
+	newFeatures.put("unit", "1 (present), Null (assume absent)");
+	newFeatures.put("varType","ECG Sinus Pause");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Sinus Pause normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  

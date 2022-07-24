@@ -1,0 +1,105 @@
+/*
+*  indexedVariablesSV.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020
+*  $Id: indexedVariablesSV.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of SV relations from Lookup Annotations 
+*/
+
+Phase: indexedVariablesSV
+Input: Token Lookup  
+Options: control=first 
+
+
+
+Rule: iLVSVValueRule
+(
+{Token.string =~ ".*LV"} 
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "Stroke"}
+{Token.string == "Volume"}	
+{Token.position == startpunct}
+{Token.string=="ml"}	
+{Token.position == endpunct}
+(
+{Token.kind == "number"}
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+)
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVSVValueGram 
+({Token.string!="number"}|{SpaceToken.string!=")"})*
+{Token.string == ")"}
+
+--> 
+:iLVSVValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVSVValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVSVValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVSVValue", newFeatures);
+  }
+  
+
+Rule: iLVSVValueAlternRule
+(
+{Token.string =~ ".*LV"} 
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "Stroke"}
+{Token.string == "volume"}
+{Token.string == "index"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVSVValueAlternGram 
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+{!Token.kind == "number"}
+
+--> 
+:iLVSVValueAlternGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVSVValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVSVValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVSVValue", newFeatures);
+  }
+  
+
+Rule: iLVSVValueAbbrevRule
+(
+{Token.string == "iLVSV"}	
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVSVValueGramAbbrev 
+
+--> 
+:iLVSVValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVSVValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVSVValueAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVSVValue", newFeatures);
+  }
+  
+

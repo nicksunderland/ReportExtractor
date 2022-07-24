@@ -1,0 +1,65 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  ecgTachyBradyVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: ecgTachyBradyVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of ECG Tachy-brady Variable relations from Lookup Annotations 
+*/
+
+Phase: ecgTachyBradyVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Macro: tachyBradyTerm
+( {Token.string ==~ "(?i)TACHY-BRADY"} | {Token.string ==~ "(?i)TACHY"} {Token.string == "-"} {Token.string ==~ "(?i)BRADY"} | {Token.string ==~ "(?i)TACHY-"} {Token.string ==~ "(?i)BRADY"}  | {Token.string ==~ "(?i)Tachycardia-bradycardia"} | {Token.string ==~ "(?i)Tachycardia"} {Token.string == "-"} {Token.string ==~ "(?i)bradycardia"} | {Token.string ==~ "(?i)Tachycardia-"} {Token.string ==~ "(?i)bradycardia"} | {Token.string ==~ "(?i)bradycardia"} {Token.string == "-"} {Token.string ==~ "(?i)Tachycardia"} | {Token.string ==~ "(?i)bradycardia-"} {Token.string ==~ "(?i)Tachycardia"} | {Token.string ==~ "(?i)bradycardia-Tachycardia"} 
+)
+
+Rule: ECGTachyBradyValueRule
+(
+(
+( {Token.string ==~ "(?i)ECG"} {Token.string ==~ "(?i):"})
+({Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)VENTRICLE"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+tachyBradyTerm
+
+
+):context
+
+
+):ECGTachyBradyValueGram 
+
+--> 
+:ECGTachyBradyValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("ECGTachyBradyValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	
+	newFeatures.put("unit", "1 (present), Null (assume absent)");
+	newFeatures.put("varType","ECG Tachy-brady");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "ECG Tachy-brady normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ECG", newFeatures);
+  }
+  

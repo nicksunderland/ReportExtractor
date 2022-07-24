@@ -1,0 +1,78 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  lvotEOAVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: lvotEOAVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of LVOT EOA Variable relations from Lookup Annotations 
+*/
+
+Phase: lvotEOAVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+ 
+  
+
+Rule: LvotEOAValueRule
+(
+(
+({Token.string ==~ "(?i)LVOT"})
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)AR", Token.string !=~ "(?i)A[OV]", Token.string !=~ "(?i)AVA[I]?"}|{SpaceToken.string!=DIMENSION})*
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)EOA"}
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+
+({Token.string == "~"})?
+({Token.string == "~"})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+{Token.string ==~ "(?i)CM"}
+{Token.string == "2"}
+):unit
+
+):LvotEOAValueGram 
+
+
+--> 
+:LvotEOAValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LvotEOAValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("varType","LVOT EOA");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LVOT EOA normal");
+	if (matchedunit != null) {
+		newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

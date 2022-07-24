@@ -1,0 +1,383 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  pulmRegurgitationLevelVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: pulmRegurgitationLevelVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of pulmonary regurgitation level Variable relations from Lookup Annotations 
+*/
+
+Phase: pulmRegurgitationLevelVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Macro: pulmonaryRegurgSeverityTerm
+(
+({Token.string ==~ "(?i)MINIMAL"} | {Token.string ==~ "(?i)MINIMUM"} | {Token.string ==~ "(?i)TRIVIAL"} | 
+{Token.string ==~ "(?i)VERY"} {Token.string ==~ "(?i)MILD"} | {Token.string ==~ "(?i)TRACE"}):trivial | 
+({Token.string ==~ "(?i)MILD"} | {Token.string ==~ "(?i)TRIVIAL-MILD"}):mild | 
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MILD-MODERATE"} | {Token.string ==~ "(?i)MOD"}):moderate |
+({Token.string ==~ "(?i)HEAVY"} | {Token.string ==~ "(?i)MARKED"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)SEVERE"} | {Token.string ==~ "(?i)MODERATE-SEVERE"}):severe
+)
+
+Macro: pulmonaryRegurgitationTerm
+(
+{Token.string ==~ "(?i)REGURGITATION"} | {Token.string ==~ "(?i)PR"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)REGURGITATION"}
+)
+
+
+Rule: PulmonaryRegurgitationLevelValueRule
+(
+(
+({Token.string ==~ "(?i)PV"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)Miscellaneous", Token.string !=~ "(?i)SUMMARY"}|{SpaceToken.string!=Miscellaneous})*
+
+):context
+)
+
+
+(
+(
+
+pulmonaryRegurgSeverityTerm
+
+
+pulmonaryRegurgitationTerm
+
+
+):context
+
+
+):PulmonaryRegurgitationLevelValueGram 
+
+--> 
+:PulmonaryRegurgitationLevelValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmonaryRegurgitationLevelValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "3");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "0");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","PR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PR level normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+ 
+ 
+Rule: PulmonaryRegurgitationLevelAlternValueRule
+Priority: 10
+(
+(
+({Token.string ==~ "(?i)PV"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)Miscellaneous", Token.string !=~ "(?i)SUMMARY"}|{SpaceToken.string!=Miscellaneous})*
+
+):context
+)
+
+
+(
+(
+
+pulmonaryRegurgSeverityTerm 
+
+
+{Token.kind == "word"}
+
+pulmonaryRegurgitationTerm
+
+
+):context
+
+
+):PulmonaryRegurgitationLevelAlternValueGram 
+
+--> 
+:PulmonaryRegurgitationLevelAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmonaryRegurgitationLevelAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "3");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "0");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","PR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PR level altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: PulmonaryRegurgitationLevelAltern2ValueRule
+Priority: 10
+(
+(
+({Token.string ==~ "(?i)PV"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)Miscellaneous", Token.string !=~ "(?i)SUMMARY"}|{SpaceToken.string!=Miscellaneous})*
+
+):context
+)
+
+
+(
+(
+ 
+pulmonaryRegurgSeverityTerm 
+
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+pulmonaryRegurgitationTerm
+
+
+):context
+
+
+):PulmonaryRegurgitationLevelAltern2ValueGram 
+
+--> 
+:PulmonaryRegurgitationLevelAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmonaryRegurgitationLevelAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "3");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "0");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","PR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PR level altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: PulmonaryRegurgitationLevelAltern3ValueRule
+Priority: 10
+(
+(
+({Token.string ==~ "(?i)PV"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)Miscellaneous", Token.string !=~ "(?i)SUMMARY"}|{SpaceToken.string!=Miscellaneous})*
+
+):context
+)
+
+
+(
+(
+ 
+pulmonaryRegurgSeverityTerm
+
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+pulmonaryRegurgitationTerm
+
+
+):context
+
+
+):PulmonaryRegurgitationLevelAltern3ValueGram 
+
+--> 
+:PulmonaryRegurgitationLevelAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmonaryRegurgitationLevelAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "3");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "0");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","PR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PR level altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: PulmonaryRegurgitationLevelAlternNonValueRule
+Priority: 10
+(
+(
+({Token.string ==~ "(?i)PV"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)Miscellaneous", Token.string !=~ "(?i)SUMMARY"}|{SpaceToken.string!=Miscellaneous})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)NO[N]?"} | {Token.string ==~ "(?i)NOT"} |
+{Token.string ==~ "(?i)NO"} {Token.string ==~ "(?i)PULMONARY"} 
+)
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+
+pulmonaryRegurgitationTerm
+
+):context
+
+
+):PulmonaryRegurgitationLevelAlternNonValueGram 
+
+--> 
+:PulmonaryRegurgitationLevelAlternNonValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmonaryRegurgitationLevelAlternNonValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","PR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PR level alternNon");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: PulmonaryRegurgitationLevelUnboundedValueRule
+(
+(
+
+pulmonaryRegurgSeverityTerm
+
+
+({Token.string ==~ "(?i)PULMONARY"}
+{Token.string ==~ "(?i)REGURGITATION"} | {Token.string ==~ "(?i)PR"})
+
+
+):context
+
+
+):PulmonaryRegurgitationLevelUnboundedValueGram 
+
+--> 
+:PulmonaryRegurgitationLevelUnboundedValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmonaryRegurgitationLevelUnboundedValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "3");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "0");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","PR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PR level Unbounded");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

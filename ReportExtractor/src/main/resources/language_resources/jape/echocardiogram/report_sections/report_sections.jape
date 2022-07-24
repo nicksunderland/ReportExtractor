@@ -1,0 +1,20 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+// To add additional section headers, add to the gazetteer files
+
+
+Phase: TagAortaReportSection
+Input: Sentence SectionHeader
+Options: control=Appelt
+
+Rule: aorta_section
+(
+	{Sentence contains SectionHeader.minorType == "aorta"}
+	({Sentence notContains SectionHeader.minorType != "aorta"})[0,20]  // allow up to 20 more sentences as long as they don't contain other headers
+	
+):aorta_section
+-->
+:aorta_section.ReportSection = {type = "aorta"}

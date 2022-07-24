@@ -1,0 +1,63 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  rightVentricleTrabeculationVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: rightVentricleTrabeculationVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Right Ventricle Trabeculation Variable relations from Lookup Annotations 
+*/
+
+Phase: rightVentricleTrabeculationVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: RightVentricleTrabeculationValueRule
+(
+(
+( {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)VENTRICLE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)HEART"} |
+{Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)SIDED"} {Token.string ==~ "(?i)STRUCTURES"} | {Token.string ==~ "(?i)RV"})
+({Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)MISC", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)CAVA", Token.string !=~ "(?i)IVC", Token.string !=~ "(?i)PRESSURE", Token.string !=~ "(?i)LA", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)PULMONARY"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+
+({Token.string ==~ "(?i)TRABECULATION[S]?"})
+
+
+):context
+
+
+):RightVentricleTrabeculationValueGram 
+
+--> 
+:RightVentricleTrabeculationValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RightVentricleTrabeculationValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "scale NULL (Absent) to 1 (Present)");
+	newFeatures.put("varType","RV Trabeculation");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "RV Trabeculation normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  

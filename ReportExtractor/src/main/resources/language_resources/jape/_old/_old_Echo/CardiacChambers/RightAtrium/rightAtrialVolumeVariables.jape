@@ -1,0 +1,70 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  rightAtrialVolumeVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: rightAtrialVolumeVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of right atrial volume Variable relations from Lookup Annotations 
+*/
+
+Phase: rightAtrialVolumeVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: RightAtrialVolumeValueRule
+Priority:1
+(
+(
+( {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIUM"} | {Token.string ==~ "(?i)RA"})
+({Token.string !=~ "(?i)PULMONARY", Token.string !=~ "(?i)IVC", Token.string !=~ "(?i)ATRIOVENTRICULAR", Token.string !=~ "(?i)AV", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)RV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)LA", Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=AREA})*
+
+):context
+)
+
+(
+({Token.string ==~ "(?i)VOLUME"})?
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)ML"}):unit)
+)
+
+):RightAtrialVolumeValueGram 
+
+--> 
+:RightAtrialVolumeValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RightAtrialVolumeValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varType","RA Volume");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule","RA Volume normal");
+		
+	if (matchedunit != null) {
+		newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

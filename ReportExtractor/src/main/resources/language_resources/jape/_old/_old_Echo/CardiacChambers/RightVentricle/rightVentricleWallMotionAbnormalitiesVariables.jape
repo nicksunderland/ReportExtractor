@@ -1,0 +1,77 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  rightVentricleWallMotionAbnormalitiesVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: rightVentricleWallMotionAbnormalitiesVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Right Ventricle Wall Motion Abnormalities Variable relations from Lookup Annotations 
+*/
+
+Phase: rightVentricleWallMotionAbnormalitiesVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: RightVentricleWallMotionAbnormalitiesValueRule
+(
+(
+( {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)VENTRICLE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)HEART"} |
+{Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)SIDED"} {Token.string ==~ "(?i)STRUCTURES"} | {Token.string ==~ "(?i)RV"})
+({Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)MISC", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)CAVA", Token.string !=~ "(?i)IVC", Token.string !=~ "(?i)PRESSURE", Token.string !=~ "(?i)LA", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)PULMONARY"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+( 
+(
+(
+({Token.string ==~ "(?i)HYPOKINESIS"} | {Token.string ==~ "(?i)HYPOKINESIA"} | {Token.string ==~ "(?i)HYPOKINETIC"} ):hypokinesis | 
+({Token.string ==~ "(?i)AKINESIS"} | {Token.string ==~ "(?i)AKINESIA"} | {Token.string ==~ "(?i)AKINETIC"} ):akinesis |
+({Token.string ==~ "(?i)DYSKINESIS"} | {Token.string ==~ "(?i)DYSKINESIA"} | {Token.string ==~ "(?i)DYSKINETIC"} ):dyskinesis
+) 
+) 
+
+
+):context
+
+
+):RightVentricleWallMotionAbnormalitiesValueGram 
+
+--> 
+:RightVentricleWallMotionAbnormalitiesValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedHypokinesis=(gate.AnnotationSet) bindings.get("hypokinesis");
+	gate.AnnotationSet matchedAkinesis=(gate.AnnotationSet) bindings.get("akinesis");
+	gate.AnnotationSet matchedDyskinesis=(gate.AnnotationSet) bindings.get("dyskinesis");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RightVentricleWallMotionAbnormalitiesValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedHypokinesis != null) {
+		newFeatures.put("varValue", "Hypokinetic");
+	} else if (matchedAkinesis != null) {
+		newFeatures.put("varValue", "Akinetic");
+	} else if (matchedDyskinesis != null) {
+		newFeatures.put("varValue", "Dyskinetic");
+	}
+	
+	newFeatures.put("unit", "NULL (normokinetic), Hypokinetic, Akinetic, Dyskinetic");
+	newFeatures.put("varType","RV Wall Motion Abnormalities");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "RV Wall Motion Abnormalities normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  

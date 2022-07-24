@@ -1,0 +1,87 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  mitralSAMVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: mitralSAMVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of mitral valve systolic anterior motion Variable relations from Lookup Annotations 
+*/
+
+Phase: mitralSAMVariables
+Input: Token Lookup  
+Options: control=appelt 
+
+
+
+Rule: MitralSAMValueRule
+(
+(
+
+( {Token.string ==~ "(?i)SAM"} | {Token.string ==~ "(?i)SYSTOLIC"} {Token.string ==~ "(?i)ANTERIOR"} {Token.string ==~ "(?i)MOTION"} )
+
+
+):context
+
+
+):MitralSAMValueGram 
+
+--> 
+:MitralSAMValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralSAMValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "0 (SAM absent) to 1 (SAM present)");
+	newFeatures.put("varType","MV SAM");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV SAM normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+
+Rule: MitralSAMAlternValueRule
+Priority: 10
+(
+(
+
+{Token.string ==~ "(?i)NO"}
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+
+( {Token.string ==~ "(?i)SAM"} | {Token.string ==~ "(?i)SYSTOLIC"} {Token.string ==~ "(?i)ANTERIOR"} {Token.string ==~ "(?i)MOTION"} )
+
+
+):context
+
+
+):MitralSAMAlternValueGram 
+
+--> 
+:MitralSAMAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MitralSAMAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "0 (SAM absent) to 1 (SAM present)");
+	newFeatures.put("varType","MV SAM");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "MV SAM altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

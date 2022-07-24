@@ -1,0 +1,142 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+
+
+Phase: AortaSinusOfValsalvaDiameterHeightIndexed
+Input: Anatomy Numeric Units Lookup Token VarSentence Split
+Options: control=Appelt negationGrouping=false
+
+Macro: CONTEXT
+(
+	{Anatomy,
+		Anatomy within {VarSentence.type == "sinus_of_valsalva"},
+		Anatomy.minorType == "sinus_of_valsalva"}
+)
+
+Macro: FILTER
+(	
+	{Token,
+		!Anatomy.minorType != "sinus_of_valsalva",
+		!Units.majorType == "z_score",
+		!Lookup.majorType == "body_surface_area",
+		!Lookup.majorType == "quantity_change", 
+		Token within {VarSentence.type == "sinus_of_valsalva"}}
+)
+
+Macro: VALUE
+(
+	{Numeric,
+		Numeric within {VarSentence.type == "sinus_of_valsalva"}, 
+		Numeric.type == "double"} |
+	{Numeric,
+		Numeric within {VarSentence.type == "sinus_of_valsalva"}, 
+		Numeric.type == "integer"}
+)
+
+Macro: UNITS
+(
+	{Units,
+		Units within {VarSentence.type == "sinus_of_valsalva"},
+		Units.majorType == "length/length"}
+)
+
+/*
+ * Description:
+ * This is the most common form 'the SoV is dilated at 45mm (22mm/m)'
+ */
+Rule: ao_sov_diam_ht_idx
+Priority: 100
+(
+	( CONTEXT ):context
+	
+	( FILTER )[0,20]
+	
+	( VALUE ):value
+	
+	( UNITS ):unit
+	
+):ao_sov_diam_ht_idx
+--> 
+:ao_sov_diam_ht_idx
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_sov_diam_ht_idx", doc, bindings, outputAS);
+}
+
+
+/*
+ * Description:
+ * Of the form 'indexed to height the SOV is dilated at 45mm (22mm/m)'
+ * The units here are optional as we declared that it was indexed to height at the start
+ */
+Rule: ao_sov_diam_ht_idx_2
+Priority: 98
+(
+	(
+		{Lookup,
+			Lookup.majorType == "indexed",
+			Lookup within {VarSentence.type == "sinus_of_valsalva"}}
+		({Token})?
+		{Lookup.majorType == "height"}
+		({Token})?
+		( CONTEXT )
+	):context
+	
+	( FILTER )[0,20]
+	
+	( VALUE ):value
+	
+	( (UNITS)? ):unit
+	
+	({Token, !Units} | {Split})
+	
+):ao_sov_diam_ht_idx 
+--> 
+:ao_sov_diam_ht_idx
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_sov_diam_ht_idx", doc, bindings, outputAS);
+}
+
+/*
+ * Here we allow words like "indexed" or "normalised" without reference to what they are 
+ * indexed to, AS LONG AS the units are enforced as length/length (e.g. cm/m) so that we 
+ * can infer that they are indexing to height
+ * e.g. indexed SoV = 33mm/m
+ */
+Rule: ao_sov_diam_ht_idx_3
+Priority: 97
+(
+	(
+		{Lookup,
+			Lookup.majorType == "indexed",
+			Lookup within {VarSentence.type == "sinus_of_valsalva"}}
+		( CONTEXT )
+	):context
+	
+	( FILTER )[0,30]
+	
+	( VALUE ):value
+	
+	( UNITS ):unit
+	
+):ao_sov_diam_ht_idx
+--> 
+:ao_sov_diam_ht_idx
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_sov_diam_ht_idx", doc, bindings, outputAS);
+}
+

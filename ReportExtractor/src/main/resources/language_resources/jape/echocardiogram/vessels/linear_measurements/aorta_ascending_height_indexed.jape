@@ -1,0 +1,173 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+
+
+Phase: AortaAscendingDiameterHeightIndexed
+Input: Anatomy Numeric Units Lookup Token VarSentence Split
+Options: control=Appelt negationGrouping=false
+
+Macro: CONTEXT
+(
+	{Anatomy,
+		Anatomy within {VarSentence.type == "ascending_aorta"},
+		Anatomy.minorType == "ascending_aorta"}
+)
+
+Macro: FILTER
+(	
+	{Token,
+		!Anatomy.minorType != "ascending_aorta",
+		!Units.majorType == "z_score",
+		!Lookup.majorType == "body_surface_area",
+		!Lookup.majorType == "quantity_change", 
+		Token within {VarSentence.type == "ascending_aorta"}}
+)
+
+Macro: VALUE
+(
+	{Numeric,
+		Numeric within {VarSentence.type == "ascending_aorta"}, 
+		Numeric.type == "double"} |
+	{Numeric,
+		Numeric within {VarSentence.type == "ascending_aorta"}, 
+		Numeric.type == "integer"}
+)
+
+Macro: UNITS
+(
+	{Units,
+		Units within {VarSentence.type == "ascending_aorta"},
+		Units.majorType == "length/length"}
+)
+
+/*
+ * Description:
+ * This is the most common form 'the asc ao is dilated at 45mm (22mm/m)'
+ */
+Rule: ao_asc_diam_ht_idx
+Priority: 100
+(
+	( CONTEXT ):context
+	
+	( FILTER )[0,20]
+	
+	( VALUE ):value
+	
+	( UNITS ):unit
+	
+):ao_asc_diam_ht_idx
+--> 
+:ao_asc_diam_ht_idx
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_asc_diam_ht_idx", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * Of the form: 'Proximal ascending aorta 2.7cm, not dilated indexed to BSA at 1.8cm/m_ and indexed to height at 17.7mm/m.'
+ */
+Rule: ao_asc_diam_ht_idx_2
+Priority: 99
+(
+	( CONTEXT ):context
+	
+	({Token,
+		Token within VarSentence.type == "ascending_aorta",
+		!Anatomy.minorType != "ascending_aorta",
+		!Lookup.majorType == "quantity_change"})[0,20] // Relaxed filter
+	
+	({Lookup.minorType == "indexed"}{Token}{Lookup.majorType == "height"}({Token})?) // Indexed to height (at)?
+				
+	( VALUE ):value
+	
+	( (UNITS)? ):unit
+	
+	({Token, !Units} | {Split})
+
+):ao_asc_diam_ht_idx 
+--> 
+:ao_asc_diam_ht_idx
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_asc_diam_ht_idx", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * Of the form 'indexed to height the asc aorta is dilated at 45mm (22mm/m)'
+ * The units here are optional as we declared that it was indexed to height at the start
+ */
+Rule: ao_asc_diam_ht_idx_3
+Priority: 98
+(
+	(
+		{Lookup,
+			Lookup.majorType == "indexed",
+			Lookup within {VarSentence.type == "ascending_aorta"}}
+		({Token})?
+		{Lookup.majorType == "height"}
+		({Token})?
+		( CONTEXT )
+	):context
+	
+	( FILTER )[0,20]
+	
+	( VALUE ):value
+	
+	( (UNITS)? ):unit
+	
+	({Token, !Units} | {Split})
+	
+):ao_asc_diam_ht_idx 
+--> 
+:ao_asc_diam_ht_idx
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_asc_diam_ht_idx", doc, bindings, outputAS);
+}
+
+/*
+ * Here we allow words like "indexed" or "normalised" without reference to what they are 
+ * indexed to, AS LONG AS the units are enforced as length/length (e.g. cm/m) so that we 
+ * can infer that they are indexing to height
+ * e.g. indexed asc aorta = 33mm/m
+ */
+Rule: ao_asc_diam_ht_idx_4
+Priority: 97
+(
+	(
+		{Lookup,
+			Lookup.majorType == "indexed",
+			Lookup within {VarSentence.type == "ascending_aorta"}}
+		( CONTEXT )
+	):context
+	
+	( FILTER )[0,30]
+	
+	( VALUE ):value
+	
+	( UNITS ):unit
+	
+):ao_asc_diam_ht_idx
+--> 
+:ao_asc_diam_ht_idx
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_asc_diam_ht_idx", doc, bindings, outputAS);
+}

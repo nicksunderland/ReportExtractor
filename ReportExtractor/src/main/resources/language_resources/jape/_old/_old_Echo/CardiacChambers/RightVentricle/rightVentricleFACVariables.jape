@@ -1,0 +1,74 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  rightVentricleFACVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: rightVentricleFACVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of right ventricle fractional area change Variable relations from Lookup Annotations 
+*/
+
+Phase: rightVentricleFACVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+ 
+  
+Rule: RightVentricleFACValueRule
+(
+(
+
+
+{Token.string ==~ "(?i)RV"}
+{Token.string ==~ "(?i)FRACTIONAL"}
+{Token.string ==~ "(?i)AREA"}
+{Token.string ==~ "(?i)CHANGE"}
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+
+({Token.string == "~"})?
+({Token.string == "~"})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string == "%"}):unit)
+)
+
+):RightVentricleFACValueGram 
+
+--> 
+:RightVentricleFACValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RightVentricleFACValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("varType","RVFAC");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "RV fractional area change normal");
+	
+	if (matchedunit != null) {
+		newFeatures.put("unit", stringFor(doc, matchedunit));
+	}
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+ 

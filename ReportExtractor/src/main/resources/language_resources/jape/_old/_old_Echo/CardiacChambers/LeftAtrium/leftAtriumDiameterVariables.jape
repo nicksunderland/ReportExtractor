@@ -1,0 +1,206 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftAtriumDiameterVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftAtriumDiameterVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of left atrium diameter Variable relations from Lookup Annotations 
+*/
+
+Phase: leftAtriumDiameterVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+   
+Rule: LeftAtriumDiameterValueRule
+(
+(
+
+{Token.string ==~ "(?i)LA"} 
+{Token.string ==~ "(?i)DIAM(ETER)?"} 
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+	
+(
+(({Token.string == "cm"} | {Token.string == "mm"}):unit)
+)
+
+
+
+):LeftAtriumDiameterValueGram 
+
+
+--> 
+:LeftAtriumDiameterValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftAtriumDiameterValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varType","LA Diam");
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	String contextStr = stringFor(doc, matchedcontext);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LA Diam normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftAtriumDiameterAlternValueRule
+(
+(
+{Token.string ==~ "(?i)LEFT"}
+{Token.string ==~ "(?i)ATRIUM"}
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"})?
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+):LeftAtriumDiameterAlternValueGram 
+(
+{Token.string !=~ "(?i)ML"}
+{Token.string !=~ "(?i)2"}
+)
+
+--> 
+:LeftAtriumDiameterAlternValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftAtriumDiameterAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("varType","LA Diam");
+	newFeatures.put("varValue", stringFor(doc, matchedVar));
+	newFeatures.put("unit", "cm");
+	
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LA Diam altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+Rule: LeftAtriumDiameterAltern2ValueRule
+Priority:10
+(
+(
+({Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)ATRIUM"} | {Token.string ==~ "(?i)LA"} )
+({Token.string !=~ "(?i)AORTA", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)RIGHT", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)VENTRICLE"} | {SpaceToken.string!=AORTIC})*
+
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)DIAM(ETER)?"} 
+
+({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == " "})?
+
+):context
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+	
+(
+(({Token.string == "cm"} | {Token.string == "mm"}):unit)
+)
+
+
+):LeftAtriumDiameterAltern2ValueGram 
+
+--> 
+:LeftAtriumDiameterAltern2ValueGram
+  {
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftAtriumDiameterAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varType","LA Diam");
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	String contextStr = stringFor(doc, matchedcontext);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("mm")) {
+	
+		varDouble = varDouble / 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		newFeatures.put("varValue", String.valueOf(varDouble));
+		
+		newFeatures.put("unit", "cm");
+		
+	} else {
+		newFeatures.put("varValue", varStr);
+	}
+	
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LA Diam altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

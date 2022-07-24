@@ -1,0 +1,86 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+Phase: fractional_area_change
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: rv_fac_rule_1
+Priority:100
+(
+	(
+		({Token.string ==~ "(?i)RV"} | {Token.string ==~ "(?i)right"} {Token.string =~ "(?i)ventric[le|ular]"})
+		({Token})[0,60]
+		({Token.string ==~ "(?i)fractional"} {Token.string ==~ "(?i)area"} {Token.string ==~ "(?i)change"})
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+		({Token.string == "~"})?
+		({Token.string == "~"})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		({Token.string == "%"})?
+	):unit
+
+):rv_fac 
+--> 
+:rv_fac
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "rv_fac",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }
+
+
+
+Rule: rv_fac_rule_2
+Priority:1
+(
+
+	(
+		({Token.string ==~ "(?i)RV"} | {Token.string ==~ "(?i)right"} {Token.string =~ "(?i)ventric[le|ular]"})
+		({Token})[0,60]
+		({Token.string ==~ "(?i)fac"})
+		({Token.string == "="} | {Token.string == "["} | {Token.string == ":"} | {Token.string == "-"} | {Token.string ==~ "(?i)OF"} | {Token.string ==~ "(?i)IS"} | {Token.string == "AT"})?
+		({Token.string == "~"})?
+		({Token.string == "~"})?
+	):context
+
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+	(
+		({Token.string == "%"})?
+	):unit
+
+):rv_fac 
+--> 
+:rv_fac
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "rv_fac",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }
+  

@@ -1,0 +1,402 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  leftVentricleDiastolicDysfunctionVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleDiastolicDysfunctionVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle Diastolic Dysfunction Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleDiastolicDysfunctionVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: LeftVentricleDiastolicDysfunctionValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string == ":"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+{Token.string ==~ "(?i)GRADE"}
+ 
+(
+({Token.string == "I"} | {Token.string == "1"}):grade1 | 
+({Token.string == "II"} | {Token.string == "2"}):grade2 | 
+({Token.string == "III"} | {Token.string == "3"}):grade3 | 
+({Token.string == "IV"} | {Token.string == "4"}):grade4 
+) 
+ 
+({Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICULAR"} | {Token.string ==~ "(?i)LV"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} | {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)HEART"} {Token.string ==~ "(?i)CHAMBER[S]?"} | {Token.string ==~ "(?i)CHAMBER[S]?"} | {Token.string ==~ "(?i)VENTRICULAR"})
+
+{Lookup.majorType == Diastolic_Dysfunction_Terms}
+
+):context
+
+
+):LeftVentricleDiastolicDysfunctionValueGram 
+
+--> 
+:LeftVentricleDiastolicDysfunctionValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedgrade1=(gate.AnnotationSet) bindings.get("grade1");
+	gate.AnnotationSet matchedgrade2=(gate.AnnotationSet) bindings.get("grade2");
+	gate.AnnotationSet matchedgrade3=(gate.AnnotationSet) bindings.get("grade3");
+	gate.AnnotationSet matchedgrade4=(gate.AnnotationSet) bindings.get("grade4");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleDiastolicDysfunctionValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedgrade1 != null) {
+		newFeatures.put("varValue", "Grade I");
+	} else if (matchedgrade2 != null) {
+		newFeatures.put("varValue", "Grade II");
+	} else if (matchedgrade3 != null) {
+		newFeatures.put("varValue", "Grade III");
+	} else if (matchedgrade4 != null) {
+		newFeatures.put("varValue", "Grade IV");
+	}
+	
+	newFeatures.put("unit", "Level: ID (Indeterminate), DD (Diastolic Dysfunction), ND (Normal Diastolic Function), Grade I, Grade II, Grade III, Grade IV");
+	newFeatures.put("varType","LV Diastolic Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Diastolic Dysfunction normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LeftVentricleDiastolicDysfunctionAlternValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string == ":"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+ 
+{Token.string ==~ "(?i)GRADE"}
+ 
+(
+({Token.string == "I"} | {Token.string == "1"}):grade1 | 
+({Token.string == "II"} | {Token.string == "2"}):grade2 | 
+({Token.string == "III"} | {Token.string == "3"}):grade3 | 
+({Token.string == "IV"} | {Token.string == "4"}):grade4 
+) 
+ 
+{Lookup.majorType == Diastolic_Dysfunction_Terms}
+
+
+):context
+
+
+):LeftVentricleDiastolicDysfunctionAlternValueGram 
+
+--> 
+:LeftVentricleDiastolicDysfunctionAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedgrade1=(gate.AnnotationSet) bindings.get("grade1");
+	gate.AnnotationSet matchedgrade2=(gate.AnnotationSet) bindings.get("grade2");
+	gate.AnnotationSet matchedgrade3=(gate.AnnotationSet) bindings.get("grade3");
+	gate.AnnotationSet matchedgrade4=(gate.AnnotationSet) bindings.get("grade4");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleDiastolicDysfunctionAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedgrade1 != null) {
+		newFeatures.put("varValue", "Grade I");
+	} else if (matchedgrade2 != null) {
+		newFeatures.put("varValue", "Grade II");
+	} else if (matchedgrade3 != null) {
+		newFeatures.put("varValue", "Grade III");
+	} else if (matchedgrade4 != null) {
+		newFeatures.put("varValue", "Grade IV");
+	}
+	
+	newFeatures.put("unit", "Level: ID (Indeterminate), DD (Diastolic Dysfunction), ND (Normal Diastolic Function), Grade I, Grade II, Grade III, Grade IV");
+	newFeatures.put("varType","LV Diastolic Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Diastolic Dysfunction altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LeftVentricleDiastolicDysfunctionIndeterminateValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string == ":"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)UNABLE"} | {Token.string ==~ "(?i)DIFFICULT"} | {Token.string ==~ "(?i)CONFLICTING"} | 
+{Token.string ==~ "(?i)INDETERMINATE"} | {Token.string ==~ "(?i)EQUIVOCAL"})
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})?
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})?
+
+	
+{Lookup.majorType == Diastolic_Dysfunction_Terms}
+
+):context
+
+
+):LeftVentricleDiastolicDysfunctionIndeterminateValueGram 
+
+--> 
+:LeftVentricleDiastolicDysfunctionIndeterminateValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedgrade1=(gate.AnnotationSet) bindings.get("grade1");
+	gate.AnnotationSet matchedgrade2=(gate.AnnotationSet) bindings.get("grade2");
+	gate.AnnotationSet matchedgrade3=(gate.AnnotationSet) bindings.get("grade3");
+	gate.AnnotationSet matchedgrade4=(gate.AnnotationSet) bindings.get("grade4");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleDiastolicDysfunctionIndeterminateValueGram");
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "ID");
+	
+	newFeatures.put("unit", "Level: ID (Indeterminate), DD (Diastolic Dysfunction), ND (Normal Diastolic Function), Grade I, Grade II, Grade III, Grade IV");
+	newFeatures.put("varType","LV Diastolic Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Diastolic Dysfunction Indeterminate");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LeftVentricleDiastolicDysfunctionIndeterminate2ValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string == ":"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+
+({Token.string ==~ "(?i)DIASTOLIC"} | {Token.string ==~ "(?i)DIASTOLOGY"})
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})?
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})?
+
+({Token.string ==~ "(?i)UNABLE"} | {Token.string ==~ "(?i)DIFFICULT"} | {Token.string ==~ "(?i)CONFLICTING"} | 
+{Token.string ==~ "(?i)INDETERMINATE"} | {Token.string ==~ "(?i)EQUIVOCAL"})
+
+
+):context
+
+
+):LeftVentricleDiastolicDysfunctionIndeterminate2ValueGram 
+
+--> 
+:LeftVentricleDiastolicDysfunctionIndeterminate2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedgrade1=(gate.AnnotationSet) bindings.get("grade1");
+	gate.AnnotationSet matchedgrade2=(gate.AnnotationSet) bindings.get("grade2");
+	gate.AnnotationSet matchedgrade3=(gate.AnnotationSet) bindings.get("grade3");
+	gate.AnnotationSet matchedgrade4=(gate.AnnotationSet) bindings.get("grade4");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleDiastolicDysfunctionIndeterminate2ValueGram");
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "ID");
+	
+	newFeatures.put("unit", "Level: ID (Indeterminate), DD (Diastolic Dysfunction), ND (Normal Diastolic Function), Grade I, Grade II, Grade III, Grade IV");
+	newFeatures.put("varType","LV Diastolic Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Diastolic Dysfunction Indeterminate2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LeftVentricleDiastolicDysfunctionDDValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string == ":"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)DIASTOLIC"} | {Token.string ==~ "(?i)DIASTOLOGY"})
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})?
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})?
+
+({Token.string ==~ "(?i)DYSFUNCTION"} | {Token.string ==~ "(?i)IMPAIREMENT"} | {Token.string ==~ "(?i)IMPAIRMENT"} | {Token.string ==~ "(?i)IMPAIRED"})
+
+
+):context
+
+
+):LeftVentricleDiastolicDysfunctionDDValueGram 
+
+--> 
+:LeftVentricleDiastolicDysfunctionDDValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleDiastolicDysfunctionDDValueGram");
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "DD");
+	
+	newFeatures.put("unit", "Level: ID (Indeterminate), DD (Diastolic Dysfunction), ND (Normal Diastolic Function), Grade I, Grade II, Grade III, Grade IV");
+	newFeatures.put("varType","LV Diastolic Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Diastolic Dysfunction DD");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleDiastolicDysfunctionNormalValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} {Token.string == ":"})
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)NORMAL"} | {Token.string ==~ "(?i)GOOD"} | {Token.string ==~ "(?i)PRESERVED"})
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})?
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "-"})?
+
+({Token.kind == "word", !Lookup.majorType == Diastolic_Dysfunction_Any_Word_Exclusion})?
+
+{Token.string ==~ "(?i)DIASTOLIC"} ({Token.string ==~ "(?i)FUNCTION"} | {Token.string ==~ "(?i)FILLING"})
+
+
+):context
+
+
+):LeftVentricleDiastolicDysfunctionNormalValueGram 
+
+--> 
+:LeftVentricleDiastolicDysfunctionNormalValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleDiastolicDysfunctionNormalValueGram");
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "ND");
+	
+	newFeatures.put("unit", "Level: ID (Indeterminate), DD (Diastolic Dysfunction), ND (Normal Diastolic Function), Grade I, Grade II, Grade III, Grade IV");
+	newFeatures.put("varType","LV Diastolic Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Diastolic Dysfunction normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

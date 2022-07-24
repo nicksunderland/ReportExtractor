@@ -1,0 +1,196 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+/*
+ * Description:
+ * This phase tags imperial measurements of length and mass with the annotation 
+ * type="ImperialMeasurement", which we can capture in later phases when looking for
+ * things like a patient's weight or height
+ */
+Phase: TagImperialLength
+Input: Numeric Units Token Split
+Options: control=Appelt negationGrouping=false
+/*
+ * Description:
+ * Tag imperial measurements in feet and inches (allowing a token inbetween, e.g. comma or fullstop)
+ */
+Rule: imperial_length_0
+(
+	({Numeric}):feet		 
+	{Units.minorType == "feet"}
+	({Token.string ==~ "[&,.]|(and)"})?
+	({Numeric}):inches
+	{Units.minorType == "inches"}
+
+):imperial_length
+-->
+:imperial_length{
+	FeatureMap newFeatures = Factory.newFeatureMap();
+	newFeatures.put("majorType","length");
+	newFeatures.put("feet", bindings.get("feet").iterator().next().getFeatures().get("value"));
+	newFeatures.put("inches", bindings.get("inches")!=null ? bindings.get("inches").iterator().next().getFeatures().get("value") : null);
+	outputAS.add(bindings.get("imperial_length").firstNode(),bindings.get("imperial_length").lastNode(),"ImperialMeasurement", newFeatures);
+	
+	// Since now the data lives in the ImperialMeasurement annotation's feature, we can clean up and remove the Numeric / Units annots
+	AnnotationSet numericWithin = bindings.get("imperial_length").get("Numeric");
+	AnnotationSet unitsWithin = bindings.get("imperial_length").get("Units");
+	inputAS.removeAll(numericWithin);
+	inputAS.removeAll(unitsWithin);
+}
+
+/*
+ * Description:
+ * Tag imperial measurements in feet +/- inches
+ */
+Rule: imperial_length_1
+(
+	({Numeric}):feet		 
+	{Units.minorType == "feet"}
+	(({Numeric})?):inches
+	({Units.minorType == "inches"})?
+
+):imperial_length
+-->
+:imperial_length{
+		FeatureMap newFeatures = Factory.newFeatureMap();
+		newFeatures.put("majorType","length");
+		newFeatures.put("feet", bindings.get("feet").iterator().next().getFeatures().get("value"));
+		newFeatures.put("inches", bindings.get("inches")!=null ? bindings.get("inches").iterator().next().getFeatures().get("value") : null);
+		outputAS.add(bindings.get("imperial_length").firstNode(),bindings.get("imperial_length").lastNode(),"ImperialMeasurement", newFeatures);
+		
+		// Since now the data lives in the ImperialMeasurement annotation's feature, we can clean up and remove the Numeric / Units annots
+		AnnotationSet numericWithin = bindings.get("imperial_length").get("Numeric");
+		AnnotationSet unitsWithin = bindings.get("imperial_length").get("Units");
+		inputAS.removeAll(numericWithin);
+		inputAS.removeAll(unitsWithin);
+}
+
+/*
+ * Description:
+ * Tag imperial measurements in inches +/- feet
+ */
+Rule: imperial_length_2
+(
+	(({Numeric})?):feet		 
+	({Units.minorType == "feet"})?
+	({Numeric}):inches
+	{Units.minorType == "inches"}
+
+):imperial_length
+-->
+:imperial_length{
+		FeatureMap newFeatures = Factory.newFeatureMap();
+		newFeatures.put("majorType","length");
+		newFeatures.put("feet", bindings.get("feet")!=null ? bindings.get("feet").iterator().next().getFeatures().get("value") : null);
+		newFeatures.put("inches", bindings.get("inches").iterator().next().getFeatures().get("value"));
+		outputAS.add(bindings.get("imperial_length").firstNode(),bindings.get("imperial_length").lastNode(),"ImperialMeasurement", newFeatures);
+		
+		// Since now the data lives in the ImperialMeasurement annotation's feature, we can clean up and remove the Numeric / Units annots
+		AnnotationSet numericWithin = bindings.get("imperial_length").get("Numeric");
+		AnnotationSet unitsWithin = bindings.get("imperial_length").get("Units");
+		inputAS.removeAll(numericWithin);
+		inputAS.removeAll(unitsWithin);
+}
+
+
+Phase: TagImperialWeight
+Input: Numeric Units Token Split
+Options: control=Appelt negationGrouping=false
+/*
+ * Description:
+ * Tag imperial measurements in stone and pounds (allowing a token inbetween, e.g. comma or fullstop)
+ */
+Rule: imperial_weight_0
+(
+	(({Numeric}{Units.minorType == "stone"} | {Token.string ==~ "1{1,2}st"})):stone //need to deal with the fact that 11st is captured as the string '11st' not two strings '11' 'st' 
+	({Token.string ==~ "[&,.]|(and)"})?
+	({Numeric}):pounds
+	{Units.minorType == "pounds"}
+
+):imperial_weight
+-->
+:imperial_weight{
+	
+	String stone_str = stringFor(doc, bindings.get("stone"));
+	stone_str = stone_str.replaceAll("[^\\d]", "");
+	
+	FeatureMap newFeatures = Factory.newFeatureMap();
+	newFeatures.put("majorType","mass");
+	newFeatures.put("stone", stone_str);
+	newFeatures.put("pounds", bindings.get("pounds")!=null ? bindings.get("pounds").iterator().next().getFeatures().get("value") : null);
+	outputAS.add(bindings.get("imperial_weight").firstNode(),bindings.get("imperial_weight").lastNode(),"ImperialMeasurement", newFeatures);
+	
+	// Since now the data lives in the ImperialMeasurement annotation's feature, we can clean up and remove the Numeric / Units annots
+	AnnotationSet numericWithin = bindings.get("imperial_weight").get("Numeric");
+	AnnotationSet thisAnnot     = bindings.get("imperial_weight");
+	AnnotationSet unitsWithin   = inputAS.get("Units", thisAnnot.firstNode().getOffset(), thisAnnot.lastNode().getOffset());
+	inputAS.removeAll(numericWithin);
+	inputAS.removeAll(unitsWithin);
+}
+
+/*
+ * Description:
+ * Tag imperial measurements in stone +/- pounds
+ */
+Rule: imperial_weight_1
+(
+	(({Numeric}{Units.minorType == "stone"} | {Token.string ==~ "1{1,2}st"})):stone //need to deal with the fact that 11st is captured as the string '11st' not two strings '11' 'st' 
+	(({Numeric})?):pounds
+	({Units.minorType == "pounds"})?
+
+):imperial_weight
+-->
+:imperial_weight{
+	
+	String stone_str = stringFor(doc, bindings.get("stone"));
+	stone_str = stone_str.replaceAll("[^\\d]", "");
+
+	FeatureMap newFeatures = Factory.newFeatureMap();
+	newFeatures.put("majorType","mass");
+	newFeatures.put("stone", stone_str);
+	newFeatures.put("pounds", bindings.get("pounds")!=null ? bindings.get("pounds").iterator().next().getFeatures().get("value") : null);
+	outputAS.add(bindings.get("imperial_weight").firstNode(),bindings.get("imperial_weight").lastNode(),"ImperialMeasurement", newFeatures);
+	
+	// Since now the data lives in the ImperialMeasurement annotation's feature, we can clean up and remove the Numeric / Units annots
+	AnnotationSet numericWithin = bindings.get("imperial_weight").get("Numeric");
+	AnnotationSet thisAnnot     = bindings.get("imperial_weight");
+	AnnotationSet unitsWithin   = inputAS.get("Units", thisAnnot.firstNode().getOffset(), thisAnnot.lastNode().getOffset());
+	inputAS.removeAll(numericWithin);
+	inputAS.removeAll(unitsWithin);
+}
+
+/*
+ * Description:
+ * Tag imperial measurements in pounds +/- stone
+ */
+Rule: imperial_weight_2
+(
+	(((({Numeric})?({Units.minorType == "stone"})?) | ({Token.string ==~ "1{1,2}st"})?)):stone //need to deal with the fact that 11st is captured as the string '11st' not two strings '11' 'st' 
+	({Numeric}):pounds
+	{Units.minorType == "pounds"}
+
+):imperial_weight
+-->
+:imperial_weight{
+	
+	
+	String stone_str = bindings.get("stone")!=null ? stringFor(doc, bindings.get("stone")) : null;
+	if(stone_str!=null) {
+		stone_str = stone_str.replaceAll("[^\\d]", "");
+	}
+
+	FeatureMap newFeatures = Factory.newFeatureMap();
+	newFeatures.put("majorType","mass");
+	newFeatures.put("stone", stone_str);
+	newFeatures.put("pounds", bindings.get("pounds").iterator().next().getFeatures().get("value"));
+	outputAS.add(bindings.get("imperial_weight").firstNode(),bindings.get("imperial_weight").lastNode(),"ImperialMeasurement", newFeatures);
+	
+	// Since now the data lives in the ImperialMeasurement annotation's feature, we can clean up and remove the Numeric / Units annots
+	AnnotationSet numericWithin = bindings.get("imperial_weight").get("Numeric");
+	AnnotationSet thisAnnot     = bindings.get("imperial_weight");
+	AnnotationSet unitsWithin   = inputAS.get("Units", thisAnnot.firstNode().getOffset(), thisAnnot.lastNode().getOffset());
+	inputAS.removeAll(numericWithin);
+	inputAS.removeAll(unitsWithin);
+}

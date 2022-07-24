@@ -1,0 +1,199 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+
+
+Phase: TagVarSentence
+Input: Sentence Anatomy
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * ....
+ */
+Rule: var_sentence
+(
+	{Sentence contains {Anatomy.minorType == "ascending_aorta"}}
+	({Sentence notContains {Anatomy.minorType != "ascending_aorta"}})?
+					
+):var_sentence
+-->
+:var_sentence.VarSentence = {type = "ascending_aorta"}
+
+
+
+Phase: AortaAscending
+Input: Token Anatomy Numeric Units Lookup VarSentence Split
+Options: control=Appelt negationGrouping=false
+
+Macro: CONTEXT
+(
+	{Anatomy,
+		Anatomy within {VarSentence.type == "ascending_aorta"},
+		Anatomy.minorType == "ascending_aorta"}
+)
+
+Macro: FILTER
+(
+	{Token,
+		!Numeric,
+		!Units.majorType == "length",
+		!Anatomy.minorType != "ascending_aorta",
+		!Lookup.majorType == "height",
+		!Lookup.majorType == "body_surface_area",
+		!Units.majorType == "length/length", 
+		!Units.majorType == "z_score", 
+		!Lookup.majorType == "quantity_change",
+		!Split,
+		Token within {VarSentence.type == "ascending_aorta"}}
+)
+
+Macro: FILTER_RELAXED
+(
+	{Token,
+		!Numeric,
+		!Units.majorType == "length",
+		!Anatomy.minorType != "ascending_aorta",
+		!Lookup.majorType == "height",
+		//!Lookup.majorType == "body_surface_area",
+		//!Units.majorType == "length/length", 
+		//!Units.majorType == "z_score", 
+		!Lookup.majorType == "quantity_change",
+		!Split,
+		Token within {VarSentence.type == "ascending_aorta"}}
+)
+
+Macro: VALUE
+(
+	{Numeric, 
+		Numeric within {VarSentence.type == "ascending_aorta"},
+		Numeric.type == "double"} |
+	{Numeric,
+		Numeric within {VarSentence.type == "ascending_aorta"}, 
+		Numeric.type == "integer"}
+)
+
+Macro: UNITS
+(
+	{Units,
+		Units within {VarSentence.type == "ascending_aorta"},
+		Units.majorType == "length"}
+)
+
+/*
+ * Description:
+ * block things that start with indexed e.g. 'indexed Asc Ao 33mm.'
+ */
+Rule: ao_idx_asc_blocker
+Priority: 100
+(	
+	{Lookup.majorType == "indexed", 
+		Lookup within {VarSentence.type == "ascending_aorta"}}
+	{Anatomy,
+		Anatomy within {VarSentence.type == "ascending_aorta"},
+		Anatomy.minorType == "ascending_aorta"}
+):asc_blocker
+-->
+:asc_blocker.Blocked = {}
+
+
+/*
+ * Description:
+ * This is the most common form, e.g. 'the Asc Ao is dilated at 45mm'
+ */
+Rule: ao_asc_diam_1
+Priority: 99
+(
+	( CONTEXT ):context
+	
+	( FILTER )[0,15]
+
+	( VALUE ):value
+	
+	( (UNITS)? ):unit
+			
+	({Token, 
+		!Lookup.minorType == "preposition",
+		!Anatomy.majorType == "misc_echo_descriptor",
+		!Units} | {Split})
+	
+):ao_asc_diam 
+--> 
+:ao_asc_diam
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_asc_diam", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * The rule captures more complicated phrases of the form:  "Aortic root measures 4,2cm at the level of the asc ao."
+ */
+Rule: ao_asc_diam_2
+Priority: 99
+(
+	// General aortic root context
+	(
+		{Anatomy,
+			Anatomy.minorType == "aortic_root",
+			Anatomy notWithin {Anatomy.minorType != "aortic_root"}}
+	)
+	
+	( FILTER )[0,5]
+	
+	( VALUE ):value
+			
+	( (UNITS)? ):unit
+
+	{Lookup.minorType == "preposition"} //Preposition leading into the actual specific context 
+	
+	( FILTER )[0,5]
+	
+	( CONTEXT ):context
+
+):ao_asc_diam 
+--> 
+:ao_asc_diam
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_asc_diam", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * The rule uses a more relaxed filter but enforces the units.
+ * e.g. proximal ascending aorta within normal limits when indexed for BSA = 4.2cm (indexed 1.9cm/m2)
+ */
+Rule: ao_asc_diam_3
+Priority: 98
+(
+	( CONTEXT ):context
+	
+	( FILTER_RELAXED )[0,10]
+	
+	( VALUE ):value
+			
+	( UNITS ):unit
+	
+	({Token, 
+		!Lookup.minorType == "preposition",
+		!Anatomy.majorType == "misc_echo_descriptor",
+		!Units} | {Split})
+
+):ao_asc_diam 
+--> 
+:ao_asc_diam
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_asc_diam", doc, bindings, outputAS);
+}

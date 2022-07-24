@@ -1,0 +1,464 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  miscPericardialEffusionVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: miscPericardialEffusionVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Miscellaneous Pericardial effusion Variable relations from Lookup Annotations 
+*/
+
+Phase: miscPericardialEffusionVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Macro: miscPericardialEffusionTerm
+( {Token.string ==~ "(?i)pericardial"} {Token.string ==~ "(?i)effusion"} | {Token.string ==~ "(?i)effusion"} | 
+{Token.string ==~ "(?i)pericardial"} | {Token.string ==~ "(?i)FLUID"} 
+)
+
+Macro: smallTerms
+( {Token.string ==~ "(?i)SMALL"} | {Token.string ==~ "(?i)TRACE"} | {Token.string ==~ "(?i)TINY"} | 
+{Token.string ==~ "(?i)THIN"} {Token.string ==~ "(?i)RIM"} |
+{Token.string ==~ "(?i)TRIVIAL"} 
+)
+
+Macro: moderateTerms
+( {Token.string ==~ "(?i)Moderate"} | {Token.string ==~ "(?i)MEDIUM"} | {Token.string =~ "(?i)Moderate"}
+)
+
+Macro: largeTerms
+( {Token.string ==~ "(?i)LARGE"} 
+)
+
+Rule: MiscPericardialEffusionValueRule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+(({Token.string != "Summary", Token.string !=~ "(?i)Pericardial", Token.string !=~ "(?i)Pericardium"} |{SpaceToken.string!=Pericardial})*
+{Token.string ==~ "(?i)PLEURAL"} {Token.string ==~ "(?i)EFFUSION"}
+)?
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)EFFUSION", Token.string !=~ "(?i)PERICARDIAL", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+smallTerms
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+
+({Token.string == ","})?
+
+miscPericardialEffusionTerm
+
+
+):context
+
+
+):MiscPericardialEffusionValueGram 
+
+--> 
+:MiscPericardialEffusionValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscPericardialEffusionValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	
+	newFeatures.put("unit", "Levels: 0 (No Effusion), 1 (Small), 2 (Moderate), 3 (Large), Null (assume 0)");
+	newFeatures.put("varType","Pericardial effusion");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Pericardial effusion normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  
+  
+Rule: MiscPericardialEffusionValueAlternRule
+Priority: 20
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+(({Token.string != "Summary", Token.string !=~ "(?i)Pericardial", Token.string !=~ "(?i)Pericardium"} |{SpaceToken.string!=Pericardial})*
+{Token.string ==~ "(?i)PLEURAL"} {Token.string ==~ "(?i)EFFUSION"}
+)?
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)EFFUSION", Token.string !=~ "(?i)PERICARDIAL", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+
+miscPericardialEffusionTerm
+
+({Token.string !=~ "(?i)Summary", Token.string != ".", Token.kind != "number", Token.string !=~ "(?i)PERICARDIUM", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+({Token.string == "~"})?
+({Token.string == "~"})?
+
+
+(({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}):varValue
+
+(
+(({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"}):unit)
+)
+
+):context
+
+
+):MiscPericardialEffusionValueAlternGram 
+
+--> 
+:MiscPericardialEffusionValueAlternGram
+  {
+	
+	gate.AnnotationSet matchedVar=(gate.AnnotationSet) bindings.get("varValue");
+	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedunit=(gate.AnnotationSet) bindings.get("unit");
+				
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscPericardialEffusionValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	String unitOrig = "";
+	
+	if (matchedunit != null) {
+		unitOrig = stringFor(doc, matchedunit);
+		newFeatures.put("unit", unitOrig);
+	}
+	
+	String varStr = stringFor(doc, matchedVar);
+	
+	double varDouble = Double.parseDouble(varStr);
+	
+	if (unitOrig.equals("cm")) {
+	
+		varDouble = varDouble * 10D;
+		
+		newFeatures.put("varOrig", varStr);
+		
+		if (varDouble < 10D) {
+			newFeatures.put("varValue", "1");
+		} else if (varDouble >= 10D && varDouble <= 20D) {
+			newFeatures.put("varValue", "2");
+		} else if (varDouble > 20D) {
+			newFeatures.put("varValue", "3");
+		}
+		
+		newFeatures.put("unit", "mm");
+		
+	} else {
+	
+		if (varDouble < 10D) {
+			newFeatures.put("varValue", "1");
+		} else if (varDouble >= 10D && varDouble <= 20D) {
+			newFeatures.put("varValue", "2");
+		} else if (varDouble > 20D) {
+			newFeatures.put("varValue", "3");
+		}
+	}
+		
+	newFeatures.put("unit", "Levels: 0 (No Effusion), 1 (Small), 2 (Moderate), 3 (Large), Null (assume 0)");
+	newFeatures.put("varType","Pericardial effusion");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Pericardial effusion altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  
+Rule: MiscPericardialEffusionValueAltern2Rule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+(({Token.string != "Summary", Token.string !=~ "(?i)Pericardial", Token.string !=~ "(?i)Pericardium"} |{SpaceToken.string!=Pericardial})*
+{Token.string ==~ "(?i)PLEURAL"} {Token.string ==~ "(?i)EFFUSION"}
+)?
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)EFFUSION", Token.string !=~ "(?i)PERICARDIAL", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+moderateTerms
+
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+
+miscPericardialEffusionTerm
+
+
+):context
+
+
+):MiscPericardialEffusionValueAltern2Gram 
+
+--> 
+:MiscPericardialEffusionValueAltern2Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscPericardialEffusionValueAltern2Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2");
+	
+	newFeatures.put("unit", "Levels: 0 (No Effusion), 1 (Small), 2 (Moderate), 3 (Large), Null (assume 0)");
+	newFeatures.put("varType","Pericardial effusion");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Pericardial effusion altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  
+
+Rule: MiscPericardialEffusionValueAltern3Rule
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+(({Token.string != "Summary", Token.string !=~ "(?i)Pericardial", Token.string !=~ "(?i)Pericardium"} |{SpaceToken.string!=Pericardial})*
+{Token.string ==~ "(?i)PLEURAL"} {Token.string ==~ "(?i)EFFUSION"}
+)?
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)EFFUSION", Token.string !=~ "(?i)PERICARDIAL", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+miscPericardialEffusionTerm
+
+):context
+
+
+):MiscPericardialEffusionValueAltern3Gram 
+
+--> 
+:MiscPericardialEffusionValueAltern3Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscPericardialEffusionValueAltern3Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2");
+	
+	newFeatures.put("unit", "Levels: 0 (No Effusion), 1 (Small), 2 (Moderate), 3 (Large), Null (assume 0)");
+	newFeatures.put("varType","Pericardial effusion");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Pericardial effusion altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  } 
+ 
+ 
+Rule: MiscPericardialEffusionValueAltern4Rule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+(({Token.string != "Summary", Token.string !=~ "(?i)Pericardial", Token.string !=~ "(?i)Pericardium"} |{SpaceToken.string!=Pericardial})*
+{Token.string ==~ "(?i)PLEURAL"} {Token.string ==~ "(?i)EFFUSION"}
+)?
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)EFFUSION", Token.string !=~ "(?i)PERICARDIAL", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+miscPericardialEffusionTerm
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+
+({Token.string == ","})?
+
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+
+({Token.string == ","})?
+
+smallTerms
+
+
+):context
+
+
+):MiscPericardialEffusionValueAltern4Gram 
+
+--> 
+:MiscPericardialEffusionValueAltern4Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscPericardialEffusionValueAltern4Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	
+	newFeatures.put("unit", "Levels: 0 (No Effusion), 1 (Small), 2 (Moderate), 3 (Large), Null (assume 0)");
+	newFeatures.put("varType","Pericardial effusion");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Pericardial effusion altern4");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  
+
+Rule: MiscPericardialEffusionValueAltern5Rule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+(({Token.string != "Summary", Token.string !=~ "(?i)Pericardial", Token.string !=~ "(?i)Pericardium"} |{SpaceToken.string!=Pericardial})*
+{Token.string ==~ "(?i)PLEURAL"} {Token.string ==~ "(?i)EFFUSION"}
+)?
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)EFFUSION", Token.string !=~ "(?i)PERICARDIAL", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+largeTerms
+
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+
+miscPericardialEffusionTerm
+
+
+):context
+
+
+):MiscPericardialEffusionValueAltern5Gram 
+
+--> 
+:MiscPericardialEffusionValueAltern5Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscPericardialEffusionValueAltern5Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2");
+	
+	newFeatures.put("unit", "Levels: 0 (No Effusion), 1 (Small), 2 (Moderate), 3 (Large), Null (assume 0)");
+	newFeatures.put("varType","Pericardial effusion");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Pericardial effusion altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }
+  
+
+Rule: MiscPericardialEffusionValueAltern6Rule
+Priority: 10
+(
+(
+( ({Token.string ==~ "(?i)Miscellaneous"} | {Token.string ==~ "(?i)MISC"} | {Token.string ==~ "(?i)Pericardium"}) {Token.string ==~ "(?i):"})
+
+(({Token.string != "Summary", Token.string !=~ "(?i)Pericardial", Token.string !=~ "(?i)Pericardium"} |{SpaceToken.string!=Pericardial})*
+{Token.string ==~ "(?i)PLEURAL"} {Token.string ==~ "(?i)EFFUSION"}
+)?
+
+({Token.string !=~ "(?i)Summary", Token.string !=~ "(?i)EFFUSION", Token.string !=~ "(?i)PERICARDIAL", Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)NO"} | {Token.string ==~ "(?i)NORMAL"}
+)
+
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+({Token.kind == "word", !Token.string ==~ "(?i)PLEURAL"})? 
+
+(miscPericardialEffusionTerm | {Token.string ==~ "(?i)PERICARDIUM"})
+
+
+):context
+
+
+):MiscPericardialEffusionValueAltern6Gram 
+
+--> 
+:MiscPericardialEffusionValueAltern6Gram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("MiscPericardialEffusionValueAltern6Gram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "0");
+	
+	newFeatures.put("unit", "Levels: 0 (No Effusion), 1 (Small), 2 (Moderate), 3 (Large), Null (assume 0)");
+	newFeatures.put("varType","Pericardial effusion");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Pericardial effusion altern6");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"Miscellaneous", newFeatures);
+  }

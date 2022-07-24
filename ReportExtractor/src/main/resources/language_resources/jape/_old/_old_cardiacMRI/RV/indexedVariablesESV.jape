@@ -1,0 +1,177 @@
+/*
+*  indexedVariablesESV.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020
+*  $Id: indexedVariablesESV.jape,v 1.0 2020/02/14 13:20:00 GMT
+*
+* The Phase separates Annotations of ESV relations from Lookup Annotations for Right Ventricle variables
+*/
+
+Phase: indexedVariablesESV
+Input: Token Lookup  
+Options: control=appelt 
+
+
+
+Rule: iRVESVValueRule
+(
+{Token.string == "RV"}
+({Token.string!="LV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+(
+{Token.kind == "number"}
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+)
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iRVESVValueGram 
+({Token.string!="number"}|{SpaceToken.string!=")"})*
+{Token.string == ")"}
+
+--> 
+:iRVESVValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iRVESVValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iRVESVValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"IRVESVValue", newFeatures);
+  }
+  
+
+Rule: iRVESVValueAlternRule
+(
+{Token.string == "RV"}
+({Token.string!="LV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iRVESVValueAlternGram 
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+{!Token.kind == "number"}
+
+--> 
+:iRVESVValueAlternGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iRVESVValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iRVESVValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"IRVESVValue", newFeatures);
+  }
+  
+
+Rule: iRVESVValueAlternRule2
+(
+{Token.string =~ ".*RV"}
+({Token.string !=~ ".*LV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.string=="ml"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+{Token.kind == "number"}	
+{Token.position == startpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iRVESVValueAlternGram2 
+
+--> 
+:iRVESVValueAlternGram2
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iRVESVValueAlternGram2");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iRVESVValueAlternRule2");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"IRVESVValue", newFeatures);
+  }  
+  
+
+Rule: iRVESVValueAlternRule3
+(
+{Token.string =~ ".*RV"} 
+({Token.string !=~ ".*LV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+{Token.position == startpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iRVESVValueAlternGram3
+{Token.string == ";"}
+
+--> 
+:iRVESVValueAlternGram3
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iRVESVValueAlternGram3");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iRVESVValueAlternRule3");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"IRVESVValue", newFeatures);
+  }
+  
+
+Rule: iRVESVValueAbbrevRule
+(
+{Token.string == "iRVESV"}	
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iRVESVValueGramAbbrev 
+
+--> 
+:iRVESVValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iRVESVValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iRVESVValueAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"IRVESVValue", newFeatures);
+  }
+  
+
+

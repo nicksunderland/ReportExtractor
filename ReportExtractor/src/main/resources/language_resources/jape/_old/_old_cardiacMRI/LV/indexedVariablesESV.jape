@@ -1,0 +1,139 @@
+/*
+*  indexedVariablesESV.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020
+*  $Id: indexedVariablesESV.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of ESV relations from Lookup Annotations 
+*/
+
+Phase: indexedVariablesESV
+Input: Token Lookup  
+Options: control=appelt 
+
+
+
+Rule: iLVESVValueRule
+(
+{Token.string == "LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+(
+{Token.kind == "number"}
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+)
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVESVValueGram 
+({Token.string!="number"}|{SpaceToken.string!=")"})*
+{Token.string == ")"}
+
+--> 
+:iLVESVValueGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVESVValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVESVValueRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVESVValue", newFeatures);
+  }
+  
+
+Rule: iLVESVValueAlternRule
+(
+{Token.string == "LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVESVValueAlternGram 
+{Token.position == startpunct}
+({Token.kind == "number"} {Token.subkind == dashpunct} {Token.kind == "number"})
+{Token.position == endpunct}
+{!Token.kind == "number"}
+
+--> 
+:iLVESVValueAlternGram
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVESVValueAlternGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVESVValueAlternRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVESVValue", newFeatures);
+  }
+  
+
+Rule: iLVESVValueAbbrevRule
+(
+{Token.string == "iLVESV"}	
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVESVValueGramAbbrev 
+
+--> 
+:iLVESVValueGramAbbrev
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVESVValueGramAbbrev");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVESVValueAbbrevRule");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVESVValue", newFeatures);
+  }
+  
+
+Rule: iLVESVValueAlternRule2
+(
+{Token.string =~ ".*LV"}
+({Token.string!="RV"}|{SpaceToken.string!=End})*
+({Token.string == "End"}
+{Token.string == "Systolic"}
+{Token.string == "Volume"}
+{Token.string=="ml"}
+{Token.position == startpunct}
+{Token.string=="ml"}
+{Token.string=="/"}
+{Token.string == "m"}{Token.string == "2"}		
+{Token.position == endpunct}
+{Token.kind == "number"}	
+{Token.position == startpunct}
+)
+)
+(
+({Token.kind == "number"})?
+({Token.string == "."})?
+{Token.kind == "number"}
+):iLVESVValueAlternGram2 
+
+--> 
+:iLVESVValueAlternGram2
+  {
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("iLVESVValueAlternGram2");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	newFeatures.put("rule","iLVESVValueAlternRule2");
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"ILVESVValue", newFeatures);
+  }

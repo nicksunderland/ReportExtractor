@@ -1,0 +1,76 @@
+Imports: {
+	import static gate.Utils.*;
+	import neoImage.v2.JapeRhsProcessor;
+}
+
+Phase: posterior_wall_diameter
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: lv_pwd_rule_1
+(
+
+	(
+		(
+			{Token.string ==~ "(?i)[lv]*pwd"} | {Token.string == "PW"} | {Token.string ==~ "(?i)ILW"} |
+			({Token.string ==~ "(?i)P"} {Token.string ==~ "(?i)W"} {Token.string ==~ "(?i)D"}) |
+			({Token.string ==~ "(?i)posterior"} {Token.string ==~ "(?i)wall"} {Token.string ==~ "(?i)diameter|thickness"})
+		)
+		({Token.string == "="})?
+	):context
+	
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+	
+	(
+		({Token.string ==~ "(?i)MM"} | {Token.string ==~ "(?i)CM"})
+	):unit
+
+):lv_pwd
+--> 
+:lv_pwd
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "lv_pwd",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }
+  
+  
+  
+Rule: lv_pwd_rule_2
+(
+
+	(
+		{Token.string == "LVPWD"}	
+		({Token.string == "["})?
+	):context
+	
+	(
+		({Token.kind == "number"})?
+		({Token.string == "."})?
+		{Token.kind == "number"}
+	):value
+
+):lv_pwd 
+--> 
+:lv_pwd
+  {
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "lv_pwd",
+			  										  doc, 
+			  										  bindings, 
+			  										  outputAS);
+  }

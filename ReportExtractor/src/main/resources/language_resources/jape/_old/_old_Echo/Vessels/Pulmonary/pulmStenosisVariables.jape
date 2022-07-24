@@ -1,0 +1,411 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  pulmStenosisVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: pulmStenosisVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of pulmonary valve stenosis Variable relations from Lookup Annotations 
+*/
+
+Phase: pulmStenosisVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: PulmonaryStenosisValueRule
+(
+(
+({Token.string ==~ "(?i)PV"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)Miscellaneous", Token.string !=~ "(?i)SUMMARY"}|{SpaceToken.string!=Miscellaneous})*
+
+):context
+)
+
+(
+(
+(
+
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+
+({Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)PS"})
+
+):context
+
+
+):PulmonaryStenosisValueGram 
+
+--> 
+:PulmonaryStenosisValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmonaryStenosisValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","PV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PV Stenosis normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: PulmonaryStenosisAlternValueRule
+(
+(
+({Token.string ==~ "(?i)PV"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)Miscellaneous", Token.string !=~ "(?i)SUMMARY"}|{SpaceToken.string!=Miscellaneous})*
+
+):context
+)
+
+(
+(
+(
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+({Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)PS"})
+
+
+):context
+
+
+):PulmonaryStenosisAlternValueGram 
+
+--> 
+:PulmonaryStenosisAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmonaryStenosisAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","PV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PV Stenosis altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: PulmonaryStenosisAltern2ValueRule
+(
+(
+({Token.string ==~ "(?i)PV"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)Miscellaneous", Token.string !=~ "(?i)SUMMARY"}|{SpaceToken.string!=Miscellaneous})*
+
+):context
+)
+
+(
+(
+(
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+)
+)
+
+{Token.kind == "word"}
+{Token.kind == "word"}
+
+({Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)PS"})
+
+
+):context
+
+
+):PulmonaryStenosisAltern2ValueGram 
+
+--> 
+:PulmonaryStenosisAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmonaryStenosisAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","PV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PV Stenosis altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: PulmonaryStenosisAltern3ValueRule
+(
+(
+({Token.string ==~ "(?i)PV"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)Miscellaneous", Token.string !=~ "(?i)SUMMARY"}|{SpaceToken.string!=Miscellaneous})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+
+{Token.kind == "word"}
+
+({Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)PS"})
+
+
+):context
+
+
+):PulmonaryStenosisAltern3ValueGram 
+
+--> 
+:PulmonaryStenosisAltern3ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmonaryStenosisAltern3ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","PV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PV Stenosis altern3");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: PulmonaryStenosisAlternModerateValueRule
+(
+(
+({Token.string ==~ "(?i)PV"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)Miscellaneous", Token.string !=~ "(?i)SUMMARY"}|{SpaceToken.string!=Miscellaneous})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)PS"})
+
+
+):context
+
+
+):PulmonaryStenosisAlternModerateValueGram 
+
+--> 
+:PulmonaryStenosisAlternModerateValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmonaryStenosisAlternModerateValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "2");
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","PV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PV Stenosis alternModerate");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+  
+Rule: PulmonaryStenosisUnboundedValueRule
+Priority:10
+(
+(
+({Token.string ==~ "(?i)PV"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)Miscellaneous", Token.string !=~ "(?i)SUMMARY"}|{SpaceToken.string!=Miscellaneous})*
+
+):context
+)
+
+(
+(
+( 
+(
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MEDIUM"}):moderate | 
+({Token.string ==~ "(?i)MILD(LY)?"}):mild | 
+({Token.string ==~ "(?i)HEAVILY"} | {Token.string ==~ "(?i)MARKED[LY]?"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)VERY"} | {Token.string ==~ "(?i)SEVERE(LY)?"} | {Token.string ==~ "(?i)TOO"} ):severe
+) 
+)
+({Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)PS"})
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+{Token.string ==~ "(?i)PULMONARY"}
+{Token.string ==~ "(?i)VALVE"}
+
+):context
+
+
+):PulmonaryStenosisUnboundedValueGram 
+
+--> 
+:PulmonaryStenosisUnboundedValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmonaryStenosisUnboundedValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedmild != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "3");
+	}
+	
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","PV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PV Stenosis Unbounded");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+Rule: PulmonaryStenosisAlternNonValueRule
+Priority: 10
+(
+(
+({Token.string ==~ "(?i)PV"} | {Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)Miscellaneous", Token.string !=~ "(?i)SUMMARY"}|{SpaceToken.string!=Miscellaneous})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)NO[N]?"} | {Token.string ==~ "(?i)NOT"} |
+{Token.string ==~ "(?i)NO"} {Token.string ==~ "(?i)PULMONARY"} 
+)
+
+({Token.kind == "word"})?
+({Token.kind == "word"})?
+({Token.string == "/"})?
+
+({Token.string ==~ "(?i)PULMONARY"} {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOSIS"} | {Token.string ==~ "(?i)STENOTIC"} | {Token.string ==~ "(?i)PS"})
+
+):context
+
+
+):PulmonaryStenosisAlternNonValueGram 
+
+--> 
+:PulmonaryStenosisAlternNonValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("PulmonaryStenosisAlternNonValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "scale 0 (No stenosis) to 3 (Severe stenosis)");
+	newFeatures.put("varType","PV Stenosis");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "PV Stenosis alternNon");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

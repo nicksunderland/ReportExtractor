@@ -1,0 +1,206 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  rightVentricleLongitudinalDysfunctionVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: rightVentricleLongitudinalDysfunctionVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Right Ventricle Longitudinal or Long Axis Dysfunction Variable relations from Lookup Annotations 
+*/
+
+Phase: rightVentricleLongitudinalDysfunctionVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+
+Rule: RightVentricleLongitudinalDysfunctionValueRule
+(
+(
+( {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)VENTRICLE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)HEART"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)SIDED"} {Token.string ==~ "(?i)STRUCTURES"} | {Token.string ==~ "(?i)RV"})
+({Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)MISC", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)CAVA", Token.string !=~ "(?i)IVC", Token.string !=~ "(?i)PRESSURE", Token.string !=~ "(?i)LA", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)PULMONARY"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+
+({Token.string ==~ "(?i)IMPAIRED"} | {Token.string ==~ "(?i)REDUCED"} | {Token.string ==~ "(?i)IMPAIR[E]?MENT"})
+
+({Token.kind == "word", Token.string !=~ "(?i)BUT"})?
+({Token.kind == "word", Token.string !=~ "(?i)BUT"})?
+
+({Token.string ==~ "(?i)LONGITUDINAL"} | {Token.string ==~ "(?i)LONGITUDINAL"} {Token.string ==~ "(?i)FUNCTION"} |{Token.string ==~ "(?i)BASAL"} {Token.string ==~ "(?i)LONGITUDINAL"} | {Token.string ==~ "(?i)LONG"} {Token.string ==~ "(?i)AXIS"} | 
+{Token.string ==~ "(?i)RV"} {Token.string ==~ "(?i)LONG"} {Token.string ==~ "(?i)AXIS"})
+ 
+):context
+
+
+):RightVentricleLongitudinalDysfunctionValueGram 
+
+--> 
+:RightVentricleLongitudinalDysfunctionValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RightVentricleLongitudinalDysfunctionValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "scale 0 (no dysfunction) to 1 (dysfunctional)");
+	newFeatures.put("varType","RV Longitudinal Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "RV Longitudinal Dysfunction normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: RightVentricleLongitudinalDysfunctionAlternValueRule
+(
+(
+( {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)VENTRICLE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)HEART"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)SIDED"} {Token.string ==~ "(?i)STRUCTURES"} | {Token.string ==~ "(?i)RV"})
+({Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)MISC", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)CAVA", Token.string !=~ "(?i)IVC", Token.string !=~ "(?i)PRESSURE", Token.string !=~ "(?i)LA", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)PULMONARY"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+
+({Token.string ==~ "(?i)GOOD"} | {Token.string ==~ "(?i)PRESERVED"} | {Token.string ==~ "(?i)REASONABLE"} | {Token.string ==~ "(?i)NORMAL"})
+
+({Token.kind == "word", Token.string !=~ "(?i)BUT"})?
+({Token.kind == "word", Token.string !=~ "(?i)BUT"})?
+
+({Token.string ==~ "(?i)LONGITUDINAL"} | {Token.string ==~ "(?i)LONGITUDINAL"} {Token.string ==~ "(?i)FUNCTION"} |{Token.string ==~ "(?i)BASAL"} {Token.string ==~ "(?i)LONGITUDINAL"} | {Token.string ==~ "(?i)LONG"} {Token.string ==~ "(?i)AXIS"} | 
+{Token.string ==~ "(?i)RV"} {Token.string ==~ "(?i)LONG"} {Token.string ==~ "(?i)AXIS"})
+ 
+
+):context
+
+
+):RightVentricleLongitudinalDysfunctionAlternValueGram 
+
+--> 
+:RightVentricleLongitudinalDysfunctionAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RightVentricleLongitudinalDysfunctionAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "scale 0 (no dysfunction) to 1 (dysfunctional)");
+	newFeatures.put("varType","RV Longitudinal Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "RV Longitudinal Dysfunction altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+
+
+Rule: RightVentricleLongitudinalDysfunctionAltern2ValueRule
+(
+(
+( {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)VENTRICLE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)HEART"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)SIDED"} {Token.string ==~ "(?i)STRUCTURES"} | {Token.string ==~ "(?i)RV"})
+({Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)MISC", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)CAVA", Token.string !=~ "(?i)IVC", Token.string !=~ "(?i)PRESSURE", Token.string !=~ "(?i)LA", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)PULMONARY"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)LONGITUDINAL"} | {Token.string ==~ "(?i)LONGITUDINAL"} {Token.string ==~ "(?i)FUNCTION"} |{Token.string ==~ "(?i)BASAL"} {Token.string ==~ "(?i)LONGITUDINAL"} | {Token.string ==~ "(?i)LONG"} {Token.string ==~ "(?i)AXIS"} | 
+{Token.string ==~ "(?i)RV"} {Token.string ==~ "(?i)LONG"} {Token.string ==~ "(?i)AXIS"})
+ 
+({Token.kind == "word", Token.string !=~ "(?i)BUT"})?
+({Token.kind == "word", Token.string !=~ "(?i)BUT"})?
+({Token.kind == "word", Token.string !=~ "(?i)BUT"})?
+
+({Token.string ==~ "(?i)IMPAIRED"} | {Token.string ==~ "(?i)REDUCED"} | {Token.string ==~ "(?i)IMPAIR[E]?MENT"})
+
+):context
+
+
+):RightVentricleLongitudinalDysfunctionAltern2ValueGram 
+
+--> 
+:RightVentricleLongitudinalDysfunctionAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RightVentricleLongitudinalDysfunctionAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+
+	newFeatures.put("varValue", "1");
+	newFeatures.put("unit", "scale 0 (no dysfunction) to 1 (dysfunctional)");
+	newFeatures.put("varType","RV Longitudinal Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "RV Longitudinal Dysfunction altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+
+Rule: RightVentricleLongitudinalDysfunctionAltern2ValueRule
+(
+(
+( {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)VENTRICLE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)HEART"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)SIDED"} {Token.string ==~ "(?i)STRUCTURES"} | {Token.string ==~ "(?i)RV"})
+({Token.string !=~ "(?i)TRICUSPID", Token.string !=~ "(?i)MISC", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)CAVA", Token.string !=~ "(?i)IVC", Token.string !=~ "(?i)PRESSURE", Token.string !=~ "(?i)LA", Token.string !=~ "(?i)RA", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)AORTIC", Token.string !=~ "(?i)MITRAL", Token.string !=~ "(?i)MEASUREMENTS", Token.string !=~ "(?i)ATRIUM", Token.string !=~ "(?i)PULMONARY"} |{SpaceToken.string!=Position})*
+
+):context
+)
+
+(
+(
+
+({Token.string ==~ "(?i)LONGITUDINAL"} | {Token.string ==~ "(?i)LONGITUDINAL"} {Token.string ==~ "(?i)FUNCTION"} |{Token.string ==~ "(?i)BASAL"} {Token.string ==~ "(?i)LONGITUDINAL"} | {Token.string ==~ "(?i)LONG"} {Token.string ==~ "(?i)AXIS"} | 
+{Token.string ==~ "(?i)RV"} {Token.string ==~ "(?i)LONG"} {Token.string ==~ "(?i)AXIS"})
+ 
+({Token.kind == "word", Token.string !=~ "(?i)BUT"})?
+({Token.kind == "word", Token.string !=~ "(?i)BUT"})?
+({Token.kind == "word", Token.string !=~ "(?i)BUT"})?
+
+({Token.string ==~ "(?i)GOOD"} | {Token.string ==~ "(?i)PRESERVED"} | {Token.string ==~ "(?i)REASONABLE"} | {Token.string ==~ "(?i)NORMAL"})
+
+):context
+
+
+):RightVentricleLongitudinalDysfunctionAltern2ValueGram 
+
+--> 
+:RightVentricleLongitudinalDysfunctionAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+		
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("RightVentricleLongitudinalDysfunctionAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+
+	newFeatures.put("varValue", "0");
+	newFeatures.put("unit", "scale 0 (no dysfunction) to 1 (dysfunctional)");
+	newFeatures.put("varType","RV Longitudinal Dysfunction");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "RV Longitudinal Dysfunction altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

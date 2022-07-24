@@ -1,0 +1,83 @@
+MultiPhase:	RelationExtractionGrammars
+
+Phases:
+	
+/* GENERAL PHASES
+ * --------------
+ * Run the general phases first to tag the numerical data and things that will be common 
+ * across all reports such as "height" and "weight".
+ */
+../general/numerical
+../general/refine_gaz_annotations
+../general/imperial_measurements
+../general/misc_numeric_annotations
+../general/height
+../general/weight
+
+/* REPORT SECTIONS
+ * ---------------
+ * Tag the report sections, here we looks for headers that indicate which "section"
+ * of the report we are in.
+ */
+report_sections/report_sections
+
+/* AORTA
+ * ---------------
+ * First we run the overarching "init" phase, which tags things common to all of the 
+ * aorta jape files. This is usually extending annotations based on things found within
+ * the report sections (which we have just tagged).
+ * Then run the specific japes for each of the variables, +/- init phases common to 
+ * each type of variable. 
+ */
+
+vessels/linear_measurements/aorta_init
+vessels/linear_measurements/aorta_root
+vessels/linear_measurements/aorta_root_height_indexed
+vessels/linear_measurements/aorta_root_cat
+vessels/linear_measurements/aorta_sinus_of_valsalva
+vessels/linear_measurements/aorta_sinus_of_valsalva_height_indexed
+vessels/linear_measurements/aorta_sinus_of_valsalva_cat
+vessels/linear_measurements/aorta_sinotubular_junction
+vessels/linear_measurements/aorta_sinotubular_junction_height_indexed
+vessels/linear_measurements/aorta_sinotubular_junction_cat
+vessels/linear_measurements/aorta_ascending
+vessels/linear_measurements/aorta_ascending_height_indexed
+vessels/linear_measurements/aorta_ascending_cat
+
+/* LEFT VENTRICLE
+ * ---------------
+ * .... 
+ */
+//left_ventricle/linear_measurements/interventricular_septal_diameter
+//left_ventricle/linear_measurements/posterior_wall_diameter
+//left_ventricle/linear_measurements/internal_diameter_diastole
+//left_ventricle/linear_measurements/internal_diameter_systole
+//left_ventricle/linear_measurements/outflow_tract_diameter
+//left_ventricle/doppler_measurements/outflow_tract_peak_vel
+//left_ventricle/doppler_measurements/outflow_tract_peak_grad
+//left_ventricle/doppler_measurements/outflow_tract_mean_vel
+//left_ventricle/doppler_measurements/outflow_tract_mean_grad
+//left_ventricle/systolic_function/ejection_fraction
+//left_ventricle/systolic_function/fractional_shortening
+
+/* RIGHT VENTRICLE
+ * ---------------
+ * .... 
+ */
+//right_ventricle/linear_measurements/internal_diameter_1
+//right_ventricle/systolic_function/tapse
+//right_ventricle/systolic_function/fractional_area_change
+//right_ventricle/tissue_doppler_measurements/tdi_s_velocity
+
+/* LEFT ATRIUM
+ * ---------------
+ * .... 
+ */
+//left_atrium/volume_measurements/biplane_volume
+//left_atrium/volume_measurements/biplane_indexed_volume
+
+/* RIGHT ATRIUM
+ * ---------------
+ * .... 
+ */
+//right_atrium/area_measurements/area_2d

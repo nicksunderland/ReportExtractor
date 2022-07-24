@@ -1,0 +1,87 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  pulmMidSystolicNotchVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: pulmMidSystolicNotchVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of pulm MPA (main), LPA (left), RPA (right) Artery Diameter Variable relations from Lookup Annotations 
+*/
+
+Phase: pulmMidSystolicNotchVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+
+  
+Rule: pulmMidSystolicNotchValueRule
+(
+(
+{Token.string ==~ "(?i)WITH"}
+({Token.kind == "word", Token.string !=~ "(?i)NO"})?
+(
+{Token.string ==~ "(?i)MID"}
+({Token.string == "-"})?
+{Token.string ==~ "(?i)SYSTOLIC"} | {Token.string ==~ "(?i)MID-SYSTOLIC"}
+)
+{Token.string ==~ "(?i)NOTCH"}
+
+):context
+
+
+):pulmMidSystolicNotchValueGram 
+
+--> 
+:pulmMidSystolicNotchValueGram
+  {	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("pulmMidSystolicNotchValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "1");
+	newFeatures.put("varType","Mid Systolic Notch");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Mid Systolic Notch Qualitative");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+
+
+Rule: pulmNoMidSystolicNotchValueRule
+(
+(
+{Token.string ==~ "(?i)NO"}
+(
+{Token.string ==~ "(?i)MID"}
+({Token.string == "-"})?
+{Token.string ==~ "(?i)SYSTOLIC"} | {Token.string ==~ "(?i)MID-SYSTOLIC"}
+)
+{Token.string ==~ "(?i)NOTCH"}
+
+):context
+
+
+):pulmNoMidSystolicNotchValueGram 
+
+--> 
+:pulmNoMidSystolicNotchValueGram
+  {	
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("pulmNoMidSystolicNotchValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "0");
+	newFeatures.put("varType","Mid Systolic Notch");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "Mid Systolic Notch Qualitative");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }

@@ -1,0 +1,4965 @@
+Imports: {
+	import static gate.Utils.*;
+	import java.util.regex.*;
+}
+
+
+/*
+*  leftVentricleWMNormokineticVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: leftVentricleWMNormokineticVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of Left Ventricle Normokinetic segments Variable relations from Lookup Annotations 
+*/
+
+Phase: leftVentricleWMNormokineticVariables
+Input: Token Lookup  
+Options: control=appelt 
+
+
+Macro: SECTION_1
+(
+(
+(
+((({Lookup.majorType == Hypokinesis_BasalToMid} | ({Lookup.majorType == Hypokinesis_BasalAndMid}):basalAndMid1):basalToMid1  | ({Lookup.majorType ==  Hypokinesis_MidToApical} | ({Lookup.majorType == Hypokinesis_MidAndApical}):midAndApical1):midToApical1 | ({Lookup.majorType ==  Hypokinesis_BasalOrMid}):midOrBasal1 | {Token.string ==~ "(?i)APICAL"}):level1 | {Lookup.majorType == Hypokinesis_BasalToApical})?
+(
+(({Lookup.majorType == Hypokinesis_AntInf_Septal}):antInfSeptal1 | ({Lookup.majorType == Hypokinesis_AntInf_Lateral }):antInfLateral1):anteroInfero1 | ({Token.string ==~ "(?i)INFERIOR"} ({Token.string ==~ "(?i)WALL"}):wall1 | {Token.string ==~ "(?i)INFERIOR"} | {Token.string ==~ "(?i)POSTERIOR"} {Token.string ==~ "(?i)WALL"} | {Token.string ==~ "(?i)POSTERIOR"} {Token.string ==~ "(?i)REGION"} | {Token.string ==~ "(?i)POSTERIOR"}):inferior1 | ({Token.string ==~ "(?i)SEPT[UA][ML]"} ({Token.string ==~ "(?i)WALL"}):wall1 | {Token.string ==~ "(?i)SEPT[UA][ML]", !Lookup.majorType == Septal_Bounce_WordExclusion}):septal1 | {Token.string ==~ "(?i)APICAL"} {Token.string ==~ "(?i)CAP"} | {Token.string ==~ "(?i)APEX"} | ({Token.string ==~ "(?i)ANTERIOR"} ({Token.string ==~ "(?i)WALL"}):wall1 | {Token.string ==~ "(?i)ANTERIOR"}):anterior1 | ({Token.string ==~ "(?i)LATERAL"} ({Token.string ==~ "(?i)WALL"}):wall1 | {Token.string ==~ "(?i)LATERAL"}):lateral1 | (({Token.string ==~ "(?i)ALL"} | {Token.string ==~ "(?i)ENTIRE"}) {Token.string ==~ "(?i)APICAL"} | {Token.string ==~ "(?i)APICAL"} {Lookup.majorType == Hypokinesis_Region}):allApical1 | (({Token.string ==~ "(?i)ALL"} | {Token.string ==~ "(?i)ENTIRE"}) {Token.string ==~ "(?i)BASAL"} | {Token.string ==~ "(?i)BASAL"} {Lookup.majorType == Hypokinesis_Region}):allBasal1 | (({Token.string ==~ "(?i)ALL"} | {Token.string ==~ "(?i)ENTIRE"}) {Token.string ==~ "(?i)MID"} | {Token.string ==~ "(?i)MID"} {Lookup.majorType == Hypokinesis_Region}):allMid1
+):segment1
+(({Token.string ==~ "(?i)WALL"}):wall1 | {Lookup.majorType == Hypokinesis_Region})?
+((({Lookup.majorType == Hypokinesis_BasalToMid} | ({Lookup.majorType == Hypokinesis_BasalAndMid}):basalAndMid1):basalToMid1  | ({Lookup.majorType ==  Hypokinesis_MidToApical} | ({Lookup.majorType == Hypokinesis_MidAndApical}):midAndApical1):midToApical1 | ({Lookup.majorType ==  Hypokinesis_BasalOrMid}):midOrBasal1 | {Token.string ==~ "(?i)APICAL"}):level1 | {Lookup.majorType == Hypokinesis_BasalToApical})?
+)
+):section1
+)
+
+Macro: SECTION_2
+(
+(
+((({Lookup.majorType == Hypokinesis_BasalToMid} | ({Lookup.majorType == Hypokinesis_BasalAndMid}):basalAndMid2):basalToMid2  | ({Lookup.majorType ==  Hypokinesis_MidToApical} | ({Lookup.majorType == Hypokinesis_MidAndApical}):midAndApical2):midToApical2 | ({Token.string ==~ "(?i)MID"} | {Token.string ==~ "(?i)BASAL"}):midOrBasal2 | {Token.string ==~ "(?i)APICAL"}):level2 | {Lookup.majorType == Hypokinesis_BasalToApical})?
+(
+(({Lookup.majorType == Hypokinesis_AntInf_Septal}):antInfSeptal2 | ({Lookup.majorType == Hypokinesis_AntInf_Lateral }):antInfLateral2):anteroInfero2 | ({Token.string ==~ "(?i)INFERIOR"} ({Token.string ==~ "(?i)WALL"}):wall1 | {Token.string ==~ "(?i)INFERIOR"} | {Token.string ==~ "(?i)POSTERIOR"} {Token.string ==~ "(?i)WALL"} | {Token.string ==~ "(?i)POSTERIOR"} {Token.string ==~ "(?i)REGION"} | {Token.string ==~ "(?i)POSTERIOR"}):inferior2 | ({Token.string ==~ "(?i)SEPT[UA][ML]"} ({Token.string ==~ "(?i)WALL"}):wall2 | {Token.string ==~ "(?i)SEPT[UA][ML]", !Lookup.majorType == Septal_Bounce_WordExclusion}):septal2 | {Token.string ==~ "(?i)APICAL"} {Token.string ==~ "(?i)CAP"} | {Token.string ==~ "(?i)APEX"} | ({Token.string ==~ "(?i)ANTERIOR"} ({Token.string ==~ "(?i)WALL"}):wall2 | {Token.string ==~ "(?i)ANTERIOR"}):anterior2 | ({Token.string ==~ "(?i)LATERAL"} ({Token.string ==~ "(?i)WALL"}):wall2 | {Token.string ==~ "(?i)LATERAL"}):lateral2 | (({Token.string ==~ "(?i)ALL"} | {Token.string ==~ "(?i)ENTIRE"}) {Token.string ==~ "(?i)APICAL"} | {Token.string ==~ "(?i)APICAL"}  {Lookup.majorType == Hypokinesis_Region}):allApical2 | (({Token.string ==~ "(?i)ALL"} | {Token.string ==~ "(?i)ENTIRE"}) {Token.string ==~ "(?i)BASAL"} | {Token.string ==~ "(?i)BASAL"} {Lookup.majorType == Hypokinesis_Region}):allBasal2 | (({Token.string ==~ "(?i)ALL"} | {Token.string ==~ "(?i)ENTIRE"}) {Token.string ==~ "(?i)MID"} | {Token.string ==~ "(?i)MID"} {Lookup.majorType == Hypokinesis_Region}):allMid2
+):segment2
+(({Token.string ==~ "(?i)WALL"}):wall2 | {Lookup.majorType == Hypokinesis_Region})?
+((({Lookup.majorType == Hypokinesis_BasalToMid} | ({Lookup.majorType == Hypokinesis_BasalAndMid}):basalAndMid2):basalToMid2  | ({Lookup.majorType ==  Hypokinesis_MidToApical} | ({Lookup.majorType == Hypokinesis_MidAndApical}):midAndApical2):midToApical2 | ({Token.string ==~ "(?i)MID"} | {Token.string ==~ "(?i)BASAL"}):midOrBasal2 | {Token.string ==~ "(?i)APICAL"}):level2 | {Lookup.majorType == Hypokinesis_BasalToApical})?
+)
+):section2
+
+
+Macro: SECTION_3
+(
+(
+((({Lookup.majorType == Hypokinesis_BasalToMid} | ({Lookup.majorType == Hypokinesis_BasalAndMid}):basalAndMid3):basalToMid3  | ({Lookup.majorType ==  Hypokinesis_MidToApical} | ({Lookup.majorType == Hypokinesis_MidAndApical}):midAndApical3):midToApical3 | ({Token.string ==~ "(?i)MID"} | {Token.string ==~ "(?i)BASAL"}):midOrBasal3 | {Token.string ==~ "(?i)APICAL"}):level3 | {Lookup.majorType == Hypokinesis_BasalToApical})?
+(
+(({Lookup.majorType == Hypokinesis_AntInf_Septal}):antInfSeptal3 | ({Lookup.majorType == Hypokinesis_AntInf_Lateral }):antInfLateral3):anteroInfero3 | ({Token.string ==~ "(?i)INFERIOR"} ({Token.string ==~ "(?i)WALL"}):wall1 | {Token.string ==~ "(?i)INFERIOR"} | {Token.string ==~ "(?i)POSTERIOR"} {Token.string ==~ "(?i)WALL"} | {Token.string ==~ "(?i)POSTERIOR"} {Token.string ==~ "(?i)REGION"} | {Token.string ==~ "(?i)POSTERIOR"}):inferior3 | ({Token.string ==~ "(?i)SEPT[UA][ML]"} ({Token.string ==~ "(?i)WALL"}):wall3 | {Token.string ==~ "(?i)SEPT[UA][ML]", !Lookup.majorType == Septal_Bounce_WordExclusion}):septal3 | {Token.string ==~ "(?i)APICAL"} {Token.string ==~ "(?i)CAP"} | {Token.string ==~ "(?i)APEX"} | ({Token.string ==~ "(?i)ANTERIOR"} ({Token.string ==~ "(?i)WALL"}):wall3 | {Token.string ==~ "(?i)ANTERIOR"}):anterior3 | ({Token.string ==~ "(?i)LATERAL"} ({Token.string ==~ "(?i)WALL"}):wall3 | {Token.string ==~ "(?i)LATERAL"}):lateral3 | (({Token.string ==~ "(?i)ALL"} | {Token.string ==~ "(?i)ENTIRE"}) {Token.string ==~ "(?i)APICAL"} | {Token.string ==~ "(?i)APICAL"}  {Lookup.majorType == Hypokinesis_Region}):allApical3 | (({Token.string ==~ "(?i)ALL"} | {Token.string ==~ "(?i)ENTIRE"}) {Token.string ==~ "(?i)BASAL"} | {Token.string ==~ "(?i)BASAL"} {Lookup.majorType == Hypokinesis_Region}):allBasal3 | (({Token.string ==~ "(?i)ALL"} | {Token.string ==~ "(?i)ENTIRE"}) {Token.string ==~ "(?i)MID"} | {Token.string ==~ "(?i)MID"} {Lookup.majorType == Hypokinesis_Region}):allMid3
+):segment3
+(({Token.string ==~ "(?i)WALL"}):wall3 | {Lookup.majorType == Hypokinesis_Region})?
+((({Lookup.majorType == Hypokinesis_BasalToMid} | ({Lookup.majorType == Hypokinesis_BasalAndMid}):basalAndMid3):basalToMid3  | ({Lookup.majorType ==  Hypokinesis_MidToApical} | ({Lookup.majorType == Hypokinesis_MidAndApical}):midAndApical3):midToApical3 | ({Token.string ==~ "(?i)MID"} | {Token.string ==~ "(?i)BASAL"}):midOrBasal3 | {Token.string ==~ "(?i)APICAL"}):level3 | {Lookup.majorType == Hypokinesis_BasalToApical})?
+)
+):section3
+
+Macro: SECTION_4
+(
+(
+((({Lookup.majorType == Hypokinesis_BasalToMid} | ({Lookup.majorType == Hypokinesis_BasalAndMid}):basalAndMid4):basalToMid4  | ({Lookup.majorType ==  Hypokinesis_MidToApical} | ({Lookup.majorType == Hypokinesis_MidAndApical}):midAndApical4):midToApical4 | ({Token.string ==~ "(?i)MID"} | {Token.string ==~ "(?i)BASAL"}):midOrBasal4 | {Token.string ==~ "(?i)APICAL"}):level4 | {Lookup.majorType == Hypokinesis_BasalToApical})?
+(
+(({Lookup.majorType == Hypokinesis_AntInf_Septal}):antInfSeptal4 | ({Lookup.majorType == Hypokinesis_AntInf_Lateral }):antInfLateral3):anteroInfero4 | ({Token.string ==~ "(?i)INFERIOR"} ({Token.string ==~ "(?i)WALL"}):wall1 | {Token.string ==~ "(?i)INFERIOR"} | {Token.string ==~ "(?i)POSTERIOR"} {Token.string ==~ "(?i)WALL"} | {Token.string ==~ "(?i)POSTERIOR"} {Token.string ==~ "(?i)REGION"} | {Token.string ==~ "(?i)POSTERIOR"}):inferior4 | ({Token.string ==~ "(?i)SEPT[UA][ML]"} ({Token.string ==~ "(?i)WALL"}):wall4 | {Token.string ==~ "(?i)SEPT[UA][ML]", !Lookup.majorType == Septal_Bounce_WordExclusion}):septal4 | {Token.string ==~ "(?i)APICAL"} {Token.string ==~ "(?i)CAP"} | {Token.string ==~ "(?i)APEX"} | ({Token.string ==~ "(?i)ANTERIOR"} ({Token.string ==~ "(?i)WALL"}):wall4 | {Token.string ==~ "(?i)ANTERIOR"}):anterior4 | ({Token.string ==~ "(?i)LATERAL"} ({Token.string ==~ "(?i)WALL"}):wall4 | {Token.string ==~ "(?i)LATERAL"}):lateral4 | (({Token.string ==~ "(?i)ALL"} | {Token.string ==~ "(?i)ENTIRE"}) {Token.string ==~ "(?i)APICAL"} | {Token.string ==~ "(?i)APICAL"}  {Lookup.majorType == Hypokinesis_Region}):allApical4 | (({Token.string ==~ "(?i)ALL"} | {Token.string ==~ "(?i)ENTIRE"}) {Token.string ==~ "(?i)BASAL"} | {Token.string ==~ "(?i)BASAL"} {Lookup.majorType == Hypokinesis_Region}):allBasal4 | (({Token.string ==~ "(?i)ALL"} | {Token.string ==~ "(?i)ENTIRE"}) {Token.string ==~ "(?i)MID"} | {Token.string ==~ "(?i)MID"} {Lookup.majorType == Hypokinesis_Region}):allMid4
+):segment4
+(({Token.string ==~ "(?i)WALL"}):wall4 | {Lookup.majorType == Hypokinesis_Region})?
+((({Lookup.majorType == Hypokinesis_BasalToMid} | ({Lookup.majorType == Hypokinesis_BasalAndMid}):basalAndMid4):basalToMid4  | ({Lookup.majorType ==  Hypokinesis_MidToApical} | ({Lookup.majorType == Hypokinesis_MidAndApical}):midAndApical4):midToApical4 | ({Token.string ==~ "(?i)MID"} | {Token.string ==~ "(?i)BASAL"}):midOrBasal4 | {Token.string ==~ "(?i)APICAL"}):level4 | ({Lookup.majorType == Hypokinesis_BasalToApical}):apical4)?
+)
+):section4
+
+
+Macro: normokineticTerm
+(
+{Lookup.majorType == Normokinetic_Term_Variations}
+)
+
+
+Macro: contextTerm
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+(({Token.string !=~ "(?i)Measurements", Token.string != "CONTRACT"} |{SpaceToken.string!=CONTRACT})*
+{Lookup.majorType == Normokinetic_Aneurysmal_Hypokinesis_Akinesia_DyskinesiaExclusion}
+({Token.string !=~ "(?i)Measurements", Token.string != ".", Token.string != "CONTRACT"} |{SpaceToken.string!=CONTRACT})*
+{Token.string == "."})? 
+
+({Token.string !=~ "(?i)Measurements", !Lookup.majorType == Hypokinesis_SpecificTerms_Exclusion} |{SpaceToken.string!=CONTRACT})*
+
+):context
+)
+
+
+
+Rule: LeftVentricleWMNormokineticFourSegmentLeftValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)CONTRACT"} |{SpaceToken.string!=CONTRACT})*
+
+):context
+)
+
+(
+(
+
+
+normokineticTerm
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+SECTION_1
+
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "."})?
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+
+SECTION_2
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "."})?
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+SECTION_3
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "."})?
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+SECTION_4
+
+):context
+
+):LeftVentricleWMNormokineticFourSegmentLeftValueGram 
+(
+({Token.string !=~ "(?i)Measurements", !Lookup.majorType == Normokinetic_Aneurysmal_Hypokinesis_Akinesia_DyskinesiaExclusion} |{SpaceToken.string!=HYPOKINETIC})* 
+{Token.string == "."}
+)
+
+--> 
+:LeftVentricleWMNormokineticFourSegmentLeftValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+
+	gate.AnnotationSet matchedinferior1=(gate.AnnotationSet) bindings.get("inferior1");
+	gate.AnnotationSet matchedinferior2=(gate.AnnotationSet) bindings.get("inferior2");
+	gate.AnnotationSet matchedinferior3=(gate.AnnotationSet) bindings.get("inferior3");
+	gate.AnnotationSet matchedinferior4=(gate.AnnotationSet) bindings.get("inferior4");
+	gate.AnnotationSet matchedwall1=(gate.AnnotationSet) bindings.get("wall1");
+	gate.AnnotationSet matchedwall2=(gate.AnnotationSet) bindings.get("wall2");
+	gate.AnnotationSet matchedwall3=(gate.AnnotationSet) bindings.get("wall3");
+	gate.AnnotationSet matchedwall4=(gate.AnnotationSet) bindings.get("wall4");
+	gate.AnnotationSet matchedseptal1=(gate.AnnotationSet) bindings.get("septal1");
+	gate.AnnotationSet matchedseptal2=(gate.AnnotationSet) bindings.get("septal2");
+	gate.AnnotationSet matchedseptal3=(gate.AnnotationSet) bindings.get("septal3");
+	gate.AnnotationSet matchedseptal4=(gate.AnnotationSet) bindings.get("septal4");
+	gate.AnnotationSet matchedantInfSeptal1=(gate.AnnotationSet) bindings.get("antInfSeptal1");
+	gate.AnnotationSet matchedantInfSeptal2=(gate.AnnotationSet) bindings.get("antInfSeptal2");
+	gate.AnnotationSet matchedantInfSeptal3=(gate.AnnotationSet) bindings.get("antInfSeptal3");
+	gate.AnnotationSet matchedantInfSeptal4=(gate.AnnotationSet) bindings.get("antInfSeptal4");
+	gate.AnnotationSet matchedlevel1=(gate.AnnotationSet) bindings.get("level1");
+	gate.AnnotationSet matchedlevel2=(gate.AnnotationSet) bindings.get("level2"); 
+	gate.AnnotationSet matchedlevel3=(gate.AnnotationSet) bindings.get("level3"); 
+	gate.AnnotationSet matchedlevel4=(gate.AnnotationSet) bindings.get("level4"); 
+	gate.AnnotationSet matchedbasalToMid1=(gate.AnnotationSet) bindings.get("basalToMid1"); 	
+	gate.AnnotationSet matchedbasalToMid2=(gate.AnnotationSet) bindings.get("basalToMid2");
+	gate.AnnotationSet matchedbasalToMid3=(gate.AnnotationSet) bindings.get("basalToMid3");
+	gate.AnnotationSet matchedbasalToMid4=(gate.AnnotationSet) bindings.get("basalToMid4");
+	
+	gate.AnnotationSet matchedanterior1=(gate.AnnotationSet) bindings.get("anterior1");
+	gate.AnnotationSet matchedanterior2=(gate.AnnotationSet) bindings.get("anterior2");
+	gate.AnnotationSet matchedanterior3=(gate.AnnotationSet) bindings.get("anterior3");
+	gate.AnnotationSet matchedanterior4=(gate.AnnotationSet) bindings.get("anterior4");
+	
+	gate.AnnotationSet matchedantInfLateral1=(gate.AnnotationSet) bindings.get("antInfLateral1");
+	gate.AnnotationSet matchedantInfLateral2=(gate.AnnotationSet) bindings.get("antInfLateral2");
+	gate.AnnotationSet matchedantInfLateral3=(gate.AnnotationSet) bindings.get("antInfLateral3");
+	gate.AnnotationSet matchedantInfLateral4=(gate.AnnotationSet) bindings.get("antInfLateral4");
+	
+	gate.AnnotationSet matchedlateral1=(gate.AnnotationSet) bindings.get("lateral1");
+	gate.AnnotationSet matchedlateral2=(gate.AnnotationSet) bindings.get("lateral2");
+	gate.AnnotationSet matchedlateral3=(gate.AnnotationSet) bindings.get("lateral3");
+	gate.AnnotationSet matchedlateral4=(gate.AnnotationSet) bindings.get("lateral4");
+	
+	gate.AnnotationSet matchedbasalAndMid1=(gate.AnnotationSet) bindings.get("basalAndMid1"); 
+	gate.AnnotationSet matchedbasalAndMid2=(gate.AnnotationSet) bindings.get("basalAndMid2"); 
+	gate.AnnotationSet matchedbasalAndMid3=(gate.AnnotationSet) bindings.get("basalAndMid3"); 
+	gate.AnnotationSet matchedbasalAndMid4=(gate.AnnotationSet) bindings.get("basalAndMid4"); 
+	
+	gate.AnnotationSet matchedmidAndApical1=(gate.AnnotationSet) bindings.get("midAndApical1"); 
+	gate.AnnotationSet matchedmidAndApical2=(gate.AnnotationSet) bindings.get("midAndApical2"); 
+	gate.AnnotationSet matchedmidAndApical3=(gate.AnnotationSet) bindings.get("midAndApical3"); 
+	gate.AnnotationSet matchedmidAndApical4=(gate.AnnotationSet) bindings.get("midAndApical4"); 
+	
+	gate.AnnotationSet matchedmidToApical1=(gate.AnnotationSet) bindings.get("midToApical1"); 
+	gate.AnnotationSet matchedmidToApical2=(gate.AnnotationSet) bindings.get("midToApical2"); 
+	gate.AnnotationSet matchedmidToApical3=(gate.AnnotationSet) bindings.get("midToApical3"); 
+	gate.AnnotationSet matchedmidToApical4=(gate.AnnotationSet) bindings.get("midToApical4");
+	
+	gate.AnnotationSet matchedmidOrBasal1=(gate.AnnotationSet) bindings.get("midOrBasal1"); 
+	gate.AnnotationSet matchedmidOrBasal2=(gate.AnnotationSet) bindings.get("midOrBasal2"); 
+	gate.AnnotationSet matchedmidOrBasal3=(gate.AnnotationSet) bindings.get("midOrBasal3"); 
+	gate.AnnotationSet matchedmidOrBasal4=(gate.AnnotationSet) bindings.get("midOrBasal4");
+	
+	gate.AnnotationSet matchedallApical1=(gate.AnnotationSet) bindings.get("allApical1"); 
+	gate.AnnotationSet matchedallApical2=(gate.AnnotationSet) bindings.get("allApical2"); 
+	gate.AnnotationSet matchedallApical3=(gate.AnnotationSet) bindings.get("allApical3"); 
+	gate.AnnotationSet matchedallApical4=(gate.AnnotationSet) bindings.get("allApical4");
+	
+	gate.AnnotationSet matchedallBasal1=(gate.AnnotationSet) bindings.get("allBasal1"); 
+	gate.AnnotationSet matchedallBasal2=(gate.AnnotationSet) bindings.get("allBasal2"); 
+	gate.AnnotationSet matchedallBasal3=(gate.AnnotationSet) bindings.get("allBasal3"); 
+	gate.AnnotationSet matchedallBasal4=(gate.AnnotationSet) bindings.get("allBasal4");
+	
+	gate.AnnotationSet matchedallMid1=(gate.AnnotationSet) bindings.get("allMid1"); 
+	gate.AnnotationSet matchedallMid2=(gate.AnnotationSet) bindings.get("allMid2"); 
+	gate.AnnotationSet matchedallMid3=(gate.AnnotationSet) bindings.get("allMid3"); 
+	gate.AnnotationSet matchedallMid4=(gate.AnnotationSet) bindings.get("allMid4");
+	
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMNormokineticFourSegmentLeftValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("unit", "levels: int (Segment number), Remaining (all remaining segments)");
+	
+	String line = stringFor(doc, matchedAnns);
+	
+	int countComma = line.length() - line.replace(",", "").length();
+	
+	int countFullStop = line.length() - line.replace(".", "").length();
+	
+	int countAnd = 0;
+	
+	Pattern p = Pattern.compile(" and ");
+	Matcher m = p.matcher(line.toLowerCase());
+	
+	while (m.find()) {
+		countAnd++;
+	}
+	
+	if (matchedbasalAndMid1 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid2 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid3 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid4 != null) {
+		countAnd--;
+	} 
+	
+	if (matchedmidAndApical1 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical2 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical3 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical4 != null) {
+		countAnd--;
+	} 
+	
+	int countInfWall1 = 0;
+	int countInfWall2 = 0;
+	int countInfWall3 = 0;
+	int countInfWall4 = 0;
+	
+	int countInfWallTotal = 0;
+	
+	if (matchedinferior1 != null & matchedlevel1 == null) {
+		countInfWall1 = 3 - 1; 
+		
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior2 != null & matchedlevel2 == null) {
+		countInfWall1 = 0;
+		
+		countInfWall2 = 3 - 1; 
+				
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior3 != null & matchedlevel3 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		
+		countInfWall3 = 3 - 1; 
+				
+		countInfWall4 = 0;
+	} else if (matchedinferior4 != null & matchedlevel4 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		
+		countInfWall4 = 3 - 1; 
+	}
+		
+	
+	countInfWallTotal = countInfWall1 + countInfWall2 + countInfWall3 + countInfWall4;
+	
+	int lateralTotalcount = 0;
+	
+	int lateralCountSection1 = 0;
+	int lateralCountSection2 = 0;
+	int lateralCountSection3 = 0;
+	int lateralCountSection4 = 0;
+	
+	if (matchedlateral1 != null & matchedlevel1 == null) {
+		
+		lateralCountSection1 = 5 - 1; 
+				
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral1 != null & matchedlevel1 == null) {
+		lateralCountSection1 = lateralCountSection1 + 1;
+	
+	} else if (matchedlateral1 != null & matchedbasalToMid1 != null) {
+		lateralCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral1 != null & matchedmidToApical1 != null) {
+		lateralCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral1 != null & matchedmidOrBasal1 != null) {
+		lateralCountSection1 = 2 - 1;
+	
+	} else if (matchedlateral2 != null & matchedlevel2 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		
+		lateralCountSection2 = 5 - 1; 
+		
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral2 != null & matchedlevel2 == null) {
+		lateralCountSection2 = lateralCountSection2 + 1;
+	
+	} else if (matchedlateral2 != null & matchedbasalToMid2 != null) {
+		lateralCountSection2 = 2 * 2 - 1 - 1; 	
+	
+	} else if (matchedlateral2 != null & matchedmidToApical2 != null) {
+		lateralCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral2 != null & matchedmidOrBasal2 != null) {
+		lateralCountSection2 = 2 - 1;
+		
+	} else if (matchedlateral3 != null & matchedlevel3 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		
+		lateralCountSection3 = 5 - 1; 
+				
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral3 != null & matchedlevel3 == null) {
+		lateralCountSection3 = lateralCountSection3 + 1;
+		
+	} else if (matchedlateral3 != null & matchedbasalToMid3 != null) {	
+		lateralCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral3 != null & matchedmidToApical3 != null) {
+		lateralCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral3 != null & matchedmidOrBasal3 != null) {
+		lateralCountSection3 = 2 - 1;
+		
+	} else if (matchedlateral4 != null & matchedwall4 != null & matchedlevel4 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		
+		lateralCountSection4 = 5 - 1; 
+		
+	} else if (matchedantInfLateral4 != null & matchedlevel4 == null) {
+		lateralCountSection4 = lateralCountSection4 + 1;
+		
+	} else if (matchedlateral4 != null & matchedbasalToMid4 != null) {	
+		lateralCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral4 != null & matchedmidToApical4 != null) {
+		lateralCountSection4 = 2 + 1 - 1 - 1;
+		
+	} else if (matchedlateral4 != null & matchedmidOrBasal4 != null) {
+		lateralCountSection4 = 2 - 1;
+
+	}
+	
+	lateralTotalcount = lateralCountSection1 + lateralCountSection2 + lateralCountSection3 + lateralCountSection4;
+	
+	
+	int septTotalcount = 0;
+		
+	int septalCountSection1 = 0;
+	int septalCountSection2 = 0;
+	int septalCountSection3 = 0;
+	int septalCountSection4 = 0;
+	
+	if (matchedseptal1 != null & matchedlevel1 == null & matchedmidOrBasal1 == null) {
+		
+		septalCountSection1 = 5 - 1; 
+		
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal1 != null & matchedlevel1 == null) {
+		septalCountSection1 = septalCountSection1 + 1;
+	
+	} else if (matchedseptal1 != null & matchedbasalToMid1 != null) {
+		septalCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal1 != null & matchedmidToApical1 != null) {
+		septalCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal1 != null & matchedmidOrBasal1 != null) {
+		septalCountSection1 = 2 - 1;
+		
+	} else if (matchedseptal2 != null & matchedlevel2 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		
+		septalCountSection2 = 5 - 1; 
+				
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal2 != null & matchedlevel2 == null) {
+		septalCountSection2 = septalCountSection2 + 1;
+		
+	} else if (matchedseptal2 != null & matchedbasalToMid2 != null) {
+		septalCountSection2 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal2 != null & matchedmidToApical2 != null) {
+		septalCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal2 != null & matchedmidOrBasal2 != null) {
+		septalCountSection2 = 2 - 1;
+		
+	} else if (matchedseptal3 != null & matchedlevel3 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		
+		septalCountSection3 = 5 - 1; 
+				
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal3 != null & matchedlevel3 == null) {
+		septalCountSection3 = septalCountSection3 + 1;
+		
+	} else if (matchedseptal3 != null & matchedbasalToMid3 != null) {	
+		septalCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal3 != null & matchedmidToApical3 != null) {
+		septalCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal3 != null & matchedmidOrBasal3 != null) {
+		septalCountSection3 = 2 - 1;
+		
+	} else if (matchedseptal4 != null & matchedlevel4 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		
+		septalCountSection4 = 5 - 1; 
+	
+	} else if (matchedantInfSeptal4 != null & matchedlevel4 == null) {
+		septalCountSection4 = septalCountSection4 + 1;
+		
+	} else if (matchedseptal4 != null & matchedbasalToMid4 != null) {	
+		septalCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal4 != null & matchedmidToApical4 != null) {
+		septalCountSection4 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal4 != null & matchedmidOrBasal4 != null) {
+		septalCountSection4 = 2 - 1;
+		
+	}
+		
+	septTotalcount = septalCountSection1 + septalCountSection2 + septalCountSection3 + septalCountSection4;
+	
+	
+	int basalToMidCount1 = 0;
+	int basalToMidCount2 = 0;
+	int basalToMidCount3 = 0;
+	int basalToMidCount4 = 0;
+	
+	int basalToMidCountTotal = 0;
+	
+	if (matchedbasalToMid1 != null) {
+		basalToMidCount1 = 1;
+	} 
+	if (matchedbasalToMid2 != null) {
+		basalToMidCount2 = 1;
+	}  
+	if (matchedbasalToMid3 != null) {
+		basalToMidCount3 = 1;
+	} 
+	if (matchedbasalToMid4 != null) {
+		basalToMidCount4 = 1;
+	} 
+		
+	basalToMidCountTotal = basalToMidCount1 + basalToMidCount2 + basalToMidCount3 + basalToMidCount4;
+	
+	
+	int midToApicalCount1 = 0;
+	int midToApicalCount2 = 0;
+	int midToApicalCount3 = 0;
+	int midToApicalCount4 = 0;
+	
+	int midToApicalCountTotal = 0;
+	
+	if (matchedmidToApical1 != null) {
+		midToApicalCount1 = 1;
+	} 
+	if (matchedmidToApical2 != null) {
+		midToApicalCount2 = 1;
+	}  
+	if (matchedmidToApical3 != null) {
+		midToApicalCount3 = 1;
+	} 
+	if (matchedmidToApical4 != null) {
+		midToApicalCount4 = 1;
+	} 
+	
+	midToApicalCountTotal = midToApicalCount1 + midToApicalCount2 + midToApicalCount3 + midToApicalCount4;
+	
+	int anteriorCountSection1 = 0;
+	int anteriorCountSection2 = 0;
+	int anteriorCountSection3 = 0;
+	int anteriorCountSection4 = 0;
+	
+	int anteriorTotalCount = 0;
+	
+	if (matchedanterior1 != null & matchedlevel1 == null) {	
+		anteriorCountSection1 = 3 - 1;
+				
+		anteriorCountSection2 = 0; 
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior2 != null & matchedlevel2 == null) {	
+		anteriorCountSection1 = 0;
+		
+		anteriorCountSection2 = 3 - 1;
+				
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior3 != null & matchedlevel3 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		
+		anteriorCountSection3 = 3 - 1;
+				
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior4 != null & matchedlevel4 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		anteriorCountSection3 = 0;
+		
+		anteriorCountSection4 = 3 - 1;
+	}
+	
+	anteriorTotalCount = anteriorCountSection1 + anteriorCountSection2 + anteriorCountSection3 + anteriorCountSection4;
+	
+	int apicalLayerCount1 = 0;
+	int apicalLayerCount2 = 0;
+	int apicalLayerCount3 = 0;
+	int apicalLayerCount4 = 0;
+	
+	int apicalTotalCount = 0;
+	
+	if (matchedallApical1 != null) {
+		apicalLayerCount1 = 4 - 1;
+	} else if (matchedallApical2 != null) {
+		apicalLayerCount2 = 4 - 1;
+	} else if (matchedallApical3 != null) {
+		apicalLayerCount3 = 4 - 1;
+	} else if (matchedallApical4 != null) {
+		apicalLayerCount4 = 4 - 1;
+	}
+		
+	apicalTotalCount = apicalLayerCount1 + apicalLayerCount2 + apicalLayerCount3 + apicalLayerCount4;
+	
+	int basalLayerCount1 = 0;
+	int basalLayerCount2 = 0;
+	int basalLayerCount3 = 0;
+	int basalLayerCount4 = 0;
+	
+	int basalTotalCount = 0;
+	
+	if (matchedallBasal1 != null) {
+		basalLayerCount1 = 6 - 1;
+	} else if (matchedallBasal2 != null) {
+		basalLayerCount2 = 6 - 1;
+	} else if (matchedallBasal3 != null) {
+		basalLayerCount3 = 6 - 1;
+	} else if (matchedallBasal4 != null) {
+		basalLayerCount4 = 6 - 1;
+	}
+	
+	basalTotalCount = basalLayerCount1 + basalLayerCount2 + basalLayerCount3 + basalLayerCount4;
+	
+	int midLayerCount1 = 0;
+	int midLayerCount2 = 0;
+	int midLayerCount3 = 0;
+	int midLayerCount4 = 0;
+	
+	int midTotalCount = 0;
+	
+	if (matchedallMid1 != null) {
+		midLayerCount1 = 6 - 1;
+	} else if (matchedallMid2 != null) {
+		midLayerCount2 = 6 - 1;
+	} else if (matchedallMid3 != null) {
+		midLayerCount3 = 6 - 1;
+	} else if (matchedallMid4 != null) {
+		midLayerCount4 = 6 - 1;
+	}
+	
+	midTotalCount = midLayerCount1 + midLayerCount2 + midLayerCount3 + midLayerCount4;
+	
+	newFeatures.put("varValue", countComma + countAnd + countFullStop + countInfWallTotal + lateralTotalcount + septTotalcount + basalToMidCountTotal + midToApicalCountTotal + anteriorTotalCount + apicalTotalCount + basalTotalCount + midTotalCount + 1);
+	
+	newFeatures.put("septTotalcount", septTotalcount); 
+	newFeatures.put("countInfWall", countInfWallTotal); 
+	newFeatures.put("countComma", countComma); 
+	newFeatures.put("countAnd", countAnd); 
+	newFeatures.put("countFullStop", countFullStop); 
+	newFeatures.put("lateralTotalcount", lateralTotalcount); 
+	newFeatures.put("basalToMidCount", basalToMidCountTotal); 
+	newFeatures.put("midToApicalCountTotal", midToApicalCountTotal); 
+	newFeatures.put("anteriorTotalCount", anteriorTotalCount);   
+	newFeatures.put("apicalTotalCount", apicalTotalCount);   
+	newFeatures.put("basalTotalCount", basalTotalCount); 
+	newFeatures.put("midTotalCount", midTotalCount); 
+	
+	newFeatures.put("varType","LV Normokinetic Segments");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Normokinetic Segments FourSegmentLeft");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LeftVentricleWMNormokineticThreeSegmentLeftValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)CONTRACT"} |{SpaceToken.string!=CONTRACT})*
+
+):context
+)
+
+(
+(
+
+
+normokineticTerm
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+SECTION_1
+
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "."})?
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+SECTION_2
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"} | {Token.string == "."})?
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+SECTION_3
+
+
+):context
+
+
+):LeftVentricleWMNormokineticThreeSegmentLeftValueGram 
+(
+({Token.string !=~ "(?i)MEASUREMENTS", !Lookup.majorType == Normokinetic_Aneurysmal_Hypokinesis_Akinesia_DyskinesiaExclusion} |{SpaceToken.string!=HYPOKINESIS})*
+{Token.string == "."}
+)
+
+--> 
+:LeftVentricleWMNormokineticThreeSegmentLeftValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+
+	gate.AnnotationSet matchedinferior1=(gate.AnnotationSet) bindings.get("inferior1");
+	gate.AnnotationSet matchedinferior2=(gate.AnnotationSet) bindings.get("inferior2");
+	gate.AnnotationSet matchedinferior3=(gate.AnnotationSet) bindings.get("inferior3");
+	gate.AnnotationSet matchedinferior4=(gate.AnnotationSet) bindings.get("inferior4");
+	gate.AnnotationSet matchedwall1=(gate.AnnotationSet) bindings.get("wall1");
+	gate.AnnotationSet matchedwall2=(gate.AnnotationSet) bindings.get("wall2");
+	gate.AnnotationSet matchedwall3=(gate.AnnotationSet) bindings.get("wall3");
+	gate.AnnotationSet matchedwall4=(gate.AnnotationSet) bindings.get("wall4");
+	gate.AnnotationSet matchedseptal1=(gate.AnnotationSet) bindings.get("septal1");
+	gate.AnnotationSet matchedseptal2=(gate.AnnotationSet) bindings.get("septal2");
+	gate.AnnotationSet matchedseptal3=(gate.AnnotationSet) bindings.get("septal3");
+	gate.AnnotationSet matchedseptal4=(gate.AnnotationSet) bindings.get("septal4");
+	gate.AnnotationSet matchedantInfSeptal1=(gate.AnnotationSet) bindings.get("antInfSeptal1");
+	gate.AnnotationSet matchedantInfSeptal2=(gate.AnnotationSet) bindings.get("antInfSeptal2");
+	gate.AnnotationSet matchedantInfSeptal3=(gate.AnnotationSet) bindings.get("antInfSeptal3");
+	gate.AnnotationSet matchedantInfSeptal4=(gate.AnnotationSet) bindings.get("antInfSeptal4");
+	gate.AnnotationSet matchedlevel1=(gate.AnnotationSet) bindings.get("level1");
+	gate.AnnotationSet matchedlevel2=(gate.AnnotationSet) bindings.get("level2"); 
+	gate.AnnotationSet matchedlevel3=(gate.AnnotationSet) bindings.get("level3"); 
+	gate.AnnotationSet matchedlevel4=(gate.AnnotationSet) bindings.get("level4"); 
+	gate.AnnotationSet matchedbasalToMid1=(gate.AnnotationSet) bindings.get("basalToMid1"); 	
+	gate.AnnotationSet matchedbasalToMid2=(gate.AnnotationSet) bindings.get("basalToMid2");
+	gate.AnnotationSet matchedbasalToMid3=(gate.AnnotationSet) bindings.get("basalToMid3");
+	gate.AnnotationSet matchedbasalToMid4=(gate.AnnotationSet) bindings.get("basalToMid4");
+	
+	gate.AnnotationSet matchedanterior1=(gate.AnnotationSet) bindings.get("anterior1");
+	gate.AnnotationSet matchedanterior2=(gate.AnnotationSet) bindings.get("anterior2");
+	gate.AnnotationSet matchedanterior3=(gate.AnnotationSet) bindings.get("anterior3");
+	gate.AnnotationSet matchedanterior4=(gate.AnnotationSet) bindings.get("anterior4");
+	
+	gate.AnnotationSet matchedantInfLateral1=(gate.AnnotationSet) bindings.get("antInfLateral1");
+	gate.AnnotationSet matchedantInfLateral2=(gate.AnnotationSet) bindings.get("antInfLateral2");
+	gate.AnnotationSet matchedantInfLateral3=(gate.AnnotationSet) bindings.get("antInfLateral3");
+	gate.AnnotationSet matchedantInfLateral4=(gate.AnnotationSet) bindings.get("antInfLateral4");
+	
+	gate.AnnotationSet matchedlateral1=(gate.AnnotationSet) bindings.get("lateral1");
+	gate.AnnotationSet matchedlateral2=(gate.AnnotationSet) bindings.get("lateral2");
+	gate.AnnotationSet matchedlateral3=(gate.AnnotationSet) bindings.get("lateral3");
+	gate.AnnotationSet matchedlateral4=(gate.AnnotationSet) bindings.get("lateral4");
+	
+	gate.AnnotationSet matchedbasalAndMid1=(gate.AnnotationSet) bindings.get("basalAndMid1"); 
+	gate.AnnotationSet matchedbasalAndMid2=(gate.AnnotationSet) bindings.get("basalAndMid2"); 
+	gate.AnnotationSet matchedbasalAndMid3=(gate.AnnotationSet) bindings.get("basalAndMid3"); 
+	gate.AnnotationSet matchedbasalAndMid4=(gate.AnnotationSet) bindings.get("basalAndMid4"); 
+	
+	gate.AnnotationSet matchedmidAndApical1=(gate.AnnotationSet) bindings.get("midAndApical1"); 
+	gate.AnnotationSet matchedmidAndApical2=(gate.AnnotationSet) bindings.get("midAndApical2"); 
+	gate.AnnotationSet matchedmidAndApical3=(gate.AnnotationSet) bindings.get("midAndApical3"); 
+	gate.AnnotationSet matchedmidAndApical4=(gate.AnnotationSet) bindings.get("midAndApical4"); 
+	
+	gate.AnnotationSet matchedmidToApical1=(gate.AnnotationSet) bindings.get("midToApical1"); 
+	gate.AnnotationSet matchedmidToApical2=(gate.AnnotationSet) bindings.get("midToApical2"); 
+	gate.AnnotationSet matchedmidToApical3=(gate.AnnotationSet) bindings.get("midToApical3"); 
+	gate.AnnotationSet matchedmidToApical4=(gate.AnnotationSet) bindings.get("midToApical4");
+	
+	gate.AnnotationSet matchedmidOrBasal1=(gate.AnnotationSet) bindings.get("midOrBasal1"); 
+	gate.AnnotationSet matchedmidOrBasal2=(gate.AnnotationSet) bindings.get("midOrBasal2"); 
+	gate.AnnotationSet matchedmidOrBasal3=(gate.AnnotationSet) bindings.get("midOrBasal3"); 
+	gate.AnnotationSet matchedmidOrBasal4=(gate.AnnotationSet) bindings.get("midOrBasal4");
+	
+	gate.AnnotationSet matchedallApical1=(gate.AnnotationSet) bindings.get("allApical1"); 
+	gate.AnnotationSet matchedallApical2=(gate.AnnotationSet) bindings.get("allApical2"); 
+	gate.AnnotationSet matchedallApical3=(gate.AnnotationSet) bindings.get("allApical3"); 
+	gate.AnnotationSet matchedallApical4=(gate.AnnotationSet) bindings.get("allApical4");
+	
+	gate.AnnotationSet matchedallBasal1=(gate.AnnotationSet) bindings.get("allBasal1"); 
+	gate.AnnotationSet matchedallBasal2=(gate.AnnotationSet) bindings.get("allBasal2"); 
+	gate.AnnotationSet matchedallBasal3=(gate.AnnotationSet) bindings.get("allBasal3"); 
+	gate.AnnotationSet matchedallBasal4=(gate.AnnotationSet) bindings.get("allBasal4");
+	
+	gate.AnnotationSet matchedallMid1=(gate.AnnotationSet) bindings.get("allMid1"); 
+	gate.AnnotationSet matchedallMid2=(gate.AnnotationSet) bindings.get("allMid2"); 
+	gate.AnnotationSet matchedallMid3=(gate.AnnotationSet) bindings.get("allMid3"); 
+	gate.AnnotationSet matchedallMid4=(gate.AnnotationSet) bindings.get("allMid4");
+	
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMNormokineticThreeSegmentLeftValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("unit", "levels: int (Segment number), Remaining (all remaining segments)");
+	
+	String line = stringFor(doc, matchedAnns);
+	
+	int countComma = line.length() - line.replace(",", "").length();
+	
+	int countFullStop = line.length() - line.replace(".", "").length();
+	
+	int countAnd = 0;
+	
+	Pattern p = Pattern.compile(" and ");
+	Matcher m = p.matcher(line.toLowerCase());
+	
+	while (m.find()) {
+		countAnd++;
+	}
+	
+	if (matchedbasalAndMid1 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid2 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid3 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid4 != null) {
+		countAnd--;
+	} 
+	
+	if (matchedmidAndApical1 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical2 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical3 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical4 != null) {
+		countAnd--;
+	} 
+	
+	int countInfWall1 = 0;
+	int countInfWall2 = 0;
+	int countInfWall3 = 0;
+	int countInfWall4 = 0;
+	
+	int countInfWallTotal = 0;
+	
+	if (matchedinferior1 != null & matchedlevel1 == null) {
+		countInfWall1 = 3 - 1; 
+		
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior2 != null & matchedlevel2 == null) {
+		countInfWall1 = 0;
+		
+		countInfWall2 = 3 - 1; 
+				
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior3 != null & matchedlevel3 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		
+		countInfWall3 = 3 - 1; 
+				
+		countInfWall4 = 0;
+	} else if (matchedinferior4 != null & matchedlevel4 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		
+		countInfWall4 = 3 - 1; 
+	}
+		
+	
+	countInfWallTotal = countInfWall1 + countInfWall2 + countInfWall3 + countInfWall4;
+	
+	int lateralTotalcount = 0;
+	
+	int lateralCountSection1 = 0;
+	int lateralCountSection2 = 0;
+	int lateralCountSection3 = 0;
+	int lateralCountSection4 = 0;
+	
+	if (matchedlateral1 != null & matchedlevel1 == null) {
+		
+		lateralCountSection1 = 5 - 1; 
+				
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral1 != null & matchedlevel1 == null) {
+		lateralCountSection1 = lateralCountSection1 + 1;
+	
+	} else if (matchedlateral1 != null & matchedbasalToMid1 != null) {
+		lateralCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral1 != null & matchedmidToApical1 != null) {
+		lateralCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral1 != null & matchedmidOrBasal1 != null) {
+		lateralCountSection1 = 2 - 1;
+	
+	} else if (matchedlateral2 != null & matchedlevel2 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		
+		lateralCountSection2 = 5 - 1; 
+		
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral2 != null & matchedlevel2 == null) {
+		lateralCountSection2 = lateralCountSection2 + 1;
+	
+	} else if (matchedlateral2 != null & matchedbasalToMid2 != null) {
+		lateralCountSection2 = 2 * 2 - 1 - 1; 	
+	
+	} else if (matchedlateral2 != null & matchedmidToApical2 != null) {
+		lateralCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral2 != null & matchedmidOrBasal2 != null) {
+		lateralCountSection2 = 2 - 1;
+		
+	} else if (matchedlateral3 != null & matchedlevel3 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		
+		lateralCountSection3 = 5 - 1; 
+				
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral3 != null & matchedlevel3 == null) {
+		lateralCountSection3 = lateralCountSection3 + 1;
+		
+	} else if (matchedlateral3 != null & matchedbasalToMid3 != null) {	
+		lateralCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral3 != null & matchedmidToApical3 != null) {
+		lateralCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral3 != null & matchedmidOrBasal3 != null) {
+		lateralCountSection3 = 2 - 1;
+		
+	} else if (matchedlateral4 != null & matchedwall4 != null & matchedlevel4 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		
+		lateralCountSection4 = 5 - 1; 
+		
+	} else if (matchedantInfLateral4 != null & matchedlevel4 == null) {
+		lateralCountSection4 = lateralCountSection4 + 1;
+		
+	} else if (matchedlateral4 != null & matchedbasalToMid4 != null) {	
+		lateralCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral4 != null & matchedmidToApical4 != null) {
+		lateralCountSection4 = 2 + 1 - 1 - 1;
+		
+	} else if (matchedlateral4 != null & matchedmidOrBasal4 != null) {
+		lateralCountSection4 = 2 - 1;
+
+	}
+	
+	lateralTotalcount = lateralCountSection1 + lateralCountSection2 + lateralCountSection3 + lateralCountSection4;
+	
+	
+	int septTotalcount = 0;
+		
+	int septalCountSection1 = 0;
+	int septalCountSection2 = 0;
+	int septalCountSection3 = 0;
+	int septalCountSection4 = 0;
+	
+	if (matchedseptal1 != null & matchedlevel1 == null & matchedmidOrBasal1 == null) {
+		
+		septalCountSection1 = 5 - 1; 
+		
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal1 != null & matchedlevel1 == null) {
+		septalCountSection1 = septalCountSection1 + 1;
+	
+	} else if (matchedseptal1 != null & matchedbasalToMid1 != null) {
+		septalCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal1 != null & matchedmidToApical1 != null) {
+		septalCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal1 != null & matchedmidOrBasal1 != null) {
+		septalCountSection1 = 2 - 1;
+		
+	} else if (matchedseptal2 != null & matchedlevel2 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		
+		septalCountSection2 = 5 - 1; 
+				
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal2 != null & matchedlevel2 == null) {
+		septalCountSection2 = septalCountSection2 + 1;
+		
+	} else if (matchedseptal2 != null & matchedbasalToMid2 != null) {
+		septalCountSection2 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal2 != null & matchedmidToApical2 != null) {
+		septalCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal2 != null & matchedmidOrBasal2 != null) {
+		septalCountSection2 = 2 - 1;
+		
+	} else if (matchedseptal3 != null & matchedlevel3 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		
+		septalCountSection3 = 5 - 1; 
+				
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal3 != null & matchedlevel3 == null) {
+		septalCountSection3 = septalCountSection3 + 1;
+		
+	} else if (matchedseptal3 != null & matchedbasalToMid3 != null) {	
+		septalCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal3 != null & matchedmidToApical3 != null) {
+		septalCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal3 != null & matchedmidOrBasal3 != null) {
+		septalCountSection3 = 2 - 1;
+		
+	} else if (matchedseptal4 != null & matchedlevel4 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		
+		septalCountSection4 = 5 - 1; 
+	
+	} else if (matchedantInfSeptal4 != null & matchedlevel4 == null) {
+		septalCountSection4 = septalCountSection4 + 1;
+		
+	} else if (matchedseptal4 != null & matchedbasalToMid4 != null) {	
+		septalCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal4 != null & matchedmidToApical4 != null) {
+		septalCountSection4 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal4 != null & matchedmidOrBasal4 != null) {
+		septalCountSection4 = 2 - 1;
+		
+	}
+		
+	septTotalcount = septalCountSection1 + septalCountSection2 + septalCountSection3 + septalCountSection4;
+	
+	
+	int basalToMidCount1 = 0;
+	int basalToMidCount2 = 0;
+	int basalToMidCount3 = 0;
+	int basalToMidCount4 = 0;
+	
+	int basalToMidCountTotal = 0;
+	
+	if (matchedbasalToMid1 != null) {
+		basalToMidCount1 = 1;
+	} 
+	if (matchedbasalToMid2 != null) {
+		basalToMidCount2 = 1;
+	}  
+	if (matchedbasalToMid3 != null) {
+		basalToMidCount3 = 1;
+	} 
+	if (matchedbasalToMid4 != null) {
+		basalToMidCount4 = 1;
+	} 
+		
+	basalToMidCountTotal = basalToMidCount1 + basalToMidCount2 + basalToMidCount3 + basalToMidCount4;
+	
+	
+	int midToApicalCount1 = 0;
+	int midToApicalCount2 = 0;
+	int midToApicalCount3 = 0;
+	int midToApicalCount4 = 0;
+	
+	int midToApicalCountTotal = 0;
+	
+	if (matchedmidToApical1 != null) {
+		midToApicalCount1 = 1;
+	} 
+	if (matchedmidToApical2 != null) {
+		midToApicalCount2 = 1;
+	}  
+	if (matchedmidToApical3 != null) {
+		midToApicalCount3 = 1;
+	} 
+	if (matchedmidToApical4 != null) {
+		midToApicalCount4 = 1;
+	} 
+	
+	midToApicalCountTotal = midToApicalCount1 + midToApicalCount2 + midToApicalCount3 + midToApicalCount4;
+	
+	int anteriorCountSection1 = 0;
+	int anteriorCountSection2 = 0;
+	int anteriorCountSection3 = 0;
+	int anteriorCountSection4 = 0;
+	
+	int anteriorTotalCount = 0;
+	
+	if (matchedanterior1 != null & matchedlevel1 == null) {	
+		anteriorCountSection1 = 3 - 1;
+				
+		anteriorCountSection2 = 0; 
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior2 != null & matchedlevel2 == null) {	
+		anteriorCountSection1 = 0;
+		
+		anteriorCountSection2 = 3 - 1;
+				
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior3 != null & matchedlevel3 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		
+		anteriorCountSection3 = 3 - 1;
+				
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior4 != null & matchedlevel4 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		anteriorCountSection3 = 0;
+		
+		anteriorCountSection4 = 3 - 1;
+	}
+	
+	anteriorTotalCount = anteriorCountSection1 + anteriorCountSection2 + anteriorCountSection3 + anteriorCountSection4;
+	
+	int apicalLayerCount1 = 0;
+	int apicalLayerCount2 = 0;
+	int apicalLayerCount3 = 0;
+	int apicalLayerCount4 = 0;
+	
+	int apicalTotalCount = 0;
+	
+	if (matchedallApical1 != null) {
+		apicalLayerCount1 = 4 - 1;
+	} else if (matchedallApical2 != null) {
+		apicalLayerCount2 = 4 - 1;
+	} else if (matchedallApical3 != null) {
+		apicalLayerCount3 = 4 - 1;
+	} else if (matchedallApical4 != null) {
+		apicalLayerCount4 = 4 - 1;
+	}
+		
+	apicalTotalCount = apicalLayerCount1 + apicalLayerCount2 + apicalLayerCount3 + apicalLayerCount4;
+	
+	int basalLayerCount1 = 0;
+	int basalLayerCount2 = 0;
+	int basalLayerCount3 = 0;
+	int basalLayerCount4 = 0;
+	
+	int basalTotalCount = 0;
+	
+	if (matchedallBasal1 != null) {
+		basalLayerCount1 = 6 - 1;
+	} else if (matchedallBasal2 != null) {
+		basalLayerCount2 = 6 - 1;
+	} else if (matchedallBasal3 != null) {
+		basalLayerCount3 = 6 - 1;
+	} else if (matchedallBasal4 != null) {
+		basalLayerCount4 = 6 - 1;
+	}
+	
+	basalTotalCount = basalLayerCount1 + basalLayerCount2 + basalLayerCount3 + basalLayerCount4;
+	
+	int midLayerCount1 = 0;
+	int midLayerCount2 = 0;
+	int midLayerCount3 = 0;
+	int midLayerCount4 = 0;
+	
+	int midTotalCount = 0;
+	
+	if (matchedallMid1 != null) {
+		midLayerCount1 = 6 - 1;
+	} else if (matchedallMid2 != null) {
+		midLayerCount2 = 6 - 1;
+	} else if (matchedallMid3 != null) {
+		midLayerCount3 = 6 - 1;
+	} else if (matchedallMid4 != null) {
+		midLayerCount4 = 6 - 1;
+	}
+	
+	midTotalCount = midLayerCount1 + midLayerCount2 + midLayerCount3 + midLayerCount4;
+	
+	newFeatures.put("varValue", countComma + countAnd + countFullStop + countInfWallTotal + lateralTotalcount + septTotalcount + basalToMidCountTotal + midToApicalCountTotal + anteriorTotalCount + apicalTotalCount + basalTotalCount + midTotalCount + 1);
+	
+	newFeatures.put("septTotalcount", septTotalcount); 
+	newFeatures.put("countInfWall", countInfWallTotal); 
+	newFeatures.put("countComma", countComma); 
+	newFeatures.put("countAnd", countAnd); 
+	newFeatures.put("countFullStop", countFullStop); 
+	newFeatures.put("lateralTotalcount", lateralTotalcount); 
+	newFeatures.put("basalToMidCount", basalToMidCountTotal); 
+	newFeatures.put("midToApicalCountTotal", midToApicalCountTotal); 
+	newFeatures.put("anteriorTotalCount", anteriorTotalCount);   
+	newFeatures.put("apicalTotalCount", apicalTotalCount);   
+	newFeatures.put("basalTotalCount", basalTotalCount); 
+	newFeatures.put("midTotalCount", midTotalCount); 
+	
+	newFeatures.put("varType","LV Normokinetic Segments");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Normokinetic Segments ThreeSegmentLeft");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+  
+Rule: LeftVentricleWMNormokineticTwoSegmentLeftValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)CONTRACT"} |{SpaceToken.string!=CONTRACT})*
+
+):context
+)
+
+(
+(
+
+
+normokineticTerm
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+
+SECTION_1
+
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+
+SECTION_2
+
+
+):context
+
+
+):LeftVentricleWMNormokineticTwoSegmentLeftValueGram 
+
+--> 
+:LeftVentricleWMNormokineticTwoSegmentLeftValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+
+	gate.AnnotationSet matchedinferior1=(gate.AnnotationSet) bindings.get("inferior1");
+	gate.AnnotationSet matchedinferior2=(gate.AnnotationSet) bindings.get("inferior2");
+	gate.AnnotationSet matchedinferior3=(gate.AnnotationSet) bindings.get("inferior3");
+	gate.AnnotationSet matchedinferior4=(gate.AnnotationSet) bindings.get("inferior4");
+	gate.AnnotationSet matchedwall1=(gate.AnnotationSet) bindings.get("wall1");
+	gate.AnnotationSet matchedwall2=(gate.AnnotationSet) bindings.get("wall2");
+	gate.AnnotationSet matchedwall3=(gate.AnnotationSet) bindings.get("wall3");
+	gate.AnnotationSet matchedwall4=(gate.AnnotationSet) bindings.get("wall4");
+	gate.AnnotationSet matchedseptal1=(gate.AnnotationSet) bindings.get("septal1");
+	gate.AnnotationSet matchedseptal2=(gate.AnnotationSet) bindings.get("septal2");
+	gate.AnnotationSet matchedseptal3=(gate.AnnotationSet) bindings.get("septal3");
+	gate.AnnotationSet matchedseptal4=(gate.AnnotationSet) bindings.get("septal4");
+	gate.AnnotationSet matchedantInfSeptal1=(gate.AnnotationSet) bindings.get("antInfSeptal1");
+	gate.AnnotationSet matchedantInfSeptal2=(gate.AnnotationSet) bindings.get("antInfSeptal2");
+	gate.AnnotationSet matchedantInfSeptal3=(gate.AnnotationSet) bindings.get("antInfSeptal3");
+	gate.AnnotationSet matchedantInfSeptal4=(gate.AnnotationSet) bindings.get("antInfSeptal4");
+	gate.AnnotationSet matchedlevel1=(gate.AnnotationSet) bindings.get("level1");
+	gate.AnnotationSet matchedlevel2=(gate.AnnotationSet) bindings.get("level2"); 
+	gate.AnnotationSet matchedlevel3=(gate.AnnotationSet) bindings.get("level3"); 
+	gate.AnnotationSet matchedlevel4=(gate.AnnotationSet) bindings.get("level4"); 
+	gate.AnnotationSet matchedbasalToMid1=(gate.AnnotationSet) bindings.get("basalToMid1"); 	
+	gate.AnnotationSet matchedbasalToMid2=(gate.AnnotationSet) bindings.get("basalToMid2");
+	gate.AnnotationSet matchedbasalToMid3=(gate.AnnotationSet) bindings.get("basalToMid3");
+	gate.AnnotationSet matchedbasalToMid4=(gate.AnnotationSet) bindings.get("basalToMid4");
+	
+	gate.AnnotationSet matchedanterior1=(gate.AnnotationSet) bindings.get("anterior1");
+	gate.AnnotationSet matchedanterior2=(gate.AnnotationSet) bindings.get("anterior2");
+	gate.AnnotationSet matchedanterior3=(gate.AnnotationSet) bindings.get("anterior3");
+	gate.AnnotationSet matchedanterior4=(gate.AnnotationSet) bindings.get("anterior4");
+	
+	gate.AnnotationSet matchedantInfLateral1=(gate.AnnotationSet) bindings.get("antInfLateral1");
+	gate.AnnotationSet matchedantInfLateral2=(gate.AnnotationSet) bindings.get("antInfLateral2");
+	gate.AnnotationSet matchedantInfLateral3=(gate.AnnotationSet) bindings.get("antInfLateral3");
+	gate.AnnotationSet matchedantInfLateral4=(gate.AnnotationSet) bindings.get("antInfLateral4");
+	
+	gate.AnnotationSet matchedlateral1=(gate.AnnotationSet) bindings.get("lateral1");
+	gate.AnnotationSet matchedlateral2=(gate.AnnotationSet) bindings.get("lateral2");
+	gate.AnnotationSet matchedlateral3=(gate.AnnotationSet) bindings.get("lateral3");
+	gate.AnnotationSet matchedlateral4=(gate.AnnotationSet) bindings.get("lateral4");
+	
+	gate.AnnotationSet matchedbasalAndMid1=(gate.AnnotationSet) bindings.get("basalAndMid1"); 
+	gate.AnnotationSet matchedbasalAndMid2=(gate.AnnotationSet) bindings.get("basalAndMid2"); 
+	gate.AnnotationSet matchedbasalAndMid3=(gate.AnnotationSet) bindings.get("basalAndMid3"); 
+	gate.AnnotationSet matchedbasalAndMid4=(gate.AnnotationSet) bindings.get("basalAndMid4"); 
+	
+	gate.AnnotationSet matchedmidAndApical1=(gate.AnnotationSet) bindings.get("midAndApical1"); 
+	gate.AnnotationSet matchedmidAndApical2=(gate.AnnotationSet) bindings.get("midAndApical2"); 
+	gate.AnnotationSet matchedmidAndApical3=(gate.AnnotationSet) bindings.get("midAndApical3"); 
+	gate.AnnotationSet matchedmidAndApical4=(gate.AnnotationSet) bindings.get("midAndApical4"); 
+	
+	gate.AnnotationSet matchedmidToApical1=(gate.AnnotationSet) bindings.get("midToApical1"); 
+	gate.AnnotationSet matchedmidToApical2=(gate.AnnotationSet) bindings.get("midToApical2"); 
+	gate.AnnotationSet matchedmidToApical3=(gate.AnnotationSet) bindings.get("midToApical3"); 
+	gate.AnnotationSet matchedmidToApical4=(gate.AnnotationSet) bindings.get("midToApical4");
+	
+	gate.AnnotationSet matchedmidOrBasal1=(gate.AnnotationSet) bindings.get("midOrBasal1"); 
+	gate.AnnotationSet matchedmidOrBasal2=(gate.AnnotationSet) bindings.get("midOrBasal2"); 
+	gate.AnnotationSet matchedmidOrBasal3=(gate.AnnotationSet) bindings.get("midOrBasal3"); 
+	gate.AnnotationSet matchedmidOrBasal4=(gate.AnnotationSet) bindings.get("midOrBasal4");
+	
+	gate.AnnotationSet matchedallApical1=(gate.AnnotationSet) bindings.get("allApical1"); 
+	gate.AnnotationSet matchedallApical2=(gate.AnnotationSet) bindings.get("allApical2"); 
+	gate.AnnotationSet matchedallApical3=(gate.AnnotationSet) bindings.get("allApical3"); 
+	gate.AnnotationSet matchedallApical4=(gate.AnnotationSet) bindings.get("allApical4");
+	
+	gate.AnnotationSet matchedallBasal1=(gate.AnnotationSet) bindings.get("allBasal1"); 
+	gate.AnnotationSet matchedallBasal2=(gate.AnnotationSet) bindings.get("allBasal2"); 
+	gate.AnnotationSet matchedallBasal3=(gate.AnnotationSet) bindings.get("allBasal3"); 
+	gate.AnnotationSet matchedallBasal4=(gate.AnnotationSet) bindings.get("allBasal4");
+	
+	gate.AnnotationSet matchedallMid1=(gate.AnnotationSet) bindings.get("allMid1"); 
+	gate.AnnotationSet matchedallMid2=(gate.AnnotationSet) bindings.get("allMid2"); 
+	gate.AnnotationSet matchedallMid3=(gate.AnnotationSet) bindings.get("allMid3"); 
+	gate.AnnotationSet matchedallMid4=(gate.AnnotationSet) bindings.get("allMid4");
+	
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMNormokineticTwoSegmentLeftValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("unit", "levels: int (Segment number), Remaining (all remaining segments)");
+	
+	String line = stringFor(doc, matchedAnns);
+	
+	int countComma = line.length() - line.replace(",", "").length();
+	
+	int countFullStop = line.length() - line.replace(".", "").length();
+	
+	int countAnd = 0;
+	
+	Pattern p = Pattern.compile(" and ");
+	Matcher m = p.matcher(line.toLowerCase());
+	
+	while (m.find()) {
+		countAnd++;
+	}
+	
+	if (matchedbasalAndMid1 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid2 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid3 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid4 != null) {
+		countAnd--;
+	} 
+	
+	if (matchedmidAndApical1 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical2 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical3 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical4 != null) {
+		countAnd--;
+	} 
+	
+	int countInfWall1 = 0;
+	int countInfWall2 = 0;
+	int countInfWall3 = 0;
+	int countInfWall4 = 0;
+	
+	int countInfWallTotal = 0;
+	
+	if (matchedinferior1 != null & matchedlevel1 == null) {
+		countInfWall1 = 3 - 1; 
+		
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior2 != null & matchedlevel2 == null) {
+		countInfWall1 = 0;
+		
+		countInfWall2 = 3 - 1; 
+				
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior3 != null & matchedlevel3 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		
+		countInfWall3 = 3 - 1; 
+				
+		countInfWall4 = 0;
+	} else if (matchedinferior4 != null & matchedlevel4 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		
+		countInfWall4 = 3 - 1; 
+	}
+		
+	
+	countInfWallTotal = countInfWall1 + countInfWall2 + countInfWall3 + countInfWall4;
+	
+	int lateralTotalcount = 0;
+	
+	int lateralCountSection1 = 0;
+	int lateralCountSection2 = 0;
+	int lateralCountSection3 = 0;
+	int lateralCountSection4 = 0;
+	
+	if (matchedlateral1 != null & matchedlevel1 == null) {
+		
+		lateralCountSection1 = 5 - 1; 
+				
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral1 != null & matchedlevel1 == null) {
+		lateralCountSection1 = lateralCountSection1 + 1;
+	
+	} else if (matchedlateral1 != null & matchedbasalToMid1 != null) {
+		lateralCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral1 != null & matchedmidToApical1 != null) {
+		lateralCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral1 != null & matchedmidOrBasal1 != null) {
+		lateralCountSection1 = 2 - 1;
+	
+	} else if (matchedlateral2 != null & matchedlevel2 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		
+		lateralCountSection2 = 5 - 1; 
+		
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral2 != null & matchedlevel2 == null) {
+		lateralCountSection2 = lateralCountSection2 + 1;
+	
+	} else if (matchedlateral2 != null & matchedbasalToMid2 != null) {
+		lateralCountSection2 = 2 * 2 - 1 - 1; 	
+	
+	} else if (matchedlateral2 != null & matchedmidToApical2 != null) {
+		lateralCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral2 != null & matchedmidOrBasal2 != null) {
+		lateralCountSection2 = 2 - 1;
+		
+	} else if (matchedlateral3 != null & matchedlevel3 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		
+		lateralCountSection3 = 5 - 1; 
+				
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral3 != null & matchedlevel3 == null) {
+		lateralCountSection3 = lateralCountSection3 + 1;
+		
+	} else if (matchedlateral3 != null & matchedbasalToMid3 != null) {	
+		lateralCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral3 != null & matchedmidToApical3 != null) {
+		lateralCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral3 != null & matchedmidOrBasal3 != null) {
+		lateralCountSection3 = 2 - 1;
+		
+	} else if (matchedlateral4 != null & matchedwall4 != null & matchedlevel4 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		
+		lateralCountSection4 = 5 - 1; 
+		
+	} else if (matchedantInfLateral4 != null & matchedlevel4 == null) {
+		lateralCountSection4 = lateralCountSection4 + 1;
+		
+	} else if (matchedlateral4 != null & matchedbasalToMid4 != null) {	
+		lateralCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral4 != null & matchedmidToApical4 != null) {
+		lateralCountSection4 = 2 + 1 - 1 - 1;
+		
+	} else if (matchedlateral4 != null & matchedmidOrBasal4 != null) {
+		lateralCountSection4 = 2 - 1;
+
+	}
+	
+	lateralTotalcount = lateralCountSection1 + lateralCountSection2 + lateralCountSection3 + lateralCountSection4;
+	
+	
+	int septTotalcount = 0;
+		
+	int septalCountSection1 = 0;
+	int septalCountSection2 = 0;
+	int septalCountSection3 = 0;
+	int septalCountSection4 = 0;
+	
+	if (matchedseptal1 != null & matchedlevel1 == null & matchedmidOrBasal1 == null) {
+		
+		septalCountSection1 = 5 - 1; 
+		
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal1 != null & matchedlevel1 == null) {
+		septalCountSection1 = septalCountSection1 + 1;
+	
+	} else if (matchedseptal1 != null & matchedbasalToMid1 != null) {
+		septalCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal1 != null & matchedmidToApical1 != null) {
+		septalCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal1 != null & matchedmidOrBasal1 != null) {
+		septalCountSection1 = 2 - 1;
+		
+	} else if (matchedseptal2 != null & matchedlevel2 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		
+		septalCountSection2 = 5 - 1; 
+				
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal2 != null & matchedlevel2 == null) {
+		septalCountSection2 = septalCountSection2 + 1;
+		
+	} else if (matchedseptal2 != null & matchedbasalToMid2 != null) {
+		septalCountSection2 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal2 != null & matchedmidToApical2 != null) {
+		septalCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal2 != null & matchedmidOrBasal2 != null) {
+		septalCountSection2 = 2 - 1;
+		
+	} else if (matchedseptal3 != null & matchedlevel3 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		
+		septalCountSection3 = 5 - 1; 
+				
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal3 != null & matchedlevel3 == null) {
+		septalCountSection3 = septalCountSection3 + 1;
+		
+	} else if (matchedseptal3 != null & matchedbasalToMid3 != null) {	
+		septalCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal3 != null & matchedmidToApical3 != null) {
+		septalCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal3 != null & matchedmidOrBasal3 != null) {
+		septalCountSection3 = 2 - 1;
+		
+	} else if (matchedseptal4 != null & matchedlevel4 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		
+		septalCountSection4 = 5 - 1; 
+	
+	} else if (matchedantInfSeptal4 != null & matchedlevel4 == null) {
+		septalCountSection4 = septalCountSection4 + 1;
+		
+	} else if (matchedseptal4 != null & matchedbasalToMid4 != null) {	
+		septalCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal4 != null & matchedmidToApical4 != null) {
+		septalCountSection4 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal4 != null & matchedmidOrBasal4 != null) {
+		septalCountSection4 = 2 - 1;
+		
+	}
+		
+	septTotalcount = septalCountSection1 + septalCountSection2 + septalCountSection3 + septalCountSection4;
+	
+	
+	int basalToMidCount1 = 0;
+	int basalToMidCount2 = 0;
+	int basalToMidCount3 = 0;
+	int basalToMidCount4 = 0;
+	
+	int basalToMidCountTotal = 0;
+	
+	if (matchedbasalToMid1 != null) {
+		basalToMidCount1 = 1;
+	} 
+	if (matchedbasalToMid2 != null) {
+		basalToMidCount2 = 1;
+	}  
+	if (matchedbasalToMid3 != null) {
+		basalToMidCount3 = 1;
+	} 
+	if (matchedbasalToMid4 != null) {
+		basalToMidCount4 = 1;
+	} 
+		
+	basalToMidCountTotal = basalToMidCount1 + basalToMidCount2 + basalToMidCount3 + basalToMidCount4;
+	
+	
+	int midToApicalCount1 = 0;
+	int midToApicalCount2 = 0;
+	int midToApicalCount3 = 0;
+	int midToApicalCount4 = 0;
+	
+	int midToApicalCountTotal = 0;
+	
+	if (matchedmidToApical1 != null) {
+		midToApicalCount1 = 1;
+	} 
+	if (matchedmidToApical2 != null) {
+		midToApicalCount2 = 1;
+	}  
+	if (matchedmidToApical3 != null) {
+		midToApicalCount3 = 1;
+	} 
+	if (matchedmidToApical4 != null) {
+		midToApicalCount4 = 1;
+	} 
+	
+	midToApicalCountTotal = midToApicalCount1 + midToApicalCount2 + midToApicalCount3 + midToApicalCount4;
+	
+	int anteriorCountSection1 = 0;
+	int anteriorCountSection2 = 0;
+	int anteriorCountSection3 = 0;
+	int anteriorCountSection4 = 0;
+	
+	int anteriorTotalCount = 0;
+	
+	if (matchedanterior1 != null & matchedlevel1 == null) {	
+		anteriorCountSection1 = 3 - 1;
+				
+		anteriorCountSection2 = 0; 
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior2 != null & matchedlevel2 == null) {	
+		anteriorCountSection1 = 0;
+		
+		anteriorCountSection2 = 3 - 1;
+				
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior3 != null & matchedlevel3 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		
+		anteriorCountSection3 = 3 - 1;
+				
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior4 != null & matchedlevel4 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		anteriorCountSection3 = 0;
+		
+		anteriorCountSection4 = 3 - 1;
+	}
+	
+	anteriorTotalCount = anteriorCountSection1 + anteriorCountSection2 + anteriorCountSection3 + anteriorCountSection4;
+	
+	int apicalLayerCount1 = 0;
+	int apicalLayerCount2 = 0;
+	int apicalLayerCount3 = 0;
+	int apicalLayerCount4 = 0;
+	
+	int apicalTotalCount = 0;
+	
+	if (matchedallApical1 != null) {
+		apicalLayerCount1 = 4 - 1;
+	} else if (matchedallApical2 != null) {
+		apicalLayerCount2 = 4 - 1;
+	} else if (matchedallApical3 != null) {
+		apicalLayerCount3 = 4 - 1;
+	} else if (matchedallApical4 != null) {
+		apicalLayerCount4 = 4 - 1;
+	}
+		
+	apicalTotalCount = apicalLayerCount1 + apicalLayerCount2 + apicalLayerCount3 + apicalLayerCount4;
+	
+	int basalLayerCount1 = 0;
+	int basalLayerCount2 = 0;
+	int basalLayerCount3 = 0;
+	int basalLayerCount4 = 0;
+	
+	int basalTotalCount = 0;
+	
+	if (matchedallBasal1 != null) {
+		basalLayerCount1 = 6 - 1;
+	} else if (matchedallBasal2 != null) {
+		basalLayerCount2 = 6 - 1;
+	} else if (matchedallBasal3 != null) {
+		basalLayerCount3 = 6 - 1;
+	} else if (matchedallBasal4 != null) {
+		basalLayerCount4 = 6 - 1;
+	}
+	
+	basalTotalCount = basalLayerCount1 + basalLayerCount2 + basalLayerCount3 + basalLayerCount4;
+	
+	int midLayerCount1 = 0;
+	int midLayerCount2 = 0;
+	int midLayerCount3 = 0;
+	int midLayerCount4 = 0;
+	
+	int midTotalCount = 0;
+	
+	if (matchedallMid1 != null) {
+		midLayerCount1 = 6 - 1;
+	} else if (matchedallMid2 != null) {
+		midLayerCount2 = 6 - 1;
+	} else if (matchedallMid3 != null) {
+		midLayerCount3 = 6 - 1;
+	} else if (matchedallMid4 != null) {
+		midLayerCount4 = 6 - 1;
+	}
+	
+	midTotalCount = midLayerCount1 + midLayerCount2 + midLayerCount3 + midLayerCount4;
+	
+	newFeatures.put("varValue", countComma + countAnd + countFullStop + countInfWallTotal + lateralTotalcount + septTotalcount + basalToMidCountTotal + midToApicalCountTotal + anteriorTotalCount + apicalTotalCount + basalTotalCount + midTotalCount + 1);
+	
+	newFeatures.put("septTotalcount", septTotalcount); 
+	newFeatures.put("countInfWall", countInfWallTotal); 
+	newFeatures.put("countComma", countComma); 
+	newFeatures.put("countAnd", countAnd); 
+	newFeatures.put("countFullStop", countFullStop); 
+	newFeatures.put("lateralTotalcount", lateralTotalcount); 
+	newFeatures.put("basalToMidCount", basalToMidCountTotal); 
+	newFeatures.put("midToApicalCountTotal", midToApicalCountTotal); 
+	newFeatures.put("anteriorTotalCount", anteriorTotalCount);   
+	newFeatures.put("apicalTotalCount", apicalTotalCount);   
+	newFeatures.put("basalTotalCount", basalTotalCount); 
+	newFeatures.put("midTotalCount", midTotalCount); 
+	
+	newFeatures.put("varType","LV Normokinetic Segments");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Normokinetic Segments TwoSegmentLeft");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+Rule: LeftVentricleWMNormokineticOneSegmentLeftValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+
+({Token.string !=~ "(?i)Measurements", Token.string !=~ "(?i)CONTRACT"} |{SpaceToken.string!=CONTRACT})*
+
+):context
+)
+
+(
+(
+
+
+normokineticTerm
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?  
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?  
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?  
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?  
+
+SECTION_1
+
+
+):context
+
+
+):LeftVentricleWMNormokineticOneSegmentLeftValueGram 
+
+--> 
+:LeftVentricleWMNormokineticOneSegmentLeftValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+
+	gate.AnnotationSet matchedinferior1=(gate.AnnotationSet) bindings.get("inferior1");
+	gate.AnnotationSet matchedinferior2=(gate.AnnotationSet) bindings.get("inferior2");
+	gate.AnnotationSet matchedinferior3=(gate.AnnotationSet) bindings.get("inferior3");
+	gate.AnnotationSet matchedinferior4=(gate.AnnotationSet) bindings.get("inferior4");
+	gate.AnnotationSet matchedwall1=(gate.AnnotationSet) bindings.get("wall1");
+	gate.AnnotationSet matchedwall2=(gate.AnnotationSet) bindings.get("wall2");
+	gate.AnnotationSet matchedwall3=(gate.AnnotationSet) bindings.get("wall3");
+	gate.AnnotationSet matchedwall4=(gate.AnnotationSet) bindings.get("wall4");
+	gate.AnnotationSet matchedseptal1=(gate.AnnotationSet) bindings.get("septal1");
+	gate.AnnotationSet matchedseptal2=(gate.AnnotationSet) bindings.get("septal2");
+	gate.AnnotationSet matchedseptal3=(gate.AnnotationSet) bindings.get("septal3");
+	gate.AnnotationSet matchedseptal4=(gate.AnnotationSet) bindings.get("septal4");
+	gate.AnnotationSet matchedantInfSeptal1=(gate.AnnotationSet) bindings.get("antInfSeptal1");
+	gate.AnnotationSet matchedantInfSeptal2=(gate.AnnotationSet) bindings.get("antInfSeptal2");
+	gate.AnnotationSet matchedantInfSeptal3=(gate.AnnotationSet) bindings.get("antInfSeptal3");
+	gate.AnnotationSet matchedantInfSeptal4=(gate.AnnotationSet) bindings.get("antInfSeptal4");
+	gate.AnnotationSet matchedlevel1=(gate.AnnotationSet) bindings.get("level1");
+	gate.AnnotationSet matchedlevel2=(gate.AnnotationSet) bindings.get("level2"); 
+	gate.AnnotationSet matchedlevel3=(gate.AnnotationSet) bindings.get("level3"); 
+	gate.AnnotationSet matchedlevel4=(gate.AnnotationSet) bindings.get("level4"); 
+	gate.AnnotationSet matchedbasalToMid1=(gate.AnnotationSet) bindings.get("basalToMid1"); 	
+	gate.AnnotationSet matchedbasalToMid2=(gate.AnnotationSet) bindings.get("basalToMid2");
+	gate.AnnotationSet matchedbasalToMid3=(gate.AnnotationSet) bindings.get("basalToMid3");
+	gate.AnnotationSet matchedbasalToMid4=(gate.AnnotationSet) bindings.get("basalToMid4");
+	
+	gate.AnnotationSet matchedanterior1=(gate.AnnotationSet) bindings.get("anterior1");
+	gate.AnnotationSet matchedanterior2=(gate.AnnotationSet) bindings.get("anterior2");
+	gate.AnnotationSet matchedanterior3=(gate.AnnotationSet) bindings.get("anterior3");
+	gate.AnnotationSet matchedanterior4=(gate.AnnotationSet) bindings.get("anterior4");
+	
+	gate.AnnotationSet matchedantInfLateral1=(gate.AnnotationSet) bindings.get("antInfLateral1");
+	gate.AnnotationSet matchedantInfLateral2=(gate.AnnotationSet) bindings.get("antInfLateral2");
+	gate.AnnotationSet matchedantInfLateral3=(gate.AnnotationSet) bindings.get("antInfLateral3");
+	gate.AnnotationSet matchedantInfLateral4=(gate.AnnotationSet) bindings.get("antInfLateral4");
+	
+	gate.AnnotationSet matchedlateral1=(gate.AnnotationSet) bindings.get("lateral1");
+	gate.AnnotationSet matchedlateral2=(gate.AnnotationSet) bindings.get("lateral2");
+	gate.AnnotationSet matchedlateral3=(gate.AnnotationSet) bindings.get("lateral3");
+	gate.AnnotationSet matchedlateral4=(gate.AnnotationSet) bindings.get("lateral4");
+	
+	gate.AnnotationSet matchedbasalAndMid1=(gate.AnnotationSet) bindings.get("basalAndMid1"); 
+	gate.AnnotationSet matchedbasalAndMid2=(gate.AnnotationSet) bindings.get("basalAndMid2"); 
+	gate.AnnotationSet matchedbasalAndMid3=(gate.AnnotationSet) bindings.get("basalAndMid3"); 
+	gate.AnnotationSet matchedbasalAndMid4=(gate.AnnotationSet) bindings.get("basalAndMid4"); 
+	
+	gate.AnnotationSet matchedmidAndApical1=(gate.AnnotationSet) bindings.get("midAndApical1"); 
+	gate.AnnotationSet matchedmidAndApical2=(gate.AnnotationSet) bindings.get("midAndApical2"); 
+	gate.AnnotationSet matchedmidAndApical3=(gate.AnnotationSet) bindings.get("midAndApical3"); 
+	gate.AnnotationSet matchedmidAndApical4=(gate.AnnotationSet) bindings.get("midAndApical4"); 
+	
+	gate.AnnotationSet matchedmidToApical1=(gate.AnnotationSet) bindings.get("midToApical1"); 
+	gate.AnnotationSet matchedmidToApical2=(gate.AnnotationSet) bindings.get("midToApical2"); 
+	gate.AnnotationSet matchedmidToApical3=(gate.AnnotationSet) bindings.get("midToApical3"); 
+	gate.AnnotationSet matchedmidToApical4=(gate.AnnotationSet) bindings.get("midToApical4");
+	
+	gate.AnnotationSet matchedmidOrBasal1=(gate.AnnotationSet) bindings.get("midOrBasal1"); 
+	gate.AnnotationSet matchedmidOrBasal2=(gate.AnnotationSet) bindings.get("midOrBasal2"); 
+	gate.AnnotationSet matchedmidOrBasal3=(gate.AnnotationSet) bindings.get("midOrBasal3"); 
+	gate.AnnotationSet matchedmidOrBasal4=(gate.AnnotationSet) bindings.get("midOrBasal4");
+	
+	gate.AnnotationSet matchedallApical1=(gate.AnnotationSet) bindings.get("allApical1"); 
+	gate.AnnotationSet matchedallApical2=(gate.AnnotationSet) bindings.get("allApical2"); 
+	gate.AnnotationSet matchedallApical3=(gate.AnnotationSet) bindings.get("allApical3"); 
+	gate.AnnotationSet matchedallApical4=(gate.AnnotationSet) bindings.get("allApical4");
+	
+	gate.AnnotationSet matchedallBasal1=(gate.AnnotationSet) bindings.get("allBasal1"); 
+	gate.AnnotationSet matchedallBasal2=(gate.AnnotationSet) bindings.get("allBasal2"); 
+	gate.AnnotationSet matchedallBasal3=(gate.AnnotationSet) bindings.get("allBasal3"); 
+	gate.AnnotationSet matchedallBasal4=(gate.AnnotationSet) bindings.get("allBasal4");
+	
+	gate.AnnotationSet matchedallMid1=(gate.AnnotationSet) bindings.get("allMid1"); 
+	gate.AnnotationSet matchedallMid2=(gate.AnnotationSet) bindings.get("allMid2"); 
+	gate.AnnotationSet matchedallMid3=(gate.AnnotationSet) bindings.get("allMid3"); 
+	gate.AnnotationSet matchedallMid4=(gate.AnnotationSet) bindings.get("allMid4");
+	
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMNormokineticOneSegmentLeftValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("unit", "levels: int (Segment number), Remaining (all remaining segments)");
+	
+	String line = stringFor(doc, matchedAnns);
+	
+	int countComma = line.length() - line.replace(",", "").length();
+	
+	int countFullStop = line.length() - line.replace(".", "").length();
+	
+	int countAnd = 0;
+	
+	Pattern p = Pattern.compile(" and ");
+	Matcher m = p.matcher(line.toLowerCase());
+	
+	while (m.find()) {
+		countAnd++;
+	}
+	
+	if (matchedbasalAndMid1 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid2 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid3 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid4 != null) {
+		countAnd--;
+	} 
+	
+	if (matchedmidAndApical1 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical2 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical3 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical4 != null) {
+		countAnd--;
+	} 
+	
+	int countInfWall1 = 0;
+	int countInfWall2 = 0;
+	int countInfWall3 = 0;
+	int countInfWall4 = 0;
+	
+	int countInfWallTotal = 0;
+	
+	if (matchedinferior1 != null & matchedlevel1 == null) {
+		countInfWall1 = 3 - 1; 
+		
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior2 != null & matchedlevel2 == null) {
+		countInfWall1 = 0;
+		
+		countInfWall2 = 3 - 1; 
+				
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior3 != null & matchedlevel3 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		
+		countInfWall3 = 3 - 1; 
+				
+		countInfWall4 = 0;
+	} else if (matchedinferior4 != null & matchedlevel4 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		
+		countInfWall4 = 3 - 1; 
+	}
+		
+	
+	countInfWallTotal = countInfWall1 + countInfWall2 + countInfWall3 + countInfWall4;
+	
+	int lateralTotalcount = 0;
+	
+	int lateralCountSection1 = 0;
+	int lateralCountSection2 = 0;
+	int lateralCountSection3 = 0;
+	int lateralCountSection4 = 0;
+	
+	if (matchedlateral1 != null & matchedlevel1 == null) {
+		
+		lateralCountSection1 = 5 - 1; 
+				
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral1 != null & matchedlevel1 == null) {
+		lateralCountSection1 = lateralCountSection1 + 1;
+	
+	} else if (matchedlateral1 != null & matchedbasalToMid1 != null) {
+		lateralCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral1 != null & matchedmidToApical1 != null) {
+		lateralCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral1 != null & matchedmidOrBasal1 != null) {
+		lateralCountSection1 = 2 - 1;
+	
+	} else if (matchedlateral2 != null & matchedlevel2 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		
+		lateralCountSection2 = 5 - 1; 
+		
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral2 != null & matchedlevel2 == null) {
+		lateralCountSection2 = lateralCountSection2 + 1;
+	
+	} else if (matchedlateral2 != null & matchedbasalToMid2 != null) {
+		lateralCountSection2 = 2 * 2 - 1 - 1; 	
+	
+	} else if (matchedlateral2 != null & matchedmidToApical2 != null) {
+		lateralCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral2 != null & matchedmidOrBasal2 != null) {
+		lateralCountSection2 = 2 - 1;
+		
+	} else if (matchedlateral3 != null & matchedlevel3 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		
+		lateralCountSection3 = 5 - 1; 
+				
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral3 != null & matchedlevel3 == null) {
+		lateralCountSection3 = lateralCountSection3 + 1;
+		
+	} else if (matchedlateral3 != null & matchedbasalToMid3 != null) {	
+		lateralCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral3 != null & matchedmidToApical3 != null) {
+		lateralCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral3 != null & matchedmidOrBasal3 != null) {
+		lateralCountSection3 = 2 - 1;
+		
+	} else if (matchedlateral4 != null & matchedwall4 != null & matchedlevel4 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		
+		lateralCountSection4 = 5 - 1; 
+		
+	} else if (matchedantInfLateral4 != null & matchedlevel4 == null) {
+		lateralCountSection4 = lateralCountSection4 + 1;
+		
+	} else if (matchedlateral4 != null & matchedbasalToMid4 != null) {	
+		lateralCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral4 != null & matchedmidToApical4 != null) {
+		lateralCountSection4 = 2 + 1 - 1 - 1;
+		
+	} else if (matchedlateral4 != null & matchedmidOrBasal4 != null) {
+		lateralCountSection4 = 2 - 1;
+
+	}
+	
+	lateralTotalcount = lateralCountSection1 + lateralCountSection2 + lateralCountSection3 + lateralCountSection4;
+	
+	
+	int septTotalcount = 0;
+		
+	int septalCountSection1 = 0;
+	int septalCountSection2 = 0;
+	int septalCountSection3 = 0;
+	int septalCountSection4 = 0;
+	
+	if (matchedseptal1 != null & matchedlevel1 == null & matchedmidOrBasal1 == null) {
+		
+		septalCountSection1 = 5 - 1; 
+		
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal1 != null & matchedlevel1 == null) {
+		septalCountSection1 = septalCountSection1 + 1;
+	
+	} else if (matchedseptal1 != null & matchedbasalToMid1 != null) {
+		septalCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal1 != null & matchedmidToApical1 != null) {
+		septalCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal1 != null & matchedmidOrBasal1 != null) {
+		septalCountSection1 = 2 - 1;
+		
+	} else if (matchedseptal2 != null & matchedlevel2 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		
+		septalCountSection2 = 5 - 1; 
+				
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal2 != null & matchedlevel2 == null) {
+		septalCountSection2 = septalCountSection2 + 1;
+		
+	} else if (matchedseptal2 != null & matchedbasalToMid2 != null) {
+		septalCountSection2 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal2 != null & matchedmidToApical2 != null) {
+		septalCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal2 != null & matchedmidOrBasal2 != null) {
+		septalCountSection2 = 2 - 1;
+		
+	} else if (matchedseptal3 != null & matchedlevel3 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		
+		septalCountSection3 = 5 - 1; 
+				
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal3 != null & matchedlevel3 == null) {
+		septalCountSection3 = septalCountSection3 + 1;
+		
+	} else if (matchedseptal3 != null & matchedbasalToMid3 != null) {	
+		septalCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal3 != null & matchedmidToApical3 != null) {
+		septalCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal3 != null & matchedmidOrBasal3 != null) {
+		septalCountSection3 = 2 - 1;
+		
+	} else if (matchedseptal4 != null & matchedlevel4 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		
+		septalCountSection4 = 5 - 1; 
+	
+	} else if (matchedantInfSeptal4 != null & matchedlevel4 == null) {
+		septalCountSection4 = septalCountSection4 + 1;
+		
+	} else if (matchedseptal4 != null & matchedbasalToMid4 != null) {	
+		septalCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal4 != null & matchedmidToApical4 != null) {
+		septalCountSection4 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal4 != null & matchedmidOrBasal4 != null) {
+		septalCountSection4 = 2 - 1;
+		
+	}
+		
+	septTotalcount = septalCountSection1 + septalCountSection2 + septalCountSection3 + septalCountSection4;
+	
+	
+	int basalToMidCount1 = 0;
+	int basalToMidCount2 = 0;
+	int basalToMidCount3 = 0;
+	int basalToMidCount4 = 0;
+	
+	int basalToMidCountTotal = 0;
+	
+	if (matchedbasalToMid1 != null) {
+		basalToMidCount1 = 1;
+	} 
+	if (matchedbasalToMid2 != null) {
+		basalToMidCount2 = 1;
+	}  
+	if (matchedbasalToMid3 != null) {
+		basalToMidCount3 = 1;
+	} 
+	if (matchedbasalToMid4 != null) {
+		basalToMidCount4 = 1;
+	} 
+		
+	basalToMidCountTotal = basalToMidCount1 + basalToMidCount2 + basalToMidCount3 + basalToMidCount4;
+	
+	
+	int midToApicalCount1 = 0;
+	int midToApicalCount2 = 0;
+	int midToApicalCount3 = 0;
+	int midToApicalCount4 = 0;
+	
+	int midToApicalCountTotal = 0;
+	
+	if (matchedmidToApical1 != null) {
+		midToApicalCount1 = 1;
+	} 
+	if (matchedmidToApical2 != null) {
+		midToApicalCount2 = 1;
+	}  
+	if (matchedmidToApical3 != null) {
+		midToApicalCount3 = 1;
+	} 
+	if (matchedmidToApical4 != null) {
+		midToApicalCount4 = 1;
+	} 
+	
+	midToApicalCountTotal = midToApicalCount1 + midToApicalCount2 + midToApicalCount3 + midToApicalCount4;
+	
+	int anteriorCountSection1 = 0;
+	int anteriorCountSection2 = 0;
+	int anteriorCountSection3 = 0;
+	int anteriorCountSection4 = 0;
+	
+	int anteriorTotalCount = 0;
+	
+	if (matchedanterior1 != null & matchedlevel1 == null) {	
+		anteriorCountSection1 = 3 - 1;
+				
+		anteriorCountSection2 = 0; 
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior2 != null & matchedlevel2 == null) {	
+		anteriorCountSection1 = 0;
+		
+		anteriorCountSection2 = 3 - 1;
+				
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior3 != null & matchedlevel3 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		
+		anteriorCountSection3 = 3 - 1;
+				
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior4 != null & matchedlevel4 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		anteriorCountSection3 = 0;
+		
+		anteriorCountSection4 = 3 - 1;
+	}
+	
+	anteriorTotalCount = anteriorCountSection1 + anteriorCountSection2 + anteriorCountSection3 + anteriorCountSection4;
+	
+	int apicalLayerCount1 = 0;
+	int apicalLayerCount2 = 0;
+	int apicalLayerCount3 = 0;
+	int apicalLayerCount4 = 0;
+	
+	int apicalTotalCount = 0;
+	
+	if (matchedallApical1 != null) {
+		apicalLayerCount1 = 4 - 1;
+	} else if (matchedallApical2 != null) {
+		apicalLayerCount2 = 4 - 1;
+	} else if (matchedallApical3 != null) {
+		apicalLayerCount3 = 4 - 1;
+	} else if (matchedallApical4 != null) {
+		apicalLayerCount4 = 4 - 1;
+	}
+		
+	apicalTotalCount = apicalLayerCount1 + apicalLayerCount2 + apicalLayerCount3 + apicalLayerCount4;
+	
+	int basalLayerCount1 = 0;
+	int basalLayerCount2 = 0;
+	int basalLayerCount3 = 0;
+	int basalLayerCount4 = 0;
+	
+	int basalTotalCount = 0;
+	
+	if (matchedallBasal1 != null) {
+		basalLayerCount1 = 6 - 1;
+	} else if (matchedallBasal2 != null) {
+		basalLayerCount2 = 6 - 1;
+	} else if (matchedallBasal3 != null) {
+		basalLayerCount3 = 6 - 1;
+	} else if (matchedallBasal4 != null) {
+		basalLayerCount4 = 6 - 1;
+	}
+	
+	basalTotalCount = basalLayerCount1 + basalLayerCount2 + basalLayerCount3 + basalLayerCount4;
+	
+	int midLayerCount1 = 0;
+	int midLayerCount2 = 0;
+	int midLayerCount3 = 0;
+	int midLayerCount4 = 0;
+	
+	int midTotalCount = 0;
+	
+	if (matchedallMid1 != null) {
+		midLayerCount1 = 6 - 1;
+	} else if (matchedallMid2 != null) {
+		midLayerCount2 = 6 - 1;
+	} else if (matchedallMid3 != null) {
+		midLayerCount3 = 6 - 1;
+	} else if (matchedallMid4 != null) {
+		midLayerCount4 = 6 - 1;
+	}
+	
+	midTotalCount = midLayerCount1 + midLayerCount2 + midLayerCount3 + midLayerCount4;
+	
+	newFeatures.put("varValue", countComma + countAnd + countFullStop + countInfWallTotal + lateralTotalcount + septTotalcount + basalToMidCountTotal + midToApicalCountTotal + anteriorTotalCount + apicalTotalCount + basalTotalCount + midTotalCount + 1);
+	
+	newFeatures.put("septTotalcount", septTotalcount); 
+	newFeatures.put("countInfWall", countInfWallTotal); 
+	newFeatures.put("countComma", countComma); 
+	newFeatures.put("countAnd", countAnd); 
+	newFeatures.put("countFullStop", countFullStop); 
+	newFeatures.put("lateralTotalcount", lateralTotalcount); 
+	newFeatures.put("basalToMidCount", basalToMidCountTotal); 
+	newFeatures.put("midToApicalCountTotal", midToApicalCountTotal); 
+	newFeatures.put("anteriorTotalCount", anteriorTotalCount);   
+	newFeatures.put("apicalTotalCount", apicalTotalCount);   
+	newFeatures.put("basalTotalCount", basalTotalCount); 
+	newFeatures.put("midTotalCount", midTotalCount); 
+	
+	newFeatures.put("varType","LV Normokinetic Segments");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Normokinetic Segments OneSegmentLeft");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+
+Rule: LeftVentricleWMNormokineticOneSegmentRightValueRule
+
+contextTerm
+
+(
+(
+
+
+SECTION_1
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+normokineticTerm
+
+
+):context
+
+
+):LeftVentricleWMNormokineticOneSegmentRightValueGram 
+
+--> 
+:LeftVentricleWMNormokineticOneSegmentRightValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+
+	gate.AnnotationSet matchedinferior1=(gate.AnnotationSet) bindings.get("inferior1");
+	gate.AnnotationSet matchedinferior2=(gate.AnnotationSet) bindings.get("inferior2");
+	gate.AnnotationSet matchedinferior3=(gate.AnnotationSet) bindings.get("inferior3");
+	gate.AnnotationSet matchedinferior4=(gate.AnnotationSet) bindings.get("inferior4");
+	gate.AnnotationSet matchedwall1=(gate.AnnotationSet) bindings.get("wall1");
+	gate.AnnotationSet matchedwall2=(gate.AnnotationSet) bindings.get("wall2");
+	gate.AnnotationSet matchedwall3=(gate.AnnotationSet) bindings.get("wall3");
+	gate.AnnotationSet matchedwall4=(gate.AnnotationSet) bindings.get("wall4");
+	gate.AnnotationSet matchedseptal1=(gate.AnnotationSet) bindings.get("septal1");
+	gate.AnnotationSet matchedseptal2=(gate.AnnotationSet) bindings.get("septal2");
+	gate.AnnotationSet matchedseptal3=(gate.AnnotationSet) bindings.get("septal3");
+	gate.AnnotationSet matchedseptal4=(gate.AnnotationSet) bindings.get("septal4");
+	gate.AnnotationSet matchedantInfSeptal1=(gate.AnnotationSet) bindings.get("antInfSeptal1");
+	gate.AnnotationSet matchedantInfSeptal2=(gate.AnnotationSet) bindings.get("antInfSeptal2");
+	gate.AnnotationSet matchedantInfSeptal3=(gate.AnnotationSet) bindings.get("antInfSeptal3");
+	gate.AnnotationSet matchedantInfSeptal4=(gate.AnnotationSet) bindings.get("antInfSeptal4");
+	gate.AnnotationSet matchedlevel1=(gate.AnnotationSet) bindings.get("level1");
+	gate.AnnotationSet matchedlevel2=(gate.AnnotationSet) bindings.get("level2"); 
+	gate.AnnotationSet matchedlevel3=(gate.AnnotationSet) bindings.get("level3"); 
+	gate.AnnotationSet matchedlevel4=(gate.AnnotationSet) bindings.get("level4"); 
+	gate.AnnotationSet matchedbasalToMid1=(gate.AnnotationSet) bindings.get("basalToMid1"); 	
+	gate.AnnotationSet matchedbasalToMid2=(gate.AnnotationSet) bindings.get("basalToMid2");
+	gate.AnnotationSet matchedbasalToMid3=(gate.AnnotationSet) bindings.get("basalToMid3");
+	gate.AnnotationSet matchedbasalToMid4=(gate.AnnotationSet) bindings.get("basalToMid4");
+	
+	gate.AnnotationSet matchedanterior1=(gate.AnnotationSet) bindings.get("anterior1");
+	gate.AnnotationSet matchedanterior2=(gate.AnnotationSet) bindings.get("anterior2");
+	gate.AnnotationSet matchedanterior3=(gate.AnnotationSet) bindings.get("anterior3");
+	gate.AnnotationSet matchedanterior4=(gate.AnnotationSet) bindings.get("anterior4");
+	
+	gate.AnnotationSet matchedantInfLateral1=(gate.AnnotationSet) bindings.get("antInfLateral1");
+	gate.AnnotationSet matchedantInfLateral2=(gate.AnnotationSet) bindings.get("antInfLateral2");
+	gate.AnnotationSet matchedantInfLateral3=(gate.AnnotationSet) bindings.get("antInfLateral3");
+	gate.AnnotationSet matchedantInfLateral4=(gate.AnnotationSet) bindings.get("antInfLateral4");
+	
+	gate.AnnotationSet matchedlateral1=(gate.AnnotationSet) bindings.get("lateral1");
+	gate.AnnotationSet matchedlateral2=(gate.AnnotationSet) bindings.get("lateral2");
+	gate.AnnotationSet matchedlateral3=(gate.AnnotationSet) bindings.get("lateral3");
+	gate.AnnotationSet matchedlateral4=(gate.AnnotationSet) bindings.get("lateral4");
+	
+	gate.AnnotationSet matchedbasalAndMid1=(gate.AnnotationSet) bindings.get("basalAndMid1"); 
+	gate.AnnotationSet matchedbasalAndMid2=(gate.AnnotationSet) bindings.get("basalAndMid2"); 
+	gate.AnnotationSet matchedbasalAndMid3=(gate.AnnotationSet) bindings.get("basalAndMid3"); 
+	gate.AnnotationSet matchedbasalAndMid4=(gate.AnnotationSet) bindings.get("basalAndMid4"); 
+	
+	gate.AnnotationSet matchedmidAndApical1=(gate.AnnotationSet) bindings.get("midAndApical1"); 
+	gate.AnnotationSet matchedmidAndApical2=(gate.AnnotationSet) bindings.get("midAndApical2"); 
+	gate.AnnotationSet matchedmidAndApical3=(gate.AnnotationSet) bindings.get("midAndApical3"); 
+	gate.AnnotationSet matchedmidAndApical4=(gate.AnnotationSet) bindings.get("midAndApical4"); 
+	
+	gate.AnnotationSet matchedmidToApical1=(gate.AnnotationSet) bindings.get("midToApical1"); 
+	gate.AnnotationSet matchedmidToApical2=(gate.AnnotationSet) bindings.get("midToApical2"); 
+	gate.AnnotationSet matchedmidToApical3=(gate.AnnotationSet) bindings.get("midToApical3"); 
+	gate.AnnotationSet matchedmidToApical4=(gate.AnnotationSet) bindings.get("midToApical4");
+	
+	gate.AnnotationSet matchedmidOrBasal1=(gate.AnnotationSet) bindings.get("midOrBasal1"); 
+	gate.AnnotationSet matchedmidOrBasal2=(gate.AnnotationSet) bindings.get("midOrBasal2"); 
+	gate.AnnotationSet matchedmidOrBasal3=(gate.AnnotationSet) bindings.get("midOrBasal3"); 
+	gate.AnnotationSet matchedmidOrBasal4=(gate.AnnotationSet) bindings.get("midOrBasal4");
+	
+	gate.AnnotationSet matchedallApical1=(gate.AnnotationSet) bindings.get("allApical1"); 
+	gate.AnnotationSet matchedallApical2=(gate.AnnotationSet) bindings.get("allApical2"); 
+	gate.AnnotationSet matchedallApical3=(gate.AnnotationSet) bindings.get("allApical3"); 
+	gate.AnnotationSet matchedallApical4=(gate.AnnotationSet) bindings.get("allApical4");
+	
+	gate.AnnotationSet matchedallBasal1=(gate.AnnotationSet) bindings.get("allBasal1"); 
+	gate.AnnotationSet matchedallBasal2=(gate.AnnotationSet) bindings.get("allBasal2"); 
+	gate.AnnotationSet matchedallBasal3=(gate.AnnotationSet) bindings.get("allBasal3"); 
+	gate.AnnotationSet matchedallBasal4=(gate.AnnotationSet) bindings.get("allBasal4");
+	
+	gate.AnnotationSet matchedallMid1=(gate.AnnotationSet) bindings.get("allMid1"); 
+	gate.AnnotationSet matchedallMid2=(gate.AnnotationSet) bindings.get("allMid2"); 
+	gate.AnnotationSet matchedallMid3=(gate.AnnotationSet) bindings.get("allMid3"); 
+	gate.AnnotationSet matchedallMid4=(gate.AnnotationSet) bindings.get("allMid4");
+	
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMNormokineticOneSegmentRightValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("unit", "levels: int (Segment number), Remaining (all remaining segments)");
+	
+	String line = stringFor(doc, matchedAnns);
+	
+	int countComma = line.length() - line.replace(",", "").length();
+	
+	int countFullStop = line.length() - line.replace(".", "").length();
+	
+	int countAnd = 0;
+	
+	Pattern p = Pattern.compile(" and ");
+	Matcher m = p.matcher(line.toLowerCase());
+	
+	while (m.find()) {
+		countAnd++;
+	}
+	
+	if (matchedbasalAndMid1 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid2 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid3 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid4 != null) {
+		countAnd--;
+	} 
+	
+	if (matchedmidAndApical1 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical2 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical3 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical4 != null) {
+		countAnd--;
+	} 
+	
+	int countInfWall1 = 0;
+	int countInfWall2 = 0;
+	int countInfWall3 = 0;
+	int countInfWall4 = 0;
+	
+	int countInfWallTotal = 0;
+	
+	if (matchedinferior1 != null & matchedlevel1 == null) {
+		countInfWall1 = 3 - 1; 
+		
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior2 != null & matchedlevel2 == null) {
+		countInfWall1 = 0;
+		
+		countInfWall2 = 3 - 1; 
+				
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior3 != null & matchedlevel3 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		
+		countInfWall3 = 3 - 1; 
+				
+		countInfWall4 = 0;
+	} else if (matchedinferior4 != null & matchedlevel4 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		
+		countInfWall4 = 3 - 1; 
+	}
+		
+	
+	countInfWallTotal = countInfWall1 + countInfWall2 + countInfWall3 + countInfWall4;
+	
+	int lateralTotalcount = 0;
+	
+	int lateralCountSection1 = 0;
+	int lateralCountSection2 = 0;
+	int lateralCountSection3 = 0;
+	int lateralCountSection4 = 0;
+	
+	if (matchedlateral1 != null & matchedlevel1 == null) {
+		
+		lateralCountSection1 = 5 - 1; 
+				
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral1 != null & matchedlevel1 == null) {
+		lateralCountSection1 = lateralCountSection1 + 1;
+	
+	} else if (matchedlateral1 != null & matchedbasalToMid1 != null) {
+		lateralCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral1 != null & matchedmidToApical1 != null) {
+		lateralCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral1 != null & matchedmidOrBasal1 != null) {
+		lateralCountSection1 = 2 - 1;
+	
+	} else if (matchedlateral2 != null & matchedlevel2 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		
+		lateralCountSection2 = 5 - 1; 
+		
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral2 != null & matchedlevel2 == null) {
+		lateralCountSection2 = lateralCountSection2 + 1;
+	
+	} else if (matchedlateral2 != null & matchedbasalToMid2 != null) {
+		lateralCountSection2 = 2 * 2 - 1 - 1; 	
+	
+	} else if (matchedlateral2 != null & matchedmidToApical2 != null) {
+		lateralCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral2 != null & matchedmidOrBasal2 != null) {
+		lateralCountSection2 = 2 - 1;
+		
+	} else if (matchedlateral3 != null & matchedlevel3 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		
+		lateralCountSection3 = 5 - 1; 
+				
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral3 != null & matchedlevel3 == null) {
+		lateralCountSection3 = lateralCountSection3 + 1;
+		
+	} else if (matchedlateral3 != null & matchedbasalToMid3 != null) {	
+		lateralCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral3 != null & matchedmidToApical3 != null) {
+		lateralCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral3 != null & matchedmidOrBasal3 != null) {
+		lateralCountSection3 = 2 - 1;
+		
+	} else if (matchedlateral4 != null & matchedwall4 != null & matchedlevel4 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		
+		lateralCountSection4 = 5 - 1; 
+		
+	} else if (matchedantInfLateral4 != null & matchedlevel4 == null) {
+		lateralCountSection4 = lateralCountSection4 + 1;
+		
+	} else if (matchedlateral4 != null & matchedbasalToMid4 != null) {	
+		lateralCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral4 != null & matchedmidToApical4 != null) {
+		lateralCountSection4 = 2 + 1 - 1 - 1;
+		
+	} else if (matchedlateral4 != null & matchedmidOrBasal4 != null) {
+		lateralCountSection4 = 2 - 1;
+
+	}
+	
+	lateralTotalcount = lateralCountSection1 + lateralCountSection2 + lateralCountSection3 + lateralCountSection4;
+	
+	
+	int septTotalcount = 0;
+		
+	int septalCountSection1 = 0;
+	int septalCountSection2 = 0;
+	int septalCountSection3 = 0;
+	int septalCountSection4 = 0;
+	
+	if (matchedseptal1 != null & matchedlevel1 == null & matchedmidOrBasal1 == null) {
+		
+		septalCountSection1 = 5 - 1; 
+		
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal1 != null & matchedlevel1 == null) {
+		septalCountSection1 = septalCountSection1 + 1;
+	
+	} else if (matchedseptal1 != null & matchedbasalToMid1 != null) {
+		septalCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal1 != null & matchedmidToApical1 != null) {
+		septalCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal1 != null & matchedmidOrBasal1 != null) {
+		septalCountSection1 = 2 - 1;
+		
+	} else if (matchedseptal2 != null & matchedlevel2 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		
+		septalCountSection2 = 5 - 1; 
+				
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal2 != null & matchedlevel2 == null) {
+		septalCountSection2 = septalCountSection2 + 1;
+		
+	} else if (matchedseptal2 != null & matchedbasalToMid2 != null) {
+		septalCountSection2 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal2 != null & matchedmidToApical2 != null) {
+		septalCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal2 != null & matchedmidOrBasal2 != null) {
+		septalCountSection2 = 2 - 1;
+		
+	} else if (matchedseptal3 != null & matchedlevel3 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		
+		septalCountSection3 = 5 - 1; 
+				
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal3 != null & matchedlevel3 == null) {
+		septalCountSection3 = septalCountSection3 + 1;
+		
+	} else if (matchedseptal3 != null & matchedbasalToMid3 != null) {	
+		septalCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal3 != null & matchedmidToApical3 != null) {
+		septalCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal3 != null & matchedmidOrBasal3 != null) {
+		septalCountSection3 = 2 - 1;
+		
+	} else if (matchedseptal4 != null & matchedlevel4 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		
+		septalCountSection4 = 5 - 1; 
+	
+	} else if (matchedantInfSeptal4 != null & matchedlevel4 == null) {
+		septalCountSection4 = septalCountSection4 + 1;
+		
+	} else if (matchedseptal4 != null & matchedbasalToMid4 != null) {	
+		septalCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal4 != null & matchedmidToApical4 != null) {
+		septalCountSection4 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal4 != null & matchedmidOrBasal4 != null) {
+		septalCountSection4 = 2 - 1;
+		
+	}
+		
+	septTotalcount = septalCountSection1 + septalCountSection2 + septalCountSection3 + septalCountSection4;
+	
+	
+	int basalToMidCount1 = 0;
+	int basalToMidCount2 = 0;
+	int basalToMidCount3 = 0;
+	int basalToMidCount4 = 0;
+	
+	int basalToMidCountTotal = 0;
+	
+	if (matchedbasalToMid1 != null) {
+		basalToMidCount1 = 1;
+	} 
+	if (matchedbasalToMid2 != null) {
+		basalToMidCount2 = 1;
+	}  
+	if (matchedbasalToMid3 != null) {
+		basalToMidCount3 = 1;
+	} 
+	if (matchedbasalToMid4 != null) {
+		basalToMidCount4 = 1;
+	} 
+		
+	basalToMidCountTotal = basalToMidCount1 + basalToMidCount2 + basalToMidCount3 + basalToMidCount4;
+	
+	
+	int midToApicalCount1 = 0;
+	int midToApicalCount2 = 0;
+	int midToApicalCount3 = 0;
+	int midToApicalCount4 = 0;
+	
+	int midToApicalCountTotal = 0;
+	
+	if (matchedmidToApical1 != null) {
+		midToApicalCount1 = 1;
+	} 
+	if (matchedmidToApical2 != null) {
+		midToApicalCount2 = 1;
+	}  
+	if (matchedmidToApical3 != null) {
+		midToApicalCount3 = 1;
+	} 
+	if (matchedmidToApical4 != null) {
+		midToApicalCount4 = 1;
+	} 
+	
+	midToApicalCountTotal = midToApicalCount1 + midToApicalCount2 + midToApicalCount3 + midToApicalCount4;
+	
+	int anteriorCountSection1 = 0;
+	int anteriorCountSection2 = 0;
+	int anteriorCountSection3 = 0;
+	int anteriorCountSection4 = 0;
+	
+	int anteriorTotalCount = 0;
+	
+	if (matchedanterior1 != null & matchedlevel1 == null) {	
+		anteriorCountSection1 = 3 - 1;
+				
+		anteriorCountSection2 = 0; 
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior2 != null & matchedlevel2 == null) {	
+		anteriorCountSection1 = 0;
+		
+		anteriorCountSection2 = 3 - 1;
+				
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior3 != null & matchedlevel3 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		
+		anteriorCountSection3 = 3 - 1;
+				
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior4 != null & matchedlevel4 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		anteriorCountSection3 = 0;
+		
+		anteriorCountSection4 = 3 - 1;
+	}
+	
+	anteriorTotalCount = anteriorCountSection1 + anteriorCountSection2 + anteriorCountSection3 + anteriorCountSection4;
+	
+	int apicalLayerCount1 = 0;
+	int apicalLayerCount2 = 0;
+	int apicalLayerCount3 = 0;
+	int apicalLayerCount4 = 0;
+	
+	int apicalTotalCount = 0;
+	
+	if (matchedallApical1 != null) {
+		apicalLayerCount1 = 4 - 1;
+	} else if (matchedallApical2 != null) {
+		apicalLayerCount2 = 4 - 1;
+	} else if (matchedallApical3 != null) {
+		apicalLayerCount3 = 4 - 1;
+	} else if (matchedallApical4 != null) {
+		apicalLayerCount4 = 4 - 1;
+	}
+		
+	apicalTotalCount = apicalLayerCount1 + apicalLayerCount2 + apicalLayerCount3 + apicalLayerCount4;
+	
+	int basalLayerCount1 = 0;
+	int basalLayerCount2 = 0;
+	int basalLayerCount3 = 0;
+	int basalLayerCount4 = 0;
+	
+	int basalTotalCount = 0;
+	
+	if (matchedallBasal1 != null) {
+		basalLayerCount1 = 6 - 1;
+	} else if (matchedallBasal2 != null) {
+		basalLayerCount2 = 6 - 1;
+	} else if (matchedallBasal3 != null) {
+		basalLayerCount3 = 6 - 1;
+	} else if (matchedallBasal4 != null) {
+		basalLayerCount4 = 6 - 1;
+	}
+	
+	basalTotalCount = basalLayerCount1 + basalLayerCount2 + basalLayerCount3 + basalLayerCount4;
+	
+	int midLayerCount1 = 0;
+	int midLayerCount2 = 0;
+	int midLayerCount3 = 0;
+	int midLayerCount4 = 0;
+	
+	int midTotalCount = 0;
+	
+	if (matchedallMid1 != null) {
+		midLayerCount1 = 6 - 1;
+	} else if (matchedallMid2 != null) {
+		midLayerCount2 = 6 - 1;
+	} else if (matchedallMid3 != null) {
+		midLayerCount3 = 6 - 1;
+	} else if (matchedallMid4 != null) {
+		midLayerCount4 = 6 - 1;
+	}
+	
+	midTotalCount = midLayerCount1 + midLayerCount2 + midLayerCount3 + midLayerCount4;
+	
+	newFeatures.put("varValue", countComma + countAnd + countFullStop + countInfWallTotal + lateralTotalcount + septTotalcount + basalToMidCountTotal + midToApicalCountTotal + anteriorTotalCount + apicalTotalCount + basalTotalCount + midTotalCount + 1);
+	
+	newFeatures.put("septTotalcount", septTotalcount); 
+	newFeatures.put("countInfWall", countInfWallTotal); 
+	newFeatures.put("countComma", countComma); 
+	newFeatures.put("countAnd", countAnd); 
+	newFeatures.put("countFullStop", countFullStop); 
+	newFeatures.put("lateralTotalcount", lateralTotalcount); 
+	newFeatures.put("basalToMidCount", basalToMidCountTotal); 
+	newFeatures.put("midToApicalCountTotal", midToApicalCountTotal); 
+	newFeatures.put("anteriorTotalCount", anteriorTotalCount);   
+	newFeatures.put("apicalTotalCount", apicalTotalCount);   
+	newFeatures.put("basalTotalCount", basalTotalCount); 
+	newFeatures.put("midTotalCount", midTotalCount); 
+	
+	newFeatures.put("varType","LV Normokinetic Segments");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Normokinetic Segments OneSegmentRight");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+
+Rule: LeftVentricleWMNormokineticTwoSegmentRightValueRule
+Priority: 20
+
+contextTerm
+
+(
+(
+
+
+SECTION_1
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+SECTION_2
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?  
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+normokineticTerm
+
+
+):context
+
+
+):LeftVentricleWMNormokineticTwoSegmentRightValueGram 
+
+--> 
+:LeftVentricleWMNormokineticTwoSegmentRightValueGram
+  {
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+
+	gate.AnnotationSet matchedinferior1=(gate.AnnotationSet) bindings.get("inferior1");
+	gate.AnnotationSet matchedinferior2=(gate.AnnotationSet) bindings.get("inferior2");
+	gate.AnnotationSet matchedinferior3=(gate.AnnotationSet) bindings.get("inferior3");
+	gate.AnnotationSet matchedinferior4=(gate.AnnotationSet) bindings.get("inferior4");
+	gate.AnnotationSet matchedwall1=(gate.AnnotationSet) bindings.get("wall1");
+	gate.AnnotationSet matchedwall2=(gate.AnnotationSet) bindings.get("wall2");
+	gate.AnnotationSet matchedwall3=(gate.AnnotationSet) bindings.get("wall3");
+	gate.AnnotationSet matchedwall4=(gate.AnnotationSet) bindings.get("wall4");
+	gate.AnnotationSet matchedseptal1=(gate.AnnotationSet) bindings.get("septal1");
+	gate.AnnotationSet matchedseptal2=(gate.AnnotationSet) bindings.get("septal2");
+	gate.AnnotationSet matchedseptal3=(gate.AnnotationSet) bindings.get("septal3");
+	gate.AnnotationSet matchedseptal4=(gate.AnnotationSet) bindings.get("septal4");
+	gate.AnnotationSet matchedantInfSeptal1=(gate.AnnotationSet) bindings.get("antInfSeptal1");
+	gate.AnnotationSet matchedantInfSeptal2=(gate.AnnotationSet) bindings.get("antInfSeptal2");
+	gate.AnnotationSet matchedantInfSeptal3=(gate.AnnotationSet) bindings.get("antInfSeptal3");
+	gate.AnnotationSet matchedantInfSeptal4=(gate.AnnotationSet) bindings.get("antInfSeptal4");
+	gate.AnnotationSet matchedlevel1=(gate.AnnotationSet) bindings.get("level1");
+	gate.AnnotationSet matchedlevel2=(gate.AnnotationSet) bindings.get("level2"); 
+	gate.AnnotationSet matchedlevel3=(gate.AnnotationSet) bindings.get("level3"); 
+	gate.AnnotationSet matchedlevel4=(gate.AnnotationSet) bindings.get("level4"); 
+	gate.AnnotationSet matchedbasalToMid1=(gate.AnnotationSet) bindings.get("basalToMid1"); 	
+	gate.AnnotationSet matchedbasalToMid2=(gate.AnnotationSet) bindings.get("basalToMid2");
+	gate.AnnotationSet matchedbasalToMid3=(gate.AnnotationSet) bindings.get("basalToMid3");
+	gate.AnnotationSet matchedbasalToMid4=(gate.AnnotationSet) bindings.get("basalToMid4");
+	
+	gate.AnnotationSet matchedanterior1=(gate.AnnotationSet) bindings.get("anterior1");
+	gate.AnnotationSet matchedanterior2=(gate.AnnotationSet) bindings.get("anterior2");
+	gate.AnnotationSet matchedanterior3=(gate.AnnotationSet) bindings.get("anterior3");
+	gate.AnnotationSet matchedanterior4=(gate.AnnotationSet) bindings.get("anterior4");
+	
+	gate.AnnotationSet matchedantInfLateral1=(gate.AnnotationSet) bindings.get("antInfLateral1");
+	gate.AnnotationSet matchedantInfLateral2=(gate.AnnotationSet) bindings.get("antInfLateral2");
+	gate.AnnotationSet matchedantInfLateral3=(gate.AnnotationSet) bindings.get("antInfLateral3");
+	gate.AnnotationSet matchedantInfLateral4=(gate.AnnotationSet) bindings.get("antInfLateral4");
+	
+	gate.AnnotationSet matchedlateral1=(gate.AnnotationSet) bindings.get("lateral1");
+	gate.AnnotationSet matchedlateral2=(gate.AnnotationSet) bindings.get("lateral2");
+	gate.AnnotationSet matchedlateral3=(gate.AnnotationSet) bindings.get("lateral3");
+	gate.AnnotationSet matchedlateral4=(gate.AnnotationSet) bindings.get("lateral4");
+	
+	gate.AnnotationSet matchedbasalAndMid1=(gate.AnnotationSet) bindings.get("basalAndMid1"); 
+	gate.AnnotationSet matchedbasalAndMid2=(gate.AnnotationSet) bindings.get("basalAndMid2"); 
+	gate.AnnotationSet matchedbasalAndMid3=(gate.AnnotationSet) bindings.get("basalAndMid3"); 
+	gate.AnnotationSet matchedbasalAndMid4=(gate.AnnotationSet) bindings.get("basalAndMid4"); 
+	
+	gate.AnnotationSet matchedmidAndApical1=(gate.AnnotationSet) bindings.get("midAndApical1"); 
+	gate.AnnotationSet matchedmidAndApical2=(gate.AnnotationSet) bindings.get("midAndApical2"); 
+	gate.AnnotationSet matchedmidAndApical3=(gate.AnnotationSet) bindings.get("midAndApical3"); 
+	gate.AnnotationSet matchedmidAndApical4=(gate.AnnotationSet) bindings.get("midAndApical4"); 
+	
+	gate.AnnotationSet matchedmidToApical1=(gate.AnnotationSet) bindings.get("midToApical1"); 
+	gate.AnnotationSet matchedmidToApical2=(gate.AnnotationSet) bindings.get("midToApical2"); 
+	gate.AnnotationSet matchedmidToApical3=(gate.AnnotationSet) bindings.get("midToApical3"); 
+	gate.AnnotationSet matchedmidToApical4=(gate.AnnotationSet) bindings.get("midToApical4");
+	
+	gate.AnnotationSet matchedmidOrBasal1=(gate.AnnotationSet) bindings.get("midOrBasal1"); 
+	gate.AnnotationSet matchedmidOrBasal2=(gate.AnnotationSet) bindings.get("midOrBasal2"); 
+	gate.AnnotationSet matchedmidOrBasal3=(gate.AnnotationSet) bindings.get("midOrBasal3"); 
+	gate.AnnotationSet matchedmidOrBasal4=(gate.AnnotationSet) bindings.get("midOrBasal4");
+	
+	gate.AnnotationSet matchedallApical1=(gate.AnnotationSet) bindings.get("allApical1"); 
+	gate.AnnotationSet matchedallApical2=(gate.AnnotationSet) bindings.get("allApical2"); 
+	gate.AnnotationSet matchedallApical3=(gate.AnnotationSet) bindings.get("allApical3"); 
+	gate.AnnotationSet matchedallApical4=(gate.AnnotationSet) bindings.get("allApical4");
+	
+	gate.AnnotationSet matchedallBasal1=(gate.AnnotationSet) bindings.get("allBasal1"); 
+	gate.AnnotationSet matchedallBasal2=(gate.AnnotationSet) bindings.get("allBasal2"); 
+	gate.AnnotationSet matchedallBasal3=(gate.AnnotationSet) bindings.get("allBasal3"); 
+	gate.AnnotationSet matchedallBasal4=(gate.AnnotationSet) bindings.get("allBasal4");
+	
+	gate.AnnotationSet matchedallMid1=(gate.AnnotationSet) bindings.get("allMid1"); 
+	gate.AnnotationSet matchedallMid2=(gate.AnnotationSet) bindings.get("allMid2"); 
+	gate.AnnotationSet matchedallMid3=(gate.AnnotationSet) bindings.get("allMid3"); 
+	gate.AnnotationSet matchedallMid4=(gate.AnnotationSet) bindings.get("allMid4");
+	
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMNormokineticTwoSegmentRightValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("unit", "levels: int (Segment number), Remaining (all remaining segments)");
+	
+	String line = stringFor(doc, matchedAnns);
+	
+	int countComma = line.length() - line.replace(",", "").length();
+	
+	int countFullStop = line.length() - line.replace(".", "").length();
+	
+	int countAnd = 0;
+	
+	Pattern p = Pattern.compile(" and ");
+	Matcher m = p.matcher(line.toLowerCase());
+	
+	while (m.find()) {
+		countAnd++;
+	}
+	
+	if (matchedbasalAndMid1 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid2 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid3 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid4 != null) {
+		countAnd--;
+	} 
+	
+	if (matchedmidAndApical1 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical2 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical3 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical4 != null) {
+		countAnd--;
+	} 
+	
+	int countInfWall1 = 0;
+	int countInfWall2 = 0;
+	int countInfWall3 = 0;
+	int countInfWall4 = 0;
+	
+	int countInfWallTotal = 0;
+	
+	if (matchedinferior1 != null & matchedlevel1 == null) {
+		countInfWall1 = 3 - 1; 
+		
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior2 != null & matchedlevel2 == null) {
+		countInfWall1 = 0;
+		
+		countInfWall2 = 3 - 1; 
+				
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior3 != null & matchedlevel3 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		
+		countInfWall3 = 3 - 1; 
+				
+		countInfWall4 = 0;
+	} else if (matchedinferior4 != null & matchedlevel4 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		
+		countInfWall4 = 3 - 1; 
+	}
+		
+	
+	countInfWallTotal = countInfWall1 + countInfWall2 + countInfWall3 + countInfWall4;
+	
+	int lateralTotalcount = 0;
+	
+	int lateralCountSection1 = 0;
+	int lateralCountSection2 = 0;
+	int lateralCountSection3 = 0;
+	int lateralCountSection4 = 0;
+	
+	if (matchedlateral1 != null & matchedlevel1 == null) {
+		
+		lateralCountSection1 = 5 - 1; 
+				
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral1 != null & matchedlevel1 == null) {
+		lateralCountSection1 = lateralCountSection1 + 1;
+	
+	} else if (matchedlateral1 != null & matchedbasalToMid1 != null) {
+		lateralCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral1 != null & matchedmidToApical1 != null) {
+		lateralCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral1 != null & matchedmidOrBasal1 != null) {
+		lateralCountSection1 = 2 - 1;
+	
+	} else if (matchedlateral2 != null & matchedlevel2 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		
+		lateralCountSection2 = 5 - 1; 
+		
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral2 != null & matchedlevel2 == null) {
+		lateralCountSection2 = lateralCountSection2 + 1;
+	
+	} else if (matchedlateral2 != null & matchedbasalToMid2 != null) {
+		lateralCountSection2 = 2 * 2 - 1 - 1; 	
+	
+	} else if (matchedlateral2 != null & matchedmidToApical2 != null) {
+		lateralCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral2 != null & matchedmidOrBasal2 != null) {
+		lateralCountSection2 = 2 - 1;
+		
+	} else if (matchedlateral3 != null & matchedlevel3 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		
+		lateralCountSection3 = 5 - 1; 
+				
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral3 != null & matchedlevel3 == null) {
+		lateralCountSection3 = lateralCountSection3 + 1;
+		
+	} else if (matchedlateral3 != null & matchedbasalToMid3 != null) {	
+		lateralCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral3 != null & matchedmidToApical3 != null) {
+		lateralCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral3 != null & matchedmidOrBasal3 != null) {
+		lateralCountSection3 = 2 - 1;
+		
+	} else if (matchedlateral4 != null & matchedwall4 != null & matchedlevel4 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		
+		lateralCountSection4 = 5 - 1; 
+		
+	} else if (matchedantInfLateral4 != null & matchedlevel4 == null) {
+		lateralCountSection4 = lateralCountSection4 + 1;
+		
+	} else if (matchedlateral4 != null & matchedbasalToMid4 != null) {	
+		lateralCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral4 != null & matchedmidToApical4 != null) {
+		lateralCountSection4 = 2 + 1 - 1 - 1;
+		
+	} else if (matchedlateral4 != null & matchedmidOrBasal4 != null) {
+		lateralCountSection4 = 2 - 1;
+
+	}
+	
+	lateralTotalcount = lateralCountSection1 + lateralCountSection2 + lateralCountSection3 + lateralCountSection4;
+	
+	
+	int septTotalcount = 0;
+		
+	int septalCountSection1 = 0;
+	int septalCountSection2 = 0;
+	int septalCountSection3 = 0;
+	int septalCountSection4 = 0;
+	
+	if (matchedseptal1 != null & matchedlevel1 == null & matchedmidOrBasal1 == null) {
+		
+		septalCountSection1 = 5 - 1; 
+		
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal1 != null & matchedlevel1 == null) {
+		septalCountSection1 = septalCountSection1 + 1;
+	
+	} else if (matchedseptal1 != null & matchedbasalToMid1 != null) {
+		septalCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal1 != null & matchedmidToApical1 != null) {
+		septalCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal1 != null & matchedmidOrBasal1 != null) {
+		septalCountSection1 = 2 - 1;
+		
+	} else if (matchedseptal2 != null & matchedlevel2 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		
+		septalCountSection2 = 5 - 1; 
+				
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal2 != null & matchedlevel2 == null) {
+		septalCountSection2 = septalCountSection2 + 1;
+		
+	} else if (matchedseptal2 != null & matchedbasalToMid2 != null) {
+		septalCountSection2 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal2 != null & matchedmidToApical2 != null) {
+		septalCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal2 != null & matchedmidOrBasal2 != null) {
+		septalCountSection2 = 2 - 1;
+		
+	} else if (matchedseptal3 != null & matchedlevel3 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		
+		septalCountSection3 = 5 - 1; 
+				
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal3 != null & matchedlevel3 == null) {
+		septalCountSection3 = septalCountSection3 + 1;
+		
+	} else if (matchedseptal3 != null & matchedbasalToMid3 != null) {	
+		septalCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal3 != null & matchedmidToApical3 != null) {
+		septalCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal3 != null & matchedmidOrBasal3 != null) {
+		septalCountSection3 = 2 - 1;
+		
+	} else if (matchedseptal4 != null & matchedlevel4 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		
+		septalCountSection4 = 5 - 1; 
+	
+	} else if (matchedantInfSeptal4 != null & matchedlevel4 == null) {
+		septalCountSection4 = septalCountSection4 + 1;
+		
+	} else if (matchedseptal4 != null & matchedbasalToMid4 != null) {	
+		septalCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal4 != null & matchedmidToApical4 != null) {
+		septalCountSection4 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal4 != null & matchedmidOrBasal4 != null) {
+		septalCountSection4 = 2 - 1;
+		
+	}
+		
+	septTotalcount = septalCountSection1 + septalCountSection2 + septalCountSection3 + septalCountSection4;
+	
+	
+	int basalToMidCount1 = 0;
+	int basalToMidCount2 = 0;
+	int basalToMidCount3 = 0;
+	int basalToMidCount4 = 0;
+	
+	int basalToMidCountTotal = 0;
+	
+	if (matchedbasalToMid1 != null) {
+		basalToMidCount1 = 1;
+	} 
+	if (matchedbasalToMid2 != null) {
+		basalToMidCount2 = 1;
+	}  
+	if (matchedbasalToMid3 != null) {
+		basalToMidCount3 = 1;
+	} 
+	if (matchedbasalToMid4 != null) {
+		basalToMidCount4 = 1;
+	} 
+		
+	basalToMidCountTotal = basalToMidCount1 + basalToMidCount2 + basalToMidCount3 + basalToMidCount4;
+	
+	
+	int midToApicalCount1 = 0;
+	int midToApicalCount2 = 0;
+	int midToApicalCount3 = 0;
+	int midToApicalCount4 = 0;
+	
+	int midToApicalCountTotal = 0;
+	
+	if (matchedmidToApical1 != null) {
+		midToApicalCount1 = 1;
+	} 
+	if (matchedmidToApical2 != null) {
+		midToApicalCount2 = 1;
+	}  
+	if (matchedmidToApical3 != null) {
+		midToApicalCount3 = 1;
+	} 
+	if (matchedmidToApical4 != null) {
+		midToApicalCount4 = 1;
+	} 
+	
+	midToApicalCountTotal = midToApicalCount1 + midToApicalCount2 + midToApicalCount3 + midToApicalCount4;
+	
+	int anteriorCountSection1 = 0;
+	int anteriorCountSection2 = 0;
+	int anteriorCountSection3 = 0;
+	int anteriorCountSection4 = 0;
+	
+	int anteriorTotalCount = 0;
+	
+	if (matchedanterior1 != null & matchedlevel1 == null) {	
+		anteriorCountSection1 = 3 - 1;
+				
+		anteriorCountSection2 = 0; 
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior2 != null & matchedlevel2 == null) {	
+		anteriorCountSection1 = 0;
+		
+		anteriorCountSection2 = 3 - 1;
+				
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior3 != null & matchedlevel3 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		
+		anteriorCountSection3 = 3 - 1;
+				
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior4 != null & matchedlevel4 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		anteriorCountSection3 = 0;
+		
+		anteriorCountSection4 = 3 - 1;
+	}
+	
+	anteriorTotalCount = anteriorCountSection1 + anteriorCountSection2 + anteriorCountSection3 + anteriorCountSection4;
+	
+	int apicalLayerCount1 = 0;
+	int apicalLayerCount2 = 0;
+	int apicalLayerCount3 = 0;
+	int apicalLayerCount4 = 0;
+	
+	int apicalTotalCount = 0;
+	
+	if (matchedallApical1 != null) {
+		apicalLayerCount1 = 4 - 1;
+	} else if (matchedallApical2 != null) {
+		apicalLayerCount2 = 4 - 1;
+	} else if (matchedallApical3 != null) {
+		apicalLayerCount3 = 4 - 1;
+	} else if (matchedallApical4 != null) {
+		apicalLayerCount4 = 4 - 1;
+	}
+		
+	apicalTotalCount = apicalLayerCount1 + apicalLayerCount2 + apicalLayerCount3 + apicalLayerCount4;
+	
+	int basalLayerCount1 = 0;
+	int basalLayerCount2 = 0;
+	int basalLayerCount3 = 0;
+	int basalLayerCount4 = 0;
+	
+	int basalTotalCount = 0;
+	
+	if (matchedallBasal1 != null) {
+		basalLayerCount1 = 6 - 1;
+	} else if (matchedallBasal2 != null) {
+		basalLayerCount2 = 6 - 1;
+	} else if (matchedallBasal3 != null) {
+		basalLayerCount3 = 6 - 1;
+	} else if (matchedallBasal4 != null) {
+		basalLayerCount4 = 6 - 1;
+	}
+	
+	basalTotalCount = basalLayerCount1 + basalLayerCount2 + basalLayerCount3 + basalLayerCount4;
+	
+	int midLayerCount1 = 0;
+	int midLayerCount2 = 0;
+	int midLayerCount3 = 0;
+	int midLayerCount4 = 0;
+	
+	int midTotalCount = 0;
+	
+	if (matchedallMid1 != null) {
+		midLayerCount1 = 6 - 1;
+	} else if (matchedallMid2 != null) {
+		midLayerCount2 = 6 - 1;
+	} else if (matchedallMid3 != null) {
+		midLayerCount3 = 6 - 1;
+	} else if (matchedallMid4 != null) {
+		midLayerCount4 = 6 - 1;
+	}
+	
+	midTotalCount = midLayerCount1 + midLayerCount2 + midLayerCount3 + midLayerCount4;
+	
+	newFeatures.put("varValue", countComma + countAnd + countFullStop + countInfWallTotal + lateralTotalcount + septTotalcount + basalToMidCountTotal + midToApicalCountTotal + anteriorTotalCount + apicalTotalCount + basalTotalCount + midTotalCount + 1);
+	
+	newFeatures.put("septTotalcount", septTotalcount); 
+	newFeatures.put("countInfWall", countInfWallTotal); 
+	newFeatures.put("countComma", countComma); 
+	newFeatures.put("countAnd", countAnd); 
+	newFeatures.put("countFullStop", countFullStop); 
+	newFeatures.put("lateralTotalcount", lateralTotalcount); 
+	newFeatures.put("basalToMidCount", basalToMidCountTotal); 
+	newFeatures.put("midToApicalCountTotal", midToApicalCountTotal); 
+	newFeatures.put("anteriorTotalCount", anteriorTotalCount);   
+	newFeatures.put("apicalTotalCount", apicalTotalCount);   
+	newFeatures.put("basalTotalCount", basalTotalCount); 
+	newFeatures.put("midTotalCount", midTotalCount); 
+	
+	newFeatures.put("varType","LV Normokinetic Segments");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Normokinetic Segments TwoSegmentRight");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+	
+
+Rule: LeftVentricleWMNormokineticThreeSegmentRightValueRule
+Priority: 30
+
+contextTerm
+
+(
+(
+
+
+SECTION_1
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+
+SECTION_2
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?  
+
+SECTION_3
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+
+normokineticTerm
+
+
+):context
+
+
+):LeftVentricleWMNormokineticThreeSegmentRightValueGram 
+
+--> 
+:LeftVentricleWMNormokineticThreeSegmentRightValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+
+	gate.AnnotationSet matchedinferior1=(gate.AnnotationSet) bindings.get("inferior1");
+	gate.AnnotationSet matchedinferior2=(gate.AnnotationSet) bindings.get("inferior2");
+	gate.AnnotationSet matchedinferior3=(gate.AnnotationSet) bindings.get("inferior3");
+	gate.AnnotationSet matchedinferior4=(gate.AnnotationSet) bindings.get("inferior4");
+	gate.AnnotationSet matchedwall1=(gate.AnnotationSet) bindings.get("wall1");
+	gate.AnnotationSet matchedwall2=(gate.AnnotationSet) bindings.get("wall2");
+	gate.AnnotationSet matchedwall3=(gate.AnnotationSet) bindings.get("wall3");
+	gate.AnnotationSet matchedwall4=(gate.AnnotationSet) bindings.get("wall4");
+	gate.AnnotationSet matchedseptal1=(gate.AnnotationSet) bindings.get("septal1");
+	gate.AnnotationSet matchedseptal2=(gate.AnnotationSet) bindings.get("septal2");
+	gate.AnnotationSet matchedseptal3=(gate.AnnotationSet) bindings.get("septal3");
+	gate.AnnotationSet matchedseptal4=(gate.AnnotationSet) bindings.get("septal4");
+	gate.AnnotationSet matchedantInfSeptal1=(gate.AnnotationSet) bindings.get("antInfSeptal1");
+	gate.AnnotationSet matchedantInfSeptal2=(gate.AnnotationSet) bindings.get("antInfSeptal2");
+	gate.AnnotationSet matchedantInfSeptal3=(gate.AnnotationSet) bindings.get("antInfSeptal3");
+	gate.AnnotationSet matchedantInfSeptal4=(gate.AnnotationSet) bindings.get("antInfSeptal4");
+	gate.AnnotationSet matchedlevel1=(gate.AnnotationSet) bindings.get("level1");
+	gate.AnnotationSet matchedlevel2=(gate.AnnotationSet) bindings.get("level2"); 
+	gate.AnnotationSet matchedlevel3=(gate.AnnotationSet) bindings.get("level3"); 
+	gate.AnnotationSet matchedlevel4=(gate.AnnotationSet) bindings.get("level4"); 
+	gate.AnnotationSet matchedbasalToMid1=(gate.AnnotationSet) bindings.get("basalToMid1"); 	
+	gate.AnnotationSet matchedbasalToMid2=(gate.AnnotationSet) bindings.get("basalToMid2");
+	gate.AnnotationSet matchedbasalToMid3=(gate.AnnotationSet) bindings.get("basalToMid3");
+	gate.AnnotationSet matchedbasalToMid4=(gate.AnnotationSet) bindings.get("basalToMid4");
+	
+	gate.AnnotationSet matchedanterior1=(gate.AnnotationSet) bindings.get("anterior1");
+	gate.AnnotationSet matchedanterior2=(gate.AnnotationSet) bindings.get("anterior2");
+	gate.AnnotationSet matchedanterior3=(gate.AnnotationSet) bindings.get("anterior3");
+	gate.AnnotationSet matchedanterior4=(gate.AnnotationSet) bindings.get("anterior4");
+	
+	gate.AnnotationSet matchedantInfLateral1=(gate.AnnotationSet) bindings.get("antInfLateral1");
+	gate.AnnotationSet matchedantInfLateral2=(gate.AnnotationSet) bindings.get("antInfLateral2");
+	gate.AnnotationSet matchedantInfLateral3=(gate.AnnotationSet) bindings.get("antInfLateral3");
+	gate.AnnotationSet matchedantInfLateral4=(gate.AnnotationSet) bindings.get("antInfLateral4");
+	
+	gate.AnnotationSet matchedlateral1=(gate.AnnotationSet) bindings.get("lateral1");
+	gate.AnnotationSet matchedlateral2=(gate.AnnotationSet) bindings.get("lateral2");
+	gate.AnnotationSet matchedlateral3=(gate.AnnotationSet) bindings.get("lateral3");
+	gate.AnnotationSet matchedlateral4=(gate.AnnotationSet) bindings.get("lateral4");
+	
+	gate.AnnotationSet matchedbasalAndMid1=(gate.AnnotationSet) bindings.get("basalAndMid1"); 
+	gate.AnnotationSet matchedbasalAndMid2=(gate.AnnotationSet) bindings.get("basalAndMid2"); 
+	gate.AnnotationSet matchedbasalAndMid3=(gate.AnnotationSet) bindings.get("basalAndMid3"); 
+	gate.AnnotationSet matchedbasalAndMid4=(gate.AnnotationSet) bindings.get("basalAndMid4"); 
+	
+	gate.AnnotationSet matchedmidAndApical1=(gate.AnnotationSet) bindings.get("midAndApical1"); 
+	gate.AnnotationSet matchedmidAndApical2=(gate.AnnotationSet) bindings.get("midAndApical2"); 
+	gate.AnnotationSet matchedmidAndApical3=(gate.AnnotationSet) bindings.get("midAndApical3"); 
+	gate.AnnotationSet matchedmidAndApical4=(gate.AnnotationSet) bindings.get("midAndApical4"); 
+	
+	gate.AnnotationSet matchedmidToApical1=(gate.AnnotationSet) bindings.get("midToApical1"); 
+	gate.AnnotationSet matchedmidToApical2=(gate.AnnotationSet) bindings.get("midToApical2"); 
+	gate.AnnotationSet matchedmidToApical3=(gate.AnnotationSet) bindings.get("midToApical3"); 
+	gate.AnnotationSet matchedmidToApical4=(gate.AnnotationSet) bindings.get("midToApical4");
+	
+	gate.AnnotationSet matchedmidOrBasal1=(gate.AnnotationSet) bindings.get("midOrBasal1"); 
+	gate.AnnotationSet matchedmidOrBasal2=(gate.AnnotationSet) bindings.get("midOrBasal2"); 
+	gate.AnnotationSet matchedmidOrBasal3=(gate.AnnotationSet) bindings.get("midOrBasal3"); 
+	gate.AnnotationSet matchedmidOrBasal4=(gate.AnnotationSet) bindings.get("midOrBasal4");
+	
+	gate.AnnotationSet matchedallApical1=(gate.AnnotationSet) bindings.get("allApical1"); 
+	gate.AnnotationSet matchedallApical2=(gate.AnnotationSet) bindings.get("allApical2"); 
+	gate.AnnotationSet matchedallApical3=(gate.AnnotationSet) bindings.get("allApical3"); 
+	gate.AnnotationSet matchedallApical4=(gate.AnnotationSet) bindings.get("allApical4");
+	
+	gate.AnnotationSet matchedallBasal1=(gate.AnnotationSet) bindings.get("allBasal1"); 
+	gate.AnnotationSet matchedallBasal2=(gate.AnnotationSet) bindings.get("allBasal2"); 
+	gate.AnnotationSet matchedallBasal3=(gate.AnnotationSet) bindings.get("allBasal3"); 
+	gate.AnnotationSet matchedallBasal4=(gate.AnnotationSet) bindings.get("allBasal4");
+	
+	gate.AnnotationSet matchedallMid1=(gate.AnnotationSet) bindings.get("allMid1"); 
+	gate.AnnotationSet matchedallMid2=(gate.AnnotationSet) bindings.get("allMid2"); 
+	gate.AnnotationSet matchedallMid3=(gate.AnnotationSet) bindings.get("allMid3"); 
+	gate.AnnotationSet matchedallMid4=(gate.AnnotationSet) bindings.get("allMid4");
+	
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMNormokineticThreeSegmentRightValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("unit", "levels: int (Segment number), Remaining (all remaining segments)");
+	
+	String line = stringFor(doc, matchedAnns);
+	
+	int countComma = line.length() - line.replace(",", "").length();
+	
+	int countFullStop = line.length() - line.replace(".", "").length();
+	
+	int countAnd = 0;
+	
+	Pattern p = Pattern.compile(" and ");
+	Matcher m = p.matcher(line.toLowerCase());
+	
+	while (m.find()) {
+		countAnd++;
+	}
+	
+	if (matchedbasalAndMid1 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid2 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid3 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid4 != null) {
+		countAnd--;
+	} 
+	
+	if (matchedmidAndApical1 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical2 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical3 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical4 != null) {
+		countAnd--;
+	} 
+	
+	int countInfWall1 = 0;
+	int countInfWall2 = 0;
+	int countInfWall3 = 0;
+	int countInfWall4 = 0;
+	
+	int countInfWallTotal = 0;
+	
+	if (matchedinferior1 != null & matchedlevel1 == null) {
+		countInfWall1 = 3 - 1; 
+		
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior2 != null & matchedlevel2 == null) {
+		countInfWall1 = 0;
+		
+		countInfWall2 = 3 - 1; 
+				
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior3 != null & matchedlevel3 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		
+		countInfWall3 = 3 - 1; 
+				
+		countInfWall4 = 0;
+	} else if (matchedinferior4 != null & matchedlevel4 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		
+		countInfWall4 = 3 - 1; 
+	}
+		
+	
+	countInfWallTotal = countInfWall1 + countInfWall2 + countInfWall3 + countInfWall4;
+	
+	int lateralTotalcount = 0;
+	
+	int lateralCountSection1 = 0;
+	int lateralCountSection2 = 0;
+	int lateralCountSection3 = 0;
+	int lateralCountSection4 = 0;
+	
+	if (matchedlateral1 != null & matchedlevel1 == null) {
+		
+		lateralCountSection1 = 5 - 1; 
+				
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral1 != null & matchedlevel1 == null) {
+		lateralCountSection1 = lateralCountSection1 + 1;
+	
+	} else if (matchedlateral1 != null & matchedbasalToMid1 != null) {
+		lateralCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral1 != null & matchedmidToApical1 != null) {
+		lateralCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral1 != null & matchedmidOrBasal1 != null) {
+		lateralCountSection1 = 2 - 1;
+	
+	} else if (matchedlateral2 != null & matchedlevel2 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		
+		lateralCountSection2 = 5 - 1; 
+		
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral2 != null & matchedlevel2 == null) {
+		lateralCountSection2 = lateralCountSection2 + 1;
+	
+	} else if (matchedlateral2 != null & matchedbasalToMid2 != null) {
+		lateralCountSection2 = 2 * 2 - 1 - 1; 	
+	
+	} else if (matchedlateral2 != null & matchedmidToApical2 != null) {
+		lateralCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral2 != null & matchedmidOrBasal2 != null) {
+		lateralCountSection2 = 2 - 1;
+		
+	} else if (matchedlateral3 != null & matchedlevel3 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		
+		lateralCountSection3 = 5 - 1; 
+				
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral3 != null & matchedlevel3 == null) {
+		lateralCountSection3 = lateralCountSection3 + 1;
+		
+	} else if (matchedlateral3 != null & matchedbasalToMid3 != null) {	
+		lateralCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral3 != null & matchedmidToApical3 != null) {
+		lateralCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral3 != null & matchedmidOrBasal3 != null) {
+		lateralCountSection3 = 2 - 1;
+		
+	} else if (matchedlateral4 != null & matchedwall4 != null & matchedlevel4 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		
+		lateralCountSection4 = 5 - 1; 
+		
+	} else if (matchedantInfLateral4 != null & matchedlevel4 == null) {
+		lateralCountSection4 = lateralCountSection4 + 1;
+		
+	} else if (matchedlateral4 != null & matchedbasalToMid4 != null) {	
+		lateralCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral4 != null & matchedmidToApical4 != null) {
+		lateralCountSection4 = 2 + 1 - 1 - 1;
+		
+	} else if (matchedlateral4 != null & matchedmidOrBasal4 != null) {
+		lateralCountSection4 = 2 - 1;
+
+	}
+	
+	lateralTotalcount = lateralCountSection1 + lateralCountSection2 + lateralCountSection3 + lateralCountSection4;
+	
+	
+	int septTotalcount = 0;
+		
+	int septalCountSection1 = 0;
+	int septalCountSection2 = 0;
+	int septalCountSection3 = 0;
+	int septalCountSection4 = 0;
+	
+	if (matchedseptal1 != null & matchedlevel1 == null & matchedmidOrBasal1 == null) {
+		
+		septalCountSection1 = 5 - 1; 
+		
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal1 != null & matchedlevel1 == null) {
+		septalCountSection1 = septalCountSection1 + 1;
+	
+	} else if (matchedseptal1 != null & matchedbasalToMid1 != null) {
+		septalCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal1 != null & matchedmidToApical1 != null) {
+		septalCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal1 != null & matchedmidOrBasal1 != null) {
+		septalCountSection1 = 2 - 1;
+		
+	} else if (matchedseptal2 != null & matchedlevel2 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		
+		septalCountSection2 = 5 - 1; 
+				
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal2 != null & matchedlevel2 == null) {
+		septalCountSection2 = septalCountSection2 + 1;
+		
+	} else if (matchedseptal2 != null & matchedbasalToMid2 != null) {
+		septalCountSection2 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal2 != null & matchedmidToApical2 != null) {
+		septalCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal2 != null & matchedmidOrBasal2 != null) {
+		septalCountSection2 = 2 - 1;
+		
+	} else if (matchedseptal3 != null & matchedlevel3 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		
+		septalCountSection3 = 5 - 1; 
+				
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal3 != null & matchedlevel3 == null) {
+		septalCountSection3 = septalCountSection3 + 1;
+		
+	} else if (matchedseptal3 != null & matchedbasalToMid3 != null) {	
+		septalCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal3 != null & matchedmidToApical3 != null) {
+		septalCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal3 != null & matchedmidOrBasal3 != null) {
+		septalCountSection3 = 2 - 1;
+		
+	} else if (matchedseptal4 != null & matchedlevel4 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		
+		septalCountSection4 = 5 - 1; 
+	
+	} else if (matchedantInfSeptal4 != null & matchedlevel4 == null) {
+		septalCountSection4 = septalCountSection4 + 1;
+		
+	} else if (matchedseptal4 != null & matchedbasalToMid4 != null) {	
+		septalCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal4 != null & matchedmidToApical4 != null) {
+		septalCountSection4 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal4 != null & matchedmidOrBasal4 != null) {
+		septalCountSection4 = 2 - 1;
+		
+	}
+		
+	septTotalcount = septalCountSection1 + septalCountSection2 + septalCountSection3 + septalCountSection4;
+	
+	
+	int basalToMidCount1 = 0;
+	int basalToMidCount2 = 0;
+	int basalToMidCount3 = 0;
+	int basalToMidCount4 = 0;
+	
+	int basalToMidCountTotal = 0;
+	
+	if (matchedbasalToMid1 != null) {
+		basalToMidCount1 = 1;
+	} 
+	if (matchedbasalToMid2 != null) {
+		basalToMidCount2 = 1;
+	}  
+	if (matchedbasalToMid3 != null) {
+		basalToMidCount3 = 1;
+	} 
+	if (matchedbasalToMid4 != null) {
+		basalToMidCount4 = 1;
+	} 
+		
+	basalToMidCountTotal = basalToMidCount1 + basalToMidCount2 + basalToMidCount3 + basalToMidCount4;
+	
+	
+	int midToApicalCount1 = 0;
+	int midToApicalCount2 = 0;
+	int midToApicalCount3 = 0;
+	int midToApicalCount4 = 0;
+	
+	int midToApicalCountTotal = 0;
+	
+	if (matchedmidToApical1 != null) {
+		midToApicalCount1 = 1;
+	} 
+	if (matchedmidToApical2 != null) {
+		midToApicalCount2 = 1;
+	}  
+	if (matchedmidToApical3 != null) {
+		midToApicalCount3 = 1;
+	} 
+	if (matchedmidToApical4 != null) {
+		midToApicalCount4 = 1;
+	} 
+	
+	midToApicalCountTotal = midToApicalCount1 + midToApicalCount2 + midToApicalCount3 + midToApicalCount4;
+	
+	int anteriorCountSection1 = 0;
+	int anteriorCountSection2 = 0;
+	int anteriorCountSection3 = 0;
+	int anteriorCountSection4 = 0;
+	
+	int anteriorTotalCount = 0;
+	
+	if (matchedanterior1 != null & matchedlevel1 == null) {	
+		anteriorCountSection1 = 3 - 1;
+				
+		anteriorCountSection2 = 0; 
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior2 != null & matchedlevel2 == null) {	
+		anteriorCountSection1 = 0;
+		
+		anteriorCountSection2 = 3 - 1;
+				
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior3 != null & matchedlevel3 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		
+		anteriorCountSection3 = 3 - 1;
+				
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior4 != null & matchedlevel4 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		anteriorCountSection3 = 0;
+		
+		anteriorCountSection4 = 3 - 1;
+	}
+	
+	anteriorTotalCount = anteriorCountSection1 + anteriorCountSection2 + anteriorCountSection3 + anteriorCountSection4;
+	
+	int apicalLayerCount1 = 0;
+	int apicalLayerCount2 = 0;
+	int apicalLayerCount3 = 0;
+	int apicalLayerCount4 = 0;
+	
+	int apicalTotalCount = 0;
+	
+	if (matchedallApical1 != null) {
+		apicalLayerCount1 = 4 - 1;
+	} else if (matchedallApical2 != null) {
+		apicalLayerCount2 = 4 - 1;
+	} else if (matchedallApical3 != null) {
+		apicalLayerCount3 = 4 - 1;
+	} else if (matchedallApical4 != null) {
+		apicalLayerCount4 = 4 - 1;
+	}
+		
+	apicalTotalCount = apicalLayerCount1 + apicalLayerCount2 + apicalLayerCount3 + apicalLayerCount4;
+	
+	int basalLayerCount1 = 0;
+	int basalLayerCount2 = 0;
+	int basalLayerCount3 = 0;
+	int basalLayerCount4 = 0;
+	
+	int basalTotalCount = 0;
+	
+	if (matchedallBasal1 != null) {
+		basalLayerCount1 = 6 - 1;
+	} else if (matchedallBasal2 != null) {
+		basalLayerCount2 = 6 - 1;
+	} else if (matchedallBasal3 != null) {
+		basalLayerCount3 = 6 - 1;
+	} else if (matchedallBasal4 != null) {
+		basalLayerCount4 = 6 - 1;
+	}
+	
+	basalTotalCount = basalLayerCount1 + basalLayerCount2 + basalLayerCount3 + basalLayerCount4;
+	
+	int midLayerCount1 = 0;
+	int midLayerCount2 = 0;
+	int midLayerCount3 = 0;
+	int midLayerCount4 = 0;
+	
+	int midTotalCount = 0;
+	
+	if (matchedallMid1 != null) {
+		midLayerCount1 = 6 - 1;
+	} else if (matchedallMid2 != null) {
+		midLayerCount2 = 6 - 1;
+	} else if (matchedallMid3 != null) {
+		midLayerCount3 = 6 - 1;
+	} else if (matchedallMid4 != null) {
+		midLayerCount4 = 6 - 1;
+	}
+	
+	midTotalCount = midLayerCount1 + midLayerCount2 + midLayerCount3 + midLayerCount4;
+	
+	newFeatures.put("varValue", countComma + countAnd + countFullStop + countInfWallTotal + lateralTotalcount + septTotalcount + basalToMidCountTotal + midToApicalCountTotal + anteriorTotalCount + apicalTotalCount + basalTotalCount + midTotalCount + 1);
+	
+	newFeatures.put("septTotalcount", septTotalcount); 
+	newFeatures.put("countInfWall", countInfWallTotal); 
+	newFeatures.put("countComma", countComma); 
+	newFeatures.put("countAnd", countAnd); 
+	newFeatures.put("countFullStop", countFullStop); 
+	newFeatures.put("lateralTotalcount", lateralTotalcount); 
+	newFeatures.put("basalToMidCount", basalToMidCountTotal); 
+	newFeatures.put("midToApicalCountTotal", midToApicalCountTotal); 
+	newFeatures.put("anteriorTotalCount", anteriorTotalCount);   
+	newFeatures.put("apicalTotalCount", apicalTotalCount);   
+	newFeatures.put("basalTotalCount", basalTotalCount); 
+	newFeatures.put("midTotalCount", midTotalCount); 
+	
+	newFeatures.put("varType","LV Normokinetic Segments");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Normokinetic Segments ThreeSegmentRight");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+  
+
+Rule: LeftVentricleWMNormokineticFourSegmentRightValueRule
+
+contextTerm
+
+(
+(
+
+
+SECTION_1
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+
+SECTION_2
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?  
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+
+SECTION_3
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+
+({Token.string == ","} | {Token.string ==~ "(?i)AND"})?
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+
+SECTION_4
+
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})? 
+({Token.kind == "word", !Lookup.majorType == Normokinetic_AnyWord_Exclusion})?
+
+normokineticTerm
+
+
+):context
+
+
+):LeftVentricleWMNormokineticFourSegmentRightValueGram 
+
+--> 
+:LeftVentricleWMNormokineticFourSegmentRightValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+
+	gate.AnnotationSet matchedinferior1=(gate.AnnotationSet) bindings.get("inferior1");
+	gate.AnnotationSet matchedinferior2=(gate.AnnotationSet) bindings.get("inferior2");
+	gate.AnnotationSet matchedinferior3=(gate.AnnotationSet) bindings.get("inferior3");
+	gate.AnnotationSet matchedinferior4=(gate.AnnotationSet) bindings.get("inferior4");
+	gate.AnnotationSet matchedwall1=(gate.AnnotationSet) bindings.get("wall1");
+	gate.AnnotationSet matchedwall2=(gate.AnnotationSet) bindings.get("wall2");
+	gate.AnnotationSet matchedwall3=(gate.AnnotationSet) bindings.get("wall3");
+	gate.AnnotationSet matchedwall4=(gate.AnnotationSet) bindings.get("wall4");
+	gate.AnnotationSet matchedseptal1=(gate.AnnotationSet) bindings.get("septal1");
+	gate.AnnotationSet matchedseptal2=(gate.AnnotationSet) bindings.get("septal2");
+	gate.AnnotationSet matchedseptal3=(gate.AnnotationSet) bindings.get("septal3");
+	gate.AnnotationSet matchedseptal4=(gate.AnnotationSet) bindings.get("septal4");
+	gate.AnnotationSet matchedantInfSeptal1=(gate.AnnotationSet) bindings.get("antInfSeptal1");
+	gate.AnnotationSet matchedantInfSeptal2=(gate.AnnotationSet) bindings.get("antInfSeptal2");
+	gate.AnnotationSet matchedantInfSeptal3=(gate.AnnotationSet) bindings.get("antInfSeptal3");
+	gate.AnnotationSet matchedantInfSeptal4=(gate.AnnotationSet) bindings.get("antInfSeptal4");
+	gate.AnnotationSet matchedlevel1=(gate.AnnotationSet) bindings.get("level1");
+	gate.AnnotationSet matchedlevel2=(gate.AnnotationSet) bindings.get("level2"); 
+	gate.AnnotationSet matchedlevel3=(gate.AnnotationSet) bindings.get("level3"); 
+	gate.AnnotationSet matchedlevel4=(gate.AnnotationSet) bindings.get("level4"); 
+	gate.AnnotationSet matchedbasalToMid1=(gate.AnnotationSet) bindings.get("basalToMid1"); 	
+	gate.AnnotationSet matchedbasalToMid2=(gate.AnnotationSet) bindings.get("basalToMid2");
+	gate.AnnotationSet matchedbasalToMid3=(gate.AnnotationSet) bindings.get("basalToMid3");
+	gate.AnnotationSet matchedbasalToMid4=(gate.AnnotationSet) bindings.get("basalToMid4");
+	
+	gate.AnnotationSet matchedanterior1=(gate.AnnotationSet) bindings.get("anterior1");
+	gate.AnnotationSet matchedanterior2=(gate.AnnotationSet) bindings.get("anterior2");
+	gate.AnnotationSet matchedanterior3=(gate.AnnotationSet) bindings.get("anterior3");
+	gate.AnnotationSet matchedanterior4=(gate.AnnotationSet) bindings.get("anterior4");
+	
+	gate.AnnotationSet matchedantInfLateral1=(gate.AnnotationSet) bindings.get("antInfLateral1");
+	gate.AnnotationSet matchedantInfLateral2=(gate.AnnotationSet) bindings.get("antInfLateral2");
+	gate.AnnotationSet matchedantInfLateral3=(gate.AnnotationSet) bindings.get("antInfLateral3");
+	gate.AnnotationSet matchedantInfLateral4=(gate.AnnotationSet) bindings.get("antInfLateral4");
+	
+	gate.AnnotationSet matchedlateral1=(gate.AnnotationSet) bindings.get("lateral1");
+	gate.AnnotationSet matchedlateral2=(gate.AnnotationSet) bindings.get("lateral2");
+	gate.AnnotationSet matchedlateral3=(gate.AnnotationSet) bindings.get("lateral3");
+	gate.AnnotationSet matchedlateral4=(gate.AnnotationSet) bindings.get("lateral4");
+	
+	gate.AnnotationSet matchedbasalAndMid1=(gate.AnnotationSet) bindings.get("basalAndMid1"); 
+	gate.AnnotationSet matchedbasalAndMid2=(gate.AnnotationSet) bindings.get("basalAndMid2"); 
+	gate.AnnotationSet matchedbasalAndMid3=(gate.AnnotationSet) bindings.get("basalAndMid3"); 
+	gate.AnnotationSet matchedbasalAndMid4=(gate.AnnotationSet) bindings.get("basalAndMid4"); 
+	
+	gate.AnnotationSet matchedmidAndApical1=(gate.AnnotationSet) bindings.get("midAndApical1"); 
+	gate.AnnotationSet matchedmidAndApical2=(gate.AnnotationSet) bindings.get("midAndApical2"); 
+	gate.AnnotationSet matchedmidAndApical3=(gate.AnnotationSet) bindings.get("midAndApical3"); 
+	gate.AnnotationSet matchedmidAndApical4=(gate.AnnotationSet) bindings.get("midAndApical4"); 
+	
+	gate.AnnotationSet matchedmidToApical1=(gate.AnnotationSet) bindings.get("midToApical1"); 
+	gate.AnnotationSet matchedmidToApical2=(gate.AnnotationSet) bindings.get("midToApical2"); 
+	gate.AnnotationSet matchedmidToApical3=(gate.AnnotationSet) bindings.get("midToApical3"); 
+	gate.AnnotationSet matchedmidToApical4=(gate.AnnotationSet) bindings.get("midToApical4");
+	
+	gate.AnnotationSet matchedmidOrBasal1=(gate.AnnotationSet) bindings.get("midOrBasal1"); 
+	gate.AnnotationSet matchedmidOrBasal2=(gate.AnnotationSet) bindings.get("midOrBasal2"); 
+	gate.AnnotationSet matchedmidOrBasal3=(gate.AnnotationSet) bindings.get("midOrBasal3"); 
+	gate.AnnotationSet matchedmidOrBasal4=(gate.AnnotationSet) bindings.get("midOrBasal4");
+	
+	gate.AnnotationSet matchedallApical1=(gate.AnnotationSet) bindings.get("allApical1"); 
+	gate.AnnotationSet matchedallApical2=(gate.AnnotationSet) bindings.get("allApical2"); 
+	gate.AnnotationSet matchedallApical3=(gate.AnnotationSet) bindings.get("allApical3"); 
+	gate.AnnotationSet matchedallApical4=(gate.AnnotationSet) bindings.get("allApical4");
+	
+	gate.AnnotationSet matchedallBasal1=(gate.AnnotationSet) bindings.get("allBasal1"); 
+	gate.AnnotationSet matchedallBasal2=(gate.AnnotationSet) bindings.get("allBasal2"); 
+	gate.AnnotationSet matchedallBasal3=(gate.AnnotationSet) bindings.get("allBasal3"); 
+	gate.AnnotationSet matchedallBasal4=(gate.AnnotationSet) bindings.get("allBasal4");
+	
+	gate.AnnotationSet matchedallMid1=(gate.AnnotationSet) bindings.get("allMid1"); 
+	gate.AnnotationSet matchedallMid2=(gate.AnnotationSet) bindings.get("allMid2"); 
+	gate.AnnotationSet matchedallMid3=(gate.AnnotationSet) bindings.get("allMid3"); 
+	gate.AnnotationSet matchedallMid4=(gate.AnnotationSet) bindings.get("allMid4");
+	
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMNormokineticFourSegmentRightValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+		
+	newFeatures.put("unit", "levels: int (Segment number), Remaining (all remaining segments)");
+	
+	String line = stringFor(doc, matchedAnns);
+	
+	int countComma = line.length() - line.replace(",", "").length();
+	
+	int countFullStop = line.length() - line.replace(".", "").length();
+	
+	int countAnd = 0;
+	
+	Pattern p = Pattern.compile(" and ");
+	Matcher m = p.matcher(line.toLowerCase());
+	
+	while (m.find()) {
+		countAnd++;
+	}
+	
+	if (matchedbasalAndMid1 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid2 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid3 != null) {
+		countAnd--;
+	} 
+	if (matchedbasalAndMid4 != null) {
+		countAnd--;
+	} 
+	
+	if (matchedmidAndApical1 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical2 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical3 != null) {
+		countAnd--;
+	} 
+	if (matchedmidAndApical4 != null) {
+		countAnd--;
+	} 
+	
+	int countInfWall1 = 0;
+	int countInfWall2 = 0;
+	int countInfWall3 = 0;
+	int countInfWall4 = 0;
+	
+	int countInfWallTotal = 0;
+	
+	if (matchedinferior1 != null & matchedlevel1 == null) {
+		countInfWall1 = 3 - 1; 
+		
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior2 != null & matchedlevel2 == null) {
+		countInfWall1 = 0;
+		
+		countInfWall2 = 3 - 1; 
+				
+		countInfWall3 = 0;
+		countInfWall4 = 0;
+	} else if (matchedinferior3 != null & matchedlevel3 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		
+		countInfWall3 = 3 - 1; 
+				
+		countInfWall4 = 0;
+	} else if (matchedinferior4 != null & matchedlevel4 == null) {
+		countInfWall1 = 0;
+		countInfWall2 = 0;
+		countInfWall3 = 0;
+		
+		countInfWall4 = 3 - 1; 
+	}
+		
+	
+	countInfWallTotal = countInfWall1 + countInfWall2 + countInfWall3 + countInfWall4;
+	
+	int lateralTotalcount = 0;
+	
+	int lateralCountSection1 = 0;
+	int lateralCountSection2 = 0;
+	int lateralCountSection3 = 0;
+	int lateralCountSection4 = 0;
+	
+	if (matchedlateral1 != null & matchedlevel1 == null) {
+		
+		lateralCountSection1 = 5 - 1; 
+				
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral1 != null & matchedlevel1 == null) {
+		lateralCountSection1 = lateralCountSection1 + 1;
+	
+	} else if (matchedlateral1 != null & matchedbasalToMid1 != null) {
+		lateralCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral1 != null & matchedmidToApical1 != null) {
+		lateralCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral1 != null & matchedmidOrBasal1 != null) {
+		lateralCountSection1 = 2 - 1;
+	
+	} else if (matchedlateral2 != null & matchedlevel2 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		
+		lateralCountSection2 = 5 - 1; 
+		
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral2 != null & matchedlevel2 == null) {
+		lateralCountSection2 = lateralCountSection2 + 1;
+	
+	} else if (matchedlateral2 != null & matchedbasalToMid2 != null) {
+		lateralCountSection2 = 2 * 2 - 1 - 1; 	
+	
+	} else if (matchedlateral2 != null & matchedmidToApical2 != null) {
+		lateralCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral2 != null & matchedmidOrBasal2 != null) {
+		lateralCountSection2 = 2 - 1;
+		
+	} else if (matchedlateral3 != null & matchedlevel3 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		
+		lateralCountSection3 = 5 - 1; 
+				
+		if (matchedantInfLateral4 != null) {
+			lateralCountSection4 = lateralCountSection4 - 1;
+		}
+	} else if (matchedantInfLateral3 != null & matchedlevel3 == null) {
+		lateralCountSection3 = lateralCountSection3 + 1;
+		
+	} else if (matchedlateral3 != null & matchedbasalToMid3 != null) {	
+		lateralCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral3 != null & matchedmidToApical3 != null) {
+		lateralCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedlateral3 != null & matchedmidOrBasal3 != null) {
+		lateralCountSection3 = 2 - 1;
+		
+	} else if (matchedlateral4 != null & matchedwall4 != null & matchedlevel4 == null) {
+		if (matchedantInfLateral1 != null) {
+			lateralCountSection1 = lateralCountSection1 - 1; 
+		}
+		if (matchedantInfLateral2 != null) {
+			lateralCountSection2 = lateralCountSection2 - 1;
+		}
+		if (matchedantInfLateral3 != null) {
+			lateralCountSection3 = lateralCountSection3 - 1;
+		}
+		
+		lateralCountSection4 = 5 - 1; 
+		
+	} else if (matchedantInfLateral4 != null & matchedlevel4 == null) {
+		lateralCountSection4 = lateralCountSection4 + 1;
+		
+	} else if (matchedlateral4 != null & matchedbasalToMid4 != null) {	
+		lateralCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedlateral4 != null & matchedmidToApical4 != null) {
+		lateralCountSection4 = 2 + 1 - 1 - 1;
+		
+	} else if (matchedlateral4 != null & matchedmidOrBasal4 != null) {
+		lateralCountSection4 = 2 - 1;
+
+	}
+	
+	lateralTotalcount = lateralCountSection1 + lateralCountSection2 + lateralCountSection3 + lateralCountSection4;
+	
+	
+	int septTotalcount = 0;
+		
+	int septalCountSection1 = 0;
+	int septalCountSection2 = 0;
+	int septalCountSection3 = 0;
+	int septalCountSection4 = 0;
+	
+	if (matchedseptal1 != null & matchedlevel1 == null & matchedmidOrBasal1 == null) {
+		
+		septalCountSection1 = 5 - 1; 
+		
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal1 != null & matchedlevel1 == null) {
+		septalCountSection1 = septalCountSection1 + 1;
+	
+	} else if (matchedseptal1 != null & matchedbasalToMid1 != null) {
+		septalCountSection1 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal1 != null & matchedmidToApical1 != null) {
+		septalCountSection1 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal1 != null & matchedmidOrBasal1 != null) {
+		septalCountSection1 = 2 - 1;
+		
+	} else if (matchedseptal2 != null & matchedlevel2 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		
+		septalCountSection2 = 5 - 1; 
+				
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal2 != null & matchedlevel2 == null) {
+		septalCountSection2 = septalCountSection2 + 1;
+		
+	} else if (matchedseptal2 != null & matchedbasalToMid2 != null) {
+		septalCountSection2 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal2 != null & matchedmidToApical2 != null) {
+		septalCountSection2 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal2 != null & matchedmidOrBasal2 != null) {
+		septalCountSection2 = 2 - 1;
+		
+	} else if (matchedseptal3 != null & matchedlevel3 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		
+		septalCountSection3 = 5 - 1; 
+				
+		if (matchedantInfSeptal4 != null) {
+			septalCountSection4 = septalCountSection4 - 1;
+		}
+	} else if (matchedantInfSeptal3 != null & matchedlevel3 == null) {
+		septalCountSection3 = septalCountSection3 + 1;
+		
+	} else if (matchedseptal3 != null & matchedbasalToMid3 != null) {	
+		septalCountSection3 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal3 != null & matchedmidToApical3 != null) {
+		septalCountSection3 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal3 != null & matchedmidOrBasal3 != null) {
+		septalCountSection3 = 2 - 1;
+		
+	} else if (matchedseptal4 != null & matchedlevel4 == null) {
+		if (matchedantInfSeptal1 != null) {
+			septalCountSection1 = septalCountSection1 - 1; 
+		}
+		if (matchedantInfSeptal2 != null) {
+			septalCountSection2 = septalCountSection2 - 1;
+		}
+		if (matchedantInfSeptal3 != null) {
+			septalCountSection3 = septalCountSection3 - 1;
+		}
+		
+		septalCountSection4 = 5 - 1; 
+	
+	} else if (matchedantInfSeptal4 != null & matchedlevel4 == null) {
+		septalCountSection4 = septalCountSection4 + 1;
+		
+	} else if (matchedseptal4 != null & matchedbasalToMid4 != null) {	
+		septalCountSection4 = 2 * 2 - 1 - 1; 
+	
+	} else if (matchedseptal4 != null & matchedmidToApical4 != null) {
+		septalCountSection4 = 2 + 1 - 1 - 1;
+	
+	} else if (matchedseptal4 != null & matchedmidOrBasal4 != null) {
+		septalCountSection4 = 2 - 1;
+		
+	}
+		
+	septTotalcount = septalCountSection1 + septalCountSection2 + septalCountSection3 + septalCountSection4;
+	
+	
+	int basalToMidCount1 = 0;
+	int basalToMidCount2 = 0;
+	int basalToMidCount3 = 0;
+	int basalToMidCount4 = 0;
+	
+	int basalToMidCountTotal = 0;
+	
+	if (matchedbasalToMid1 != null) {
+		basalToMidCount1 = 1;
+	} 
+	if (matchedbasalToMid2 != null) {
+		basalToMidCount2 = 1;
+	}  
+	if (matchedbasalToMid3 != null) {
+		basalToMidCount3 = 1;
+	} 
+	if (matchedbasalToMid4 != null) {
+		basalToMidCount4 = 1;
+	} 
+		
+	basalToMidCountTotal = basalToMidCount1 + basalToMidCount2 + basalToMidCount3 + basalToMidCount4;
+	
+	
+	int midToApicalCount1 = 0;
+	int midToApicalCount2 = 0;
+	int midToApicalCount3 = 0;
+	int midToApicalCount4 = 0;
+	
+	int midToApicalCountTotal = 0;
+	
+	if (matchedmidToApical1 != null) {
+		midToApicalCount1 = 1;
+	} 
+	if (matchedmidToApical2 != null) {
+		midToApicalCount2 = 1;
+	}  
+	if (matchedmidToApical3 != null) {
+		midToApicalCount3 = 1;
+	} 
+	if (matchedmidToApical4 != null) {
+		midToApicalCount4 = 1;
+	} 
+	
+	midToApicalCountTotal = midToApicalCount1 + midToApicalCount2 + midToApicalCount3 + midToApicalCount4;
+	
+	int anteriorCountSection1 = 0;
+	int anteriorCountSection2 = 0;
+	int anteriorCountSection3 = 0;
+	int anteriorCountSection4 = 0;
+	
+	int anteriorTotalCount = 0;
+	
+	if (matchedanterior1 != null & matchedlevel1 == null) {	
+		anteriorCountSection1 = 3 - 1;
+				
+		anteriorCountSection2 = 0; 
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior2 != null & matchedlevel2 == null) {	
+		anteriorCountSection1 = 0;
+		
+		anteriorCountSection2 = 3 - 1;
+				
+		anteriorCountSection3 = 0;
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior3 != null & matchedlevel3 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		
+		anteriorCountSection3 = 3 - 1;
+				
+		anteriorCountSection4 = 0;
+	} else if (matchedanterior4 != null & matchedlevel4 == null) {	
+		anteriorCountSection1 = 0;
+		anteriorCountSection2 = 0;
+		anteriorCountSection3 = 0;
+		
+		anteriorCountSection4 = 3 - 1;
+	}
+	
+	anteriorTotalCount = anteriorCountSection1 + anteriorCountSection2 + anteriorCountSection3 + anteriorCountSection4;
+	
+	int apicalLayerCount1 = 0;
+	int apicalLayerCount2 = 0;
+	int apicalLayerCount3 = 0;
+	int apicalLayerCount4 = 0;
+	
+	int apicalTotalCount = 0;
+	
+	if (matchedallApical1 != null) {
+		apicalLayerCount1 = 4 - 1;
+	} else if (matchedallApical2 != null) {
+		apicalLayerCount2 = 4 - 1;
+	} else if (matchedallApical3 != null) {
+		apicalLayerCount3 = 4 - 1;
+	} else if (matchedallApical4 != null) {
+		apicalLayerCount4 = 4 - 1;
+	}
+		
+	apicalTotalCount = apicalLayerCount1 + apicalLayerCount2 + apicalLayerCount3 + apicalLayerCount4;
+	
+	int basalLayerCount1 = 0;
+	int basalLayerCount2 = 0;
+	int basalLayerCount3 = 0;
+	int basalLayerCount4 = 0;
+	
+	int basalTotalCount = 0;
+	
+	if (matchedallBasal1 != null) {
+		basalLayerCount1 = 6 - 1;
+	} else if (matchedallBasal2 != null) {
+		basalLayerCount2 = 6 - 1;
+	} else if (matchedallBasal3 != null) {
+		basalLayerCount3 = 6 - 1;
+	} else if (matchedallBasal4 != null) {
+		basalLayerCount4 = 6 - 1;
+	}
+	
+	basalTotalCount = basalLayerCount1 + basalLayerCount2 + basalLayerCount3 + basalLayerCount4;
+	
+	int midLayerCount1 = 0;
+	int midLayerCount2 = 0;
+	int midLayerCount3 = 0;
+	int midLayerCount4 = 0;
+	
+	int midTotalCount = 0;
+	
+	if (matchedallMid1 != null) {
+		midLayerCount1 = 6 - 1;
+	} else if (matchedallMid2 != null) {
+		midLayerCount2 = 6 - 1;
+	} else if (matchedallMid3 != null) {
+		midLayerCount3 = 6 - 1;
+	} else if (matchedallMid4 != null) {
+		midLayerCount4 = 6 - 1;
+	}
+	
+	midTotalCount = midLayerCount1 + midLayerCount2 + midLayerCount3 + midLayerCount4;
+	
+	newFeatures.put("varValue", countComma + countAnd + countFullStop + countInfWallTotal + lateralTotalcount + septTotalcount + basalToMidCountTotal + midToApicalCountTotal + anteriorTotalCount + apicalTotalCount + basalTotalCount + midTotalCount + 1);
+	
+	newFeatures.put("septTotalcount", septTotalcount); 
+	newFeatures.put("countInfWall", countInfWallTotal); 
+	newFeatures.put("countComma", countComma); 
+	newFeatures.put("countAnd", countAnd); 
+	newFeatures.put("countFullStop", countFullStop); 
+	newFeatures.put("lateralTotalcount", lateralTotalcount); 
+	newFeatures.put("basalToMidCount", basalToMidCountTotal); 
+	newFeatures.put("midToApicalCountTotal", midToApicalCountTotal); 
+	newFeatures.put("anteriorTotalCount", anteriorTotalCount);   
+	newFeatures.put("apicalTotalCount", apicalTotalCount);   
+	newFeatures.put("basalTotalCount", basalTotalCount); 
+	newFeatures.put("midTotalCount", midTotalCount); 
+	
+	newFeatures.put("varType","LV Normokinetic Segments");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Normokinetic Segments FourSegmentRight");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  } 
+  
+ 
+Rule: LeftVentricleWMNormokineticRemainingValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=contract})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)OTHER"} | {Token.string ==~ "(?i)REMAINING"}
+)
+
+({Token.kind == "word", Token.string !=~ "(?i)NOT"})? 
+({Token.kind == "word", Token.string !=~ "(?i)NOT"})? 
+({Token.kind == "word", Token.string !=~ "(?i)NOT"})? 
+({Token.kind == "word", Token.string !=~ "(?i)NOT"})? 
+({Token.kind == "word", Token.string !=~ "(?i)NOT"})?
+({Token.kind == "word", Token.string !=~ "(?i)NOT"})?
+
+normokineticTerm
+
+
+):context
+
+
+):LeftVentricleWMNormokineticRemainingValueGram 
+
+--> 
+:LeftVentricleWMNormokineticRemainingValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMNormokineticRemainingValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "Remaining");
+	newFeatures.put("unit", "levels: int (Segment number), Remaining (all remaining segments)");
+	newFeatures.put("varType","LV Normokinetic Segments");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Normokinetic Segments Remaining");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }
+
+
+Rule: LeftVentricleWMNormokineticGlobalValueRule
+(
+(
+( {Token.string ==~ "(?i)LEFT"} {Token.string ==~ "(?i)VENTRICLE"} )
+({Token.string !=~ "(?i)Measurements"} |{SpaceToken.string!=contract})*
+
+):context
+)
+
+(
+(
+
+(
+{Token.string ==~ "(?i)DIFFUSE"} | {Token.string ==~ "(?i)GLOBAL"} | {Token.string ==~ "(?i)EXTENSIVE"}
+)
+
+({Token.kind == "word", !Lookup.majorType == Global_Normokinetic_WordExclusion})? 
+({Token.kind == "word", !Lookup.majorType == Global_Normokinetic_WordExclusion})? 
+({Token.kind == "word", !Lookup.majorType == Global_Normokinetic_WordExclusion})? 
+({Token.kind == "word", !Lookup.majorType == Global_Normokinetic_WordExclusion})? 
+({Token.kind == "word", !Lookup.majorType == Global_Normokinetic_WordExclusion})? 
+({Token.kind == "word", !Lookup.majorType == Global_Normokinetic_WordExclusion})? 
+
+normokineticTerm
+
+
+):context
+
+
+):LeftVentricleWMNormokineticGlobalValueGram 
+
+--> 
+:LeftVentricleWMNormokineticGlobalValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("LeftVentricleWMNormokineticGlobalValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	newFeatures.put("varValue", "11");
+	newFeatures.put("unit", "levels: int (Segment number), Remaining (all remaining segments)");
+	newFeatures.put("varType","LV Normokinetic Segments");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "LV Normokinetic Segments Global");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"CardiacChambers", newFeatures);
+  }

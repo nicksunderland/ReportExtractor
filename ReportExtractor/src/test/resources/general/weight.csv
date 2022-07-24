@@ -1,0 +1,1222 @@
+var_name,text,expected_value,expected_units
+weight,"Patient's approx. height 5' 7*, weight 11st 5lb, BSA 1.83m_",72.1,kg
+weight,"referral_details: 
+TTE_INDICATION: 
+STUDY_COMMENTS: Patient weight 107lg
+OBJ_TIMESTAMP: 616619348
+OVERALL_IMPRESSION: Please note, patient has increased weight 25kg since previous study",107,kg
+weight,Test blocker. Patient admits to putting at least 3 stone of weight on.,,
+weight,"STUDY_COMMENTS: *** Patient reports 2 stone weight loss in the previou 5 weeks and harsh productive cough ***
+
+Report ammended 07/11/2017 - changed Ao desc to 'NO evidence of coarctation' - reviewed by MC/DHM. 
+OBJ_TIMESTAMP: 563376655
+patient lost 10kg. 
+OPERATOR_ONE_ID: 954
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 177cm and 67kg.",67,kg
+weight,"referral_details: 
+TTE_INDICATION: 
+STUDY_COMMENTS: Please not this patient was 1/52 post partum at this scan.
+OBJ_TIMESTAMP: 657812510
+OPERATOR_ONE_ID: -1
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: 1. Non dilated LV with impaired systolic function, see text.
+2. No significant valvular pathology.
+PROCEDURE_ID: 258646
+HAMB_AO_ARCH_NORMAL: F
+CHAMB_AO_ARCH_TEXT: Not well imaged, however does not appear dilated.
+
+HAMB_AO_ASC_NORMAL: F
+HAMB_AO_ASC_TEXT: Proximal ascending aorta 24.5mm. This is not dilated indexed to height.
+
+CHAMB_AO_DESC_NORMAL: F
+CHAMB_AO_DESC_TEXT: Flow in descending aorta 1.4m/s.
+
+CHAMB_COMMENT: 
+CHAMB_IAS_INTACT: F
+CHAMB_IAS_TEXT: No obvious flow seen across IAS.
+
+CHAMB_LA_NORMAL: F
+CHAMB_LA_TEXT: Non dilated,  LAVI= 24ml/m_ (normal < 34ml/m_).
+
+CHAMB_LAA_NORMAL: F
+CHAMB_LAA_TEXT: 
+CHAMB_LV_NORMAL: F
+CHAMB_LV_TEXT: Non dilated. Impaired systolic function. Visually est EF~45%. Biplane EF measured is inaccurate.
+Average mitral annular systolic velocity S' 10cm/s. Indexed stroke volume reduced at 32ml/m_.
+The inferior wall is hypokinetic, mid to apical inferolateral hypokinesia, mid to apical anterolateral wall hypokinesia and base to mid anteroseptal hypokinesia.
+CHAMB_NORMAL: F
+CHAMB_RA_NORMAL: F
+CHAMB_RA_TEXT: Not dilated by indexed area. ESAi = 7.5cm_/m_.
+
+CHAMB_RV_NORMAL: F
+CHAMB_RV_TEXT: Not dilated, RVd1 3.1cm. Normal systolic function. TAPSE 2.3cm.
+
+DOPP_AR_DESC_T: 
+DOPP_AR_SLOPE: 
+DOPP_AREA_AORTIC: 2.53
+DOPP_AREA_MITRAL: 
+DOPP_AREA_PULM: 
+DOPP_AREA_TRI: 
+DOPP_ARP12T: 
+DOPP_EA_RATIO: 1.28
+DOPP_IVRT: 
+DOPP_MITRAL_E_SLOPE: 
+OPP_MPGRAD_AORTIC: 3.5
+DOPP_MPGRAD_LVOT: 1.7
+DOPP_MPGRAD_MITRAL: 
+DOPP_MPGRAD_PULM: 
+DOPP_MPGRAD_TRI: 
+DOPP_MV2DAREA: 
+DOPP_MVEL_AORTIC: 0.86
+DOPP_MVEL_LVOT: 0.57
+DOPP_MVEL_MITRAL: 
+DOPP_MVEL_PULM: 
+DOPP_MVEL_TRI: 
+DOPP_MVP12T: 
+DOPP_PEAK_A: 0.47
+DOPP_PEAK_E: 0.6
+DOPP_PPGRAD_AORTIC: 6.9
+DOPP_PPGRAD_LVOT: 4.2
+DOPP_PPGRAD_MITRAL: 
+DOPP_PPGRAD_PULM: 
+DOPP_PPGRAD_TRI: 
+DOPP_PVEL_AORTIC: 1.3
+DOPP_PVEL_LVOT: 1
+DOPP_PVEL_MITRAL: 
+DOPP_PVEL_PULM: 
+DOPP_PVEL_TRI: 
+DOPP_RVSP: 
+DOPP_VTI_AORTIC: 23.5
+DOPP_VTI_LVOT: 17.3
+DOPP_VTI_MITRAL: 
+DOPP_VTI_PULM: 
+DOPP_VTI_TRI: 
+INISH_TIME: 
+FS: 
+INTUBATION:  
+INTUBATIONTEXT: 
+LA_LENGTH: 
+MITRAL_A_DEC_TIME: 
+MM_ABDOMINAL_AO: 
+MM_AO_ARCH: 
+MM_AO_CUSP_SEP: 
+MM_AO_ROOT: 
+MM_AORTIC_ANNULUS: 
+MM_DESCENDING_AORTA: 
+MM_EJ_MANUAL_ENTRY: T
+MM_ESTIMATED_EJ: 
+Mm_FS_Manual_Entry: T
+MM_IVS: 1
+MM_LA: 
+MM_LVED: 5.1
+MM_LVES: 4
+MM_LVOT_D: 2.1
+MM_PA: 
+MM_PW: 1
+MM_RV: 
+MM_SINOTUBULAR_JUNCTION: 2.2
+MM_SINUS_OF_VALSALVA: 2.7
+NORMAL_STUDY: F
+PV_AO_RESISTANCE_MANUAL: F
+PV_AORTIC_AO_MEAN: 
+PV_AORTIC_AO_MNPR: 
+PV_AORTIC_AO_PKPR: 
+PV_AORTIC_AO_VMAX: 
+PV_AORTIC_AO_VTI: 
+PV_AORTIC_EJT: 
+PV_AORTIC_EOA: 
+PV_AORTIC_LVOT_DIAM: 
+PV_AORTIC_LVOT_MNPR: 
+PV_AORTIC_LVOT_VMAX: 
+PV_AORTIC_LVOT_VTI: 
+PV_AORTIC_PP:  
+PV_AORTIC_REGURGITATION:  
+PV_AORTIC_RESISTANCE: 
+PV_AORTIC_RR_INTERVAL: 
+PV_AORTIC_THROUGH:  
+PV_AORTIC_UNDEFINED:  
+PV_COMMENTS: 
+PV_MITRAL_DTI: 
+PV_MITRAL_EOA: 
+PV_MITRAL_LVOT_DIAM: 
+PV_MITRAL_LVOT_VTI: 
+PV_MITRAL_MEAN: 
+PV_MITRAL_MNPR: 
+PV_MITRAL_PHT: 
+PV_MITRAL_PP:  
+PV_MITRAL_REGURGITATION:  
+PV_MITRAL_RR_INTERVAL: 
+PV_MITRAL_THROUGH:  
+PV_MITRAL_UNDEFINED:  
+PV_MITRAL_VMAX: 
+PV_MITRAL_VTI: 
+PV_PULM_PA_MEAN: 
+PV_PULM_PA_MNPR: 
+PV_PULM_PA_PKPR: 
+PV_PULM_PA_VMAX: 
+PV_PULM_PA_VTI: 
+PV_PULM_PP:  
+PV_PULM_REGURGITATION:  
+PV_PULM_THROUGH:  
+PV_PULM_UNDEFINED:  
+PV_TRI_MEAN: 
+PV_TRI_MNPR: 
+PV_TRI_PHT: 
+PV_TRI_PP:  
+PV_TRI_REGURGITATION:  
+PV_TRI_THROUGH:  
+PV_TRI_UNDEFINED:  
+PV_TRI_VMAX: 
+RA_LENGTH: 
+START_NO:           
+START_TIME: 
+TAPE_NO:  
+TOE_INDICATION: 
+TOE_MAXIMUM: 
+TOE_POSTSO2: 
+TOE_PRESO2: 
+TOE_SERIAL_NUMBER_ID: 
+TOE_SO2: 
+TTE_INDICATION: 
+TTOE_WINDOW_QUALITY_ID: -1
+VALVE_AORTIC_NORMAL: F
+VALVE_AORTIC_TEXT: Tricuspid, thin and mobile leaflets. No obvious aortic regurgitation.
+
+VALVE_COMMENT: 
+VALVE_MITRAL_NORMAL: F
+VALVE_MITRAL_TEXT: Thin and mobile leaflets, open well.
+Trace of mitral regurgitation.
+
+VALVE_NORMAL: F
+VALVE_PULM_NORMAL: F
+VALVE_PULM_TEXT: Normal forward flow.
+Trivial pulmonary regurgitation.
+
+VALVE_TRI_NORMAL: F
+VALVE_TRI_TEX: Thin and mobile leaflets.
+Trace of tricuspid regurgitation.
+IVC not dilated with >50% inspiratory collapse.
+
+",,
+weight,"""referral_details: 
+TTE_INDICATION: 
+STUDY_COMMENTS: 
+OBJ_TIMESTAMP: 636911363
+OPERATOR_ONE_ID: 842
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: ECG - sinus rhythm. HR 70bpm. Frequent ectopics. BBB morphology. 
+Patient approx 149cm and 1.7kg. BSA 1.70m_.
+Severely impaired LV systolic function. Est visual EF <35%. Mild LVH. 
+Impaired RV radial function. 
+Moderate mitral regurgitation. 
+Dilated proximal ascending aorta for height. 
+PROCEDURE_ID: 249374
+HAMB_AO_ARCH_NORMAL: F
+CHAMB_AO_ARCH_TEXT: 
+HAMB_AO_ASC_NORMAL: F
+HAMB_AO_ASC_TEXT: Sinus of Valsalva is not dilated 28mm (19mm/m) from inner edge to inner edge.
+Proximal ascending aorta 32mm. This is dilated indexed to height at 21mm/m.
+
+CHAMB_AO_DESC_NORMAL: F
+CHAMB_AO_DESC_TEXT: 
+CHAMB_COMMENT: 
+CHAMB_IAS_INTACT: F
+CHAMB_IAS_TEXT: Not clearly visualised to assess.
+
+CHAMB_LA_NORMAL: F
+CHAMB_LA_TEXT: Unable to measure accurately, appears compressed ?hernia. Visually appears dilated. 
+CHAMB_LAA_NORMAL: F
+CHAMB_LAA_TEXT: 
+CHAMB_LV_NORMAL: F
+CHAMB_LV_TEXT: Not dilated. Mildly hypertrophied. Overall systolic function severely impaired. Estimated visual EF <35%. 
+Difficult to assess diastolic function due to frequent ectopics. 
+CHAMB_NORMAL: F
+CHAMB_RA_NORMAL: F
+CHAMB_RA_TEXT: Visually dilated. 
+CHAMB_RV_NORMAL: F
+CHAMB_RV_TEXT: Not dilated, RVD1 3.5cm. Systolic function within normal limits, TAPSE 2.9cm, impaired radially. 
+DOPP_AR_DESC_T: 
+DOPP_AR_SLOPE: 
+DOPP_AREA_AORTIC: 
+DOPP_AREA_MITRAL: 
+DOPP_AREA_PULM: 
+DOPP_AREA_TRI: 
+DOPP_ARP12T: 
+DOPP_EA_RATIO: 0.78
+DOPP_IVRT: 
+DOPP_MITRAL_E_SLOPE: 185
+OPP_MPGRAD_AORTIC: 
+DOPP_MPGRAD_LVOT: 
+DOPP_MPGRAD_MITRAL: 
+DOPP_MPGRAD_PULM: 
+DOPP_MPGRAD_TRI: 
+DOPP_MV2DAREA: 
+DOPP_MVEL_AORTIC: 
+DOPP_MVEL_LVOT: 
+DOPP_MVEL_MITRAL: 
+DOPP_MVEL_PULM: 
+DOPP_MVEL_TRI: 
+DOPP_MVP12T: 
+DOPP_PEAK_A: 0.9
+DOPP_PEAK_E: 0.7
+DOPP_PPGRAD_AORTIC: 
+DOPP_PPGRAD_LVOT: 
+DOPP_PPGRAD_MITRAL: 
+DOPP_PPGRAD_PULM: 
+DOPP_PPGRAD_TRI: 
+DOPP_PVEL_AORTIC: 1.5
+DOPP_PVEL_LVOT: 1
+DOPP_PVEL_MITRAL: 
+DOPP_PVEL_PULM: 1.1
+DOPP_PVEL_TRI: 
+DOPP_RVSP: 
+DOPP_VTI_AORTIC: 
+DOPP_VTI_LVOT: 
+DOPP_VTI_MITRAL: 
+DOPP_VTI_PULM: 
+DOPP_VTI_TRI: 
+INISH_TIME: 
+FS: 
+INTUBATION:  
+INTUBATIONTEXT: 
+LA_LENGTH: 
+MITRAL_A_DEC_TIME: 
+MM_ABDOMINAL_AO: 
+MM_AO_ARCH: 
+MM_AO_CUSP_SEP: 
+MM_AO_ROOT: 
+MM_AORTIC_ANNULUS: 
+MM_DESCENDING_AORTA: 
+MM_EJ_MANUAL_ENTRY: T
+MM_ESTIMATED_EJ: 
+Mm_FS_Manual_Entry: T
+MM_IVS: 1.3
+MM_LA: 
+MM_LVED: 4.8
+MM_LVES: 
+MM_LVOT_D: 
+MM_PA: 
+MM_PW: 1.4
+MM_RV: 
+MM_SINOTUBULAR_JUNCTION: 
+MM_SINUS_OF_VALSALVA: 
+NORMAL_STUDY: F
+PV_AO_RESISTANCE_MANUAL: F
+PV_AORTIC_AO_MEAN: 
+PV_AORTIC_AO_MNPR: 
+PV_AORTIC_AO_PKPR: 
+PV_AORTIC_AO_VMAX: 
+PV_AORTIC_AO_VTI: 
+PV_AORTIC_EJT: 
+PV_AORTIC_EOA: 
+PV_AORTIC_LVOT_DIAM: 
+PV_AORTIC_LVOT_MNPR: 
+PV_AORTIC_LVOT_VMAX: 
+PV_AORTIC_LVOT_VTI: 
+PV_AORTIC_PP:  
+PV_AORTIC_REGURGITATION:  
+PV_AORTIC_RESISTANCE: 
+PV_AORTIC_RR_INTERVAL: 
+PV_AORTIC_THROUGH:  
+PV_AORTIC_UNDEFINED:  
+PV_COMMENTS: 
+PV_MITRAL_DTI: 
+PV_MITRAL_EOA: 
+PV_MITRAL_LVOT_DIAM: 
+PV_MITRAL_LVOT_VTI: 
+PV_MITRAL_MEAN: 
+PV_MITRAL_MNPR: 
+PV_MITRAL_PHT: 
+PV_MITRAL_PP:  
+PV_MITRAL_REGURGITATION:  
+PV_MITRAL_RR_INTERVAL: 
+PV_MITRAL_THROUGH:  
+PV_MITRAL_UNDEFINED:  
+PV_MITRAL_VMAX: 
+PV_MITRAL_VTI: 
+PV_PULM_PA_MEAN: 
+PV_PULM_PA_MNPR: 
+PV_PULM_PA_PKPR: 
+PV_PULM_PA_VMAX: 
+PV_PULM_PA_VTI: 
+PV_PULM_PP:  
+PV_PULM_REGURGITATION:  
+PV_PULM_THROUGH:  
+PV_PULM_UNDEFINED:  
+PV_TRI_MEAN: 
+PV_TRI_MNPR: 
+PV_TRI_PHT: 
+PV_TRI_PP:  
+PV_TRI_REGURGITATION:  
+PV_TRI_THROUGH:  
+PV_TRI_UNDEFINED:  
+PV_TRI_VMAX: 
+RA_LENGTH: 
+START_NO:           
+START_TIME: 
+TAPE_NO:  
+TOE_INDICATION: 
+TOE_MAXIMUM: 
+TOE_POSTSO2: 
+TOE_PRESO2: 
+TOE_SERIAL_NUMBER_ID: 
+TOE_SO2: 
+TTE_INDICATION: 
+TTOE_WINDOW_QUALITY_ID: -1
+VALVE_AORTIC_NORMAL: F
+VALVE_AORTIC_TEXT: Tricuspid morphology. Thickened cusps with good excursion. No obvious aortic regurgitation. 
+VALVE_COMMENT: 
+VALVE_MITRAL_NORMAL: F
+VALVE_MITRAL_TEXT: Mildly thickened leaflets, open well. Slight apical tenting. 
+Moderate mitral regurgitation. VC 0.4cm, PISA 0.7cm. 
+VALVE_NORMAL: F
+VALVE_PULM_NORMAL: F
+VALVE_PULM_TEXT: Not clearly imaged, forward flow within normal limits.
+PVAT 140ms
+
+VALVE_TRI_NORMAL: F
+VALVE_TRI_TEX: No obvious tricuspid regurgitation. Unable to estimate RVSP. 
+IVC not dilated with >50% inspiratory collapse. 
+""",1.7,kg
+weight,"referral_details: TTE_INDICATION: recent FAF decomp CCF, HFSTUDY_COMMENTS: OBJ_TIMESTAMP: 604947074OPERATOR_ONE_ID: -1OPERATOR_TWO_ID: -1OVERALL_IMPRESSION: Patient approx160cm and 1.54kg. BSA 1.54m_.
+ECG - ?AF. HR 105bpm(heart rate varies)
+Normal LV size with normal ejection fraction. Biplane EF=62%. Mild LVH. 
+Normal RV size and systolic function. 
+Bi-atrial enlargement.
+Mild AR and TR. Estimated PASP=30mmHg. 
+At least mild-moderate MR. PROCEDURE_ID: 210963HAMB_AO_ARCH_NORMAL: TCHAMB_AO_ARCH_TEXT: HAMB_AO_ASC_NORMAL: FHAMB_AO_ASC_TEXT: Normal prox. ascending aortic size with normal laminar flow. Normal aortic root. 
+Not visualised distal ascending aorta. CHAMB_AO_DESC_NORMAL: TCHAMB_AO_DESC_TEXT: CHAMB_COMMENT: No pericardial effusion. CHAMB_IAS_INTACT: FCHAMB_IAS_TEXT: Intact, no evidence of shunt defect on color flow Doppler. CHAMB_LA_NORMAL: FCHAMB_LA_TEXT: Severely dilated= 83ml/m_.CHAMB_LAA_NORMAL: FCHAMB_LAA_TEXT: Not visualised in TTE. CHAMB_LV_NORMAL: FCHAMB_LV_TEXT: Normal LV cavity size and ejection fraction. Biplane EF=62%. No regional wall motion abnormalities. Mild left ventricular hypertrophy with basal septal bulge. Indeterminate LV filling pressures due to underlying rhythm( single E wave noted on transmitral inflow doppler). CHAMB_NORMAL: FCHAMB_RA_NORMAL: FCHAMB_RA_TEXT: Dilated=21cm_.CHAMB_RV_NORMAL: FCHAMB_RV_TEXT: Normal cavity size and systolic function. TAPSE= 2.2cm DOPP_AR_DESC_T: DOPP_AR_SLOPE: DOPP_AREA_AORTIC: 2.06DOPP_AREA_MITRAL: DOPP_AREA_PULM: DOPP_AREA_TRI: DOPP_ARP12T: DOPP_EA_RATIO: DOPP_IVRT: DOPP_MITRAL_E_SLOPE: OPP_MPGRAD_AORTIC: 5DOPP_MPGRAD_LVOT: 3DOPP_MPGRAD_MITRAL: DOPP_MPGRAD_PULM: DOPP_MPGRAD_TRI: DOPP_MV2DAREA: DOPP_MVEL_AORTIC: 1.01DOPP_MVEL_LVOT: 0.75DOPP_MVEL_MITRAL: DOPP_MVEL_PULM: DOPP_MVEL_TRI: DOPP_MVP12T: DOPP_PEAK_A: DOPP_PEAK_E: DOPP_PPGRAD_AORTIC: 8DOPP_PPGRAD_LVOT: 5DOPP_PPGRAD_MITRAL: 4DOPP_PPGRAD_PULM: DOPP_PPGRAD_TRI: DOPP_PVEL_AORTIC: 1.4DOPP_PVEL_LVOT: 1.09DOPP_PVEL_MITRAL: 1DOPP_PVEL_PULM: DOPP_PVEL_TRI: DOPP_RVSP: DOPP_VTI_AORTIC: 24DOPP_VTI_LVOT: 18DOPP_VTI_MITRAL: DOPP_VTI_PULM: DOPP_VTI_TRI: INISH_TIME: FS: INTUBATION:  INTUBATIONTEXT: LA_LENGTH: MITRAL_A_DEC_TIME: MM_ABDOMINAL_AO: MM_AO_ARCH: MM_AO_CUSP_SEP: MM_AO_ROOT: MM_AORTIC_ANNULUS: MM_DESCENDING_AORTA: MM_EJ_MANUAL_ENTRY: TMM_ESTIMATED_EJ: 62Mm_FS_Manual_Entry: TMM_IVS: 1.1MM_LA: MM_LVED: 3.2MM_LVES: 2MM_LVOT_D: 1.9MM_PA: MM_PW: 1.1MM_RV: 4MM_SINOTUBULAR_JUNCTION: MM_SINUS_OF_VALSALVA: 3.1NORMAL_STUDY: FPV_AO_RESISTANCE_MANUAL: FPV_AORTIC_AO_MEAN: PV_AORTIC_AO_MNPR: PV_AORTIC_AO_PKPR: PV_AORTIC_AO_VMAX: PV_AORTIC_AO_VTI: PV_AORTIC_EJT: PV_AORTIC_EOA: PV_AORTIC_LVOT_DIAM: PV_AORTIC_LVOT_MNPR: PV_AORTIC_LVOT_VMAX: PV_AORTIC_LVOT_VTI: PV_AORTIC_PP:  PV_AORTIC_REGURGITATION:  PV_AORTIC_RESISTANCE: PV_AORTIC_RR_INTERVAL: PV_AORTIC_THROUGH:  PV_AORTIC_UNDEFINED:  PV_COMMENTS: PV_MITRAL_DTI: PV_MITRAL_EOA: PV_MITRAL_LVOT_DIAM: PV_MITRAL_LVOT_VTI: PV_MITRAL_MEAN: PV_MITRAL_MNPR: PV_MITRAL_PHT: PV_MITRAL_PP:  PV_MITRAL_REGURGITATION:  PV_MITRAL_RR_INTERVAL: PV_MITRAL_THROUGH:  PV_MITRAL_UNDEFINED:  PV_MITRAL_VMAX: PV_MITRAL_VTI: PV_PULM_PA_MEAN: PV_PULM_PA_MNPR: PV_PULM_PA_PKPR: PV_PULM_PA_VMAX: PV_PULM_PA_VTI: PV_PULM_PP:  PV_PULM_REGURGITATION:  PV_PULM_THROUGH:  PV_PULM_UNDEFINED:  PV_TRI_MEAN: PV_TRI_MNPR: PV_TRI_PHT: PV_TRI_PP:  PV_TRI_REGURGITATION:  PV_TRI_THROUGH:  PV_TRI_UNDEFINED:  PV_TRI_VMAX: RA_LENGTH: START_NO: START_TIME: TAPE_NO: EPIQTOE_INDICATION: TOE_MAXIMUM: TOE_POSTSO2: TOE_PRESO2: TOE_SERIAL_NUMBER_ID: TOE_SO2: TTE_INDICATION: recent FAF decomp CCF, HFTTOE_WINDOW_QUALITY_ID: -1VALVE_AORTIC_NORMAL: FVALVE_AORTIC_TEXT: Trileaflet with mildly thickened mobile cusps. No stenosis. Mild regurgitation. VALVE_COMMENT: VALVE_MITRAL_NORMAL: FVALVE_MITRAL_TEXT: Appears mildly thickened, mobile leaflets with slightly dilated annulus. No evidence of prolapse/stenosis. Color jet shows at least mild-moderate functional regurgitation, vena contracta:0.4cm. VALVE_NORMAL: FVALVE_PULM_NORMAL: FVALVE_PULM_TEXT: Thin mobile cusps. No stenosis. Trace regurgitation. PV acceleration time= 116ms. 
+
+Normal MPA and branches. 
+VALVE_TRI_NORMAL: FVALVE_TRI_TEX: Thin, mobile leaflets. Color jet shows mild regurgitation. Estimated PASP=30mmHg if RAP is 3mmHg. Might be underestimated PASP due to incomplete TR Doppler trace. 
+
+IVC size is normal with > 50% inspiratory collapse. 
+",1.54,kg
+weight,"""referral_details: 
+TTE_INDICATION: 
+STUDY_COMMENTS: 
+OBJ_TIMESTAMP: 560948592
+OPERATOR_ONE_ID: 833
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 152cm and 1.62kg. BSA 1.62m_.
+ECG - sinus rhythm. HR 62bpm.
+Biventricular systolic function appears within normal limits
+No significant valvular abnormalities detected.
+
+PROCEDURE_ID: 167022
+HAMB_AO_ARCH_NORMAL: F
+CHAMB_AO_ARCH_TEXT: No suprasternal view.
+
+HAMB_AO_ASC_NORMAL: F
+HAMB_AO_ASC_TEXT: Proximal ascending aorta 2.8cm.
+
+CHAMB_AO_DESC_NORMAL: F
+CHAMB_AO_DESC_TEXT: 
+CHAMB_COMMENT: 
+CHAMB_IAS_INTACT: F
+CHAMB_IAS_TEXT: No obvious flow seen across IAS.
+
+CHAMB_LA_NORMAL: F
+CHAMB_LA_TEXT: Not dilated, LAVI 22ml/m_
+
+CHAMB_LAA_NORMAL: F
+CHAMB_LAA_TEXT: 
+CHAMB_LV_NORMAL: F
+CHAMB_LV_TEXT: Not dilated. Overall systolic function within normal limits.Possible hypokinesia of the basal inferoseptum. Est visual EF >55%
+TDI - averaged E/E'7.
+
+CHAMB_NORMAL: F
+CHAMB_RA_NORMAL: F
+CHAMB_RA_TEXT: Visually not dilated.
+CHAMB_RV_NORMAL: F
+CHAMB_RV_TEXT: Not dilated (RVD1 3.0cm). Overall function appears within normal limits. TAPSE 2.3cm
+
+DOPP_AR_DESC_T: 
+DOPP_AR_SLOPE: 
+DOPP_AREA_AORTIC: 
+DOPP_AREA_MITRAL: 
+DOPP_AREA_PULM: 
+DOPP_AREA_TRI: 
+DOPP_ARP12T: 
+DOPP_EA_RATIO: 1.21
+DOPP_IVRT: 
+DOPP_MITRAL_E_SLOPE: 203
+OPP_MPGRAD_AORTIC: 
+DOPP_MPGRAD_LVOT: 
+DOPP_MPGRAD_MITRAL: 
+DOPP_MPGRAD_PULM: 
+DOPP_MPGRAD_TRI: 
+DOPP_MV2DAREA: 
+DOPP_MVEL_AORTIC: 
+DOPP_MVEL_LVOT: 
+DOPP_MVEL_MITRAL: 
+DOPP_MVEL_PULM: 
+DOPP_MVEL_TRI: 
+DOPP_MVP12T: 
+DOPP_PEAK_A: 0.62
+DOPP_PEAK_E: 0.75
+DOPP_PPGRAD_AORTIC: 
+DOPP_PPGRAD_LVOT: 
+DOPP_PPGRAD_MITRAL: 
+DOPP_PPGRAD_PULM: 
+DOPP_PPGRAD_TRI: 
+DOPP_PVEL_AORTIC: 1.2
+DOPP_PVEL_LVOT: 0.9
+DOPP_PVEL_MITRAL: 
+DOPP_PVEL_PULM: 0.8
+DOPP_PVEL_TRI: 
+DOPP_RVSP: 
+DOPP_VTI_AORTIC: 
+DOPP_VTI_LVOT: 
+DOPP_VTI_MITRAL: 
+DOPP_VTI_PULM: 
+DOPP_VTI_TRI: 
+INISH_TIME: 
+FS: 
+INTUBATION:  
+INTUBATIONTEXT: 
+LA_LENGTH: 
+MITRAL_A_DEC_TIME: 
+MM_ABDOMINAL_AO: 
+MM_AO_ARCH: 
+MM_AO_CUSP_SEP: 
+MM_AO_ROOT: 
+MM_AORTIC_ANNULUS: 
+MM_DESCENDING_AORTA: 
+MM_EJ_MANUAL_ENTRY: T
+MM_ESTIMATED_EJ: 
+Mm_FS_Manual_Entry: T
+MM_IVS: 1
+MM_LA: 3.2
+MM_LVED: 4.3
+MM_LVES: 2.6
+MM_LVOT_D: 
+MM_PA: 
+MM_PW: 0.8
+MM_RV: 
+MM_SINOTUBULAR_JUNCTION: 
+MM_SINUS_OF_VALSALVA: 2.8
+NORMAL_STUDY: F
+PV_AO_RESISTANCE_MANUAL: F
+PV_AORTIC_AO_MEAN: 
+PV_AORTIC_AO_MNPR: 
+PV_AORTIC_AO_PKPR: 
+PV_AORTIC_AO_VMAX: 
+PV_AORTIC_AO_VTI: 
+PV_AORTIC_EJT: 
+PV_AORTIC_EOA: 
+PV_AORTIC_LVOT_DIAM: 
+PV_AORTIC_LVOT_MNPR: 
+PV_AORTIC_LVOT_VMAX: 
+PV_AORTIC_LVOT_VTI: 
+PV_AORTIC_PP:  
+PV_AORTIC_REGURGITATION:  
+PV_AORTIC_RESISTANCE: 
+PV_AORTIC_RR_INTERVAL: 
+PV_AORTIC_THROUGH:  
+PV_AORTIC_UNDEFINED:  
+PV_COMMENTS: 
+PV_MITRAL_DTI: 
+PV_MITRAL_EOA: 
+PV_MITRAL_LVOT_DIAM: 
+PV_MITRAL_LVOT_VTI: 
+PV_MITRAL_MEAN: 
+PV_MITRAL_MNPR: 
+PV_MITRAL_PHT: 
+PV_MITRAL_PP:  
+PV_MITRAL_REGURGITATION:  
+PV_MITRAL_RR_INTERVAL: 
+PV_MITRAL_THROUGH:  
+PV_MITRAL_UNDEFINED:  
+PV_MITRAL_VMAX: 
+PV_MITRAL_VTI: 
+PV_PULM_PA_MEAN: 
+PV_PULM_PA_MNPR: 
+PV_PULM_PA_PKPR: 
+PV_PULM_PA_VMAX: 
+PV_PULM_PA_VTI: 
+PV_PULM_PP:  
+PV_PULM_REGURGITATION:  
+PV_PULM_THROUGH:  
+PV_PULM_UNDEFINED:  
+PV_TRI_MEAN: 
+PV_TRI_MNPR: 
+PV_TRI_PHT: 
+PV_TRI_PP:  
+PV_TRI_REGURGITATION:  
+PV_TRI_THROUGH:  
+PV_TRI_UNDEFINED:  
+PV_TRI_VMAX: 
+RA_LENGTH: 
+START_NO:           
+START_TIME: 
+TAPE_NO: E9
+TOE_INDICATION: 
+TOE_MAXIMUM: 
+TOE_POSTSO2: 
+TOE_PRESO2: 
+TOE_SERIAL_NUMBER_ID: 
+TOE_SO2: 
+TTE_INDICATION: 
+TTOE_WINDOW_QUALITY_ID: 9
+VALVE_AORTIC_NORMAL: F
+VALVE_AORTIC_TEXT: Tricuspid morphology with mildly thickened cusps.
+No significant aortic regurgitation detected.
+
+VALVE_COMMENT: 
+VALVE_MITRAL_NORMAL: F
+VALVE_MITRAL_TEXT: Mildly thickened leaflets, open well.
+Trace of mitral regurgitation.
+
+VALVE_NORMAL: F
+VALVE_PULM_NORMAL: F
+VALVE_PULM_TEXT: Not clearly imaged, forward flow within normal limits.
+
+VALVE_TRI_NORMAL: F
+VALVE_TRI_TEX: Trace of tricuspid regurgitation. Unable to estimate PA pressure by regurgitation gradient.
+IVC not dilated with >50% inspiratory collapse.
+
+""",1.62,kg
+weight,"referral_details: 
+TTE_INDICATION: 
+STUDY_COMMENTS: Good LV systolic function in the presence of slow AF. EF: 60%.
+Dilated RV with good systolic function demonstrated. 
+Severe bi-atrial enlargement.
+Mild tricuspid regurgitation.
+Mild mitral regurgitation.
+
+OBJ_TIMESTAMP: 554459898
+OPERATOR_ONE_ID: -1
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 177 cm and 87.5 0kg. BSA 2.05 m_.
+ECG - Atrial fibrillation with a slow ventricular response. HR approx  40 bpm.
+
+LV: Non-dilated internal LV chamber dimensions. Normal LV wall thickness. Slight sigmoidal septum noted. No obvious regional wall motion abnormalities demonstrated. Good LV systolic function in the presence of atrial fibrillation. EF estimated with Simpsons Bi-plane: 60%. 
+LA: Severely dilated left atrium. LAVI: 62.06 ml/m2.
+RV: Dilated internal basal dimensions. RVD1: 5.4 cm. Good RV systolic function. TAPSE: 2.1 cm. 
+RA: Dilated right atrium. RA Area: 34 cm2. 
+
+AV: Appears trileaflet. Mild leaflet thickening with good excursion demonstrated. Normal velocities recorded. Minimal regurgitation detected. 
+MV: Mild b-leaflet thickening with good mobility.Mild degree of regurgitation detected. 
+TV: Thin and mobile leaflets.Mild degree of regurgitation detected. 
+PV: Thin and mobile leaflets. Normal velocities recorded. Minimal degree of regurgitation detected. 
+
+IVC: Not visualised. 
+AO: Aortic arch appears structurally normal with laminar flow and normal descending velocities. 
+PROCEDURE_ID: 160329
+HAMB_AO_ARCH_NORMAL: F
+CHAMB_AO_ARCH_TEXT: 
+HAMB_AO_ASC_NORMAL: F
+HAMB_AO_ASC_TEXT: 
+CHAMB_AO_DESC_NORMAL: F
+CHAMB_AO_DESC_TEXT: 
+CHAMB_COMMENT: 
+CHAMB_IAS_INTACT: F
+CHAMB_IAS_TEXT: 
+CHAMB_LA_NORMAL: F
+CHAMB_LA_TEXT: 
+CHAMB_LAA_NORMAL: F
+CHAMB_LAA_TEXT: 
+CHAMB_LV_NORMAL: F
+CHAMB_LV_TEXT: 
+CHAMB_NORMAL: F
+CHAMB_RA_NORMAL: F
+CHAMB_RA_TEXT: 
+CHAMB_RV_NORMAL: F
+CHAMB_RV_TEXT: 
+DOPP_AR_DESC_T: 
+DOPP_AR_SLOPE: 
+DOPP_AREA_AORTIC: 
+DOPP_AREA_MITRAL: 
+DOPP_AREA_PULM: 
+DOPP_AREA_TRI: 
+DOPP_ARP12T: 
+DOPP_EA_RATIO: 
+DOPP_IVRT: 
+DOPP_MITRAL_E_SLOPE: 
+OPP_MPGRAD_AORTIC: 
+DOPP_MPGRAD_LVOT: 
+DOPP_MPGRAD_MITRAL: 
+DOPP_MPGRAD_PULM: 
+DOPP_MPGRAD_TRI: 
+DOPP_MV2DAREA: 
+DOPP_MVEL_AORTIC: 
+DOPP_MVEL_LVOT: 
+DOPP_MVEL_MITRAL: 
+DOPP_MVEL_PULM: 
+DOPP_MVEL_TRI: 
+DOPP_MVP12T: 
+DOPP_PEAK_A: 
+DOPP_PEAK_E: 
+DOPP_PPGRAD_AORTIC: 5.92
+DOPP_PPGRAD_LVOT: 4.87
+DOPP_PPGRAD_MITRAL: 
+DOPP_PPGRAD_PULM: 5.28
+DOPP_PPGRAD_TRI: 
+DOPP_PVEL_AORTIC: 1.21
+DOPP_PVEL_LVOT: 1.1
+DOPP_PVEL_MITRAL: 
+DOPP_PVEL_PULM: 1.15
+DOPP_PVEL_TRI: 
+DOPP_RVSP: 21
+DOPP_VTI_AORTIC: 
+DOPP_VTI_LVOT: 
+DOPP_VTI_MITRAL: 
+DOPP_VTI_PULM: 
+DOPP_VTI_TRI: 
+INISH_TIME: 
+FS: 37
+INTUBATION:  
+INTUBATIONTEXT: 
+LA_LENGTH: 
+MITRAL_A_DEC_TIME: 
+MM_ABDOMINAL_AO: 
+MM_AO_ARCH: 
+MM_AO_CUSP_SEP: 
+MM_AO_ROOT: 
+MM_AORTIC_ANNULUS: 
+MM_DESCENDING_AORTA: 
+MM_EJ_MANUAL_ENTRY: T
+MM_ESTIMATED_EJ: 67
+Mm_FS_Manual_Entry: T
+MM_IVS: 1.1
+MM_LA: 
+MM_LVED: 5.4
+MM_LVES: 3.4
+MM_LVOT_D: 
+MM_PA: 
+MM_PW: 1.1
+MM_RV: 5.4
+MM_SINOTUBULAR_JUNCTION: 
+MM_SINUS_OF_VALSALVA: 
+NORMAL_STUDY: F
+PV_AO_RESISTANCE_MANUAL: F
+PV_AORTIC_AO_MEAN: 
+PV_AORTIC_AO_MNPR: 
+PV_AORTIC_AO_PKPR: 
+PV_AORTIC_AO_VMAX: 
+PV_AORTIC_AO_VTI: 
+PV_AORTIC_EJT: 
+PV_AORTIC_EOA: 
+PV_AORTIC_LVOT_DIAM: 
+PV_AORTIC_LVOT_MNPR: 
+PV_AORTIC_LVOT_VMAX: 
+PV_AORTIC_LVOT_VTI: 
+PV_AORTIC_PP:  
+PV_AORTIC_REGURGITATION:  
+PV_AORTIC_RESISTANCE: 
+PV_AORTIC_RR_INTERVAL: 
+PV_AORTIC_THROUGH:  
+PV_AORTIC_UNDEFINED:  
+PV_COMMENTS: 
+PV_MITRAL_DTI: 
+PV_MITRAL_EOA: 
+PV_MITRAL_LVOT_DIAM: 
+PV_MITRAL_LVOT_VTI: 
+PV_MITRAL_MEAN: 
+PV_MITRAL_MNPR: 
+PV_MITRAL_PHT: 
+PV_MITRAL_PP:  
+PV_MITRAL_REGURGITATION:  
+PV_MITRAL_RR_INTERVAL: 
+PV_MITRAL_THROUGH:  
+PV_MITRAL_UNDEFINED:  
+PV_MITRAL_VMAX: 
+PV_MITRAL_VTI: 
+PV_PULM_PA_MEAN: 
+PV_PULM_PA_MNPR: 
+PV_PULM_PA_PKPR: 
+PV_PULM_PA_VMAX: 
+PV_PULM_PA_VTI: 
+PV_PULM_PP:  
+PV_PULM_REGURGITATION:  
+PV_PULM_THROUGH:  
+PV_PULM_UNDEFINED:  
+PV_TRI_MEAN: 
+PV_TRI_MNPR: 
+PV_TRI_PHT: 
+PV_TRI_PP:  
+PV_TRI_REGURGITATION:  
+PV_TRI_THROUGH:  
+PV_TRI_UNDEFINED:  
+PV_TRI_VMAX: 
+RA_LENGTH: 
+START_NO:           
+START_TIME: 
+TAPE_NO: E9
+TOE_INDICATION: 
+TOE_MAXIMUM: 
+TOE_POSTSO2: 
+TOE_PRESO2: 
+TOE_SERIAL_NUMBER_ID: 
+TOE_SO2: 
+TTE_INDICATION: 
+TTOE_WINDOW_QUALITY_ID: 9
+VALVE_AORTIC_NORMAL: F
+VALVE_AORTIC_TEXT: 
+VALVE_COMMENT: 
+VALVE_MITRAL_NORMAL: F
+VALVE_MITRAL_TEXT: 
+VALVE_NORMAL: F
+VALVE_PULM_NORMAL: F
+VALVE_PULM_TEXT: 
+VALVE_TRI_NORMAL: F
+VALVE_TRI_TEX: 
+",87.5,kg
+weight,"""referral_details: 
+TTE_INDICATION: 
+STUDY_COMMENTS: 
+OBJ_TIMESTAMP: 545392802
+OPERATOR_ONE_ID: 842
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Focussed study and report. Patient BSA 1.65m_.
+ECG paced rhythm at 75ppm. 
+
+AVR - 21cm perimount in situ, appears well seated. Turbulent colour flow. PAV 2.9m/s, PPD 33mmHg (where upper limit of normal for this valve is 33mmHg), mean PD 19mmHg (where upper limit of normal is 18mmHg). 
+
+LV - not dilated. Mildly hypertrophied with reduced longitudinal function. Appears similar to previous study, overall mild to moderately impaired, estimated visual EF ~45%. 
+RV - not dilated, RVD1 3.0cm. Impaired function, TAPSE 1.2cm.  Pacing lead noted in situ. 
+
+Mild mitral and tricuspid regurgitation. Estimated RVSP ~21mmHg + RA pressure.  
+Aortic root at SoV measures 3.9cm, this is dilated for patient height but within normal limits for BSA. 
+Proximal ascending aorta 3.4cm (borderline dilated for BSA 2.1cm/m_)
+PROCEDURE_ID: 131717
+HAMB_AO_ARCH_NORMAL: F
+CHAMB_AO_ARCH_TEXT: 
+HAMB_AO_ASC_NORMAL: F
+HAMB_AO_ASC_TEXT: 
+CHAMB_AO_DESC_NORMAL: F
+CHAMB_AO_DESC_TEXT: 
+CHAMB_COMMENT: 
+CHAMB_IAS_INTACT: F
+CHAMB_IAS_TEXT: 
+CHAMB_LA_NORMAL: F
+CHAMB_LA_TEXT: 
+CHAMB_LAA_NORMAL: F
+CHAMB_LAA_TEXT: 
+CHAMB_LV_NORMAL: F
+CHAMB_LV_TEXT: 
+CHAMB_NORMAL: F
+CHAMB_RA_NORMAL: F
+CHAMB_RA_TEXT: 
+CHAMB_RV_NORMAL: F
+CHAMB_RV_TEXT: 
+DOPP_AR_DESC_T: 
+DOPP_AR_SLOPE: 
+DOPP_AREA_AORTIC: 
+DOPP_AREA_MITRAL: 
+DOPP_AREA_PULM: 
+DOPP_AREA_TRI: 
+DOPP_ARP12T: 
+DOPP_EA_RATIO: 0.86
+DOPP_IVRT: 
+DOPP_MITRAL_E_SLOPE: 250
+OPP_MPGRAD_AORTIC: 19
+DOPP_MPGRAD_LVOT: 
+DOPP_MPGRAD_MITRAL: 
+DOPP_MPGRAD_PULM: 
+DOPP_MPGRAD_TRI: 
+DOPP_MV2DAREA: 
+DOPP_MVEL_AORTIC: 
+DOPP_MVEL_LVOT: 
+DOPP_MVEL_MITRAL: 
+DOPP_MVEL_PULM: 
+DOPP_MVEL_TRI: 
+DOPP_MVP12T: 
+DOPP_PEAK_A: 0.7
+DOPP_PEAK_E: 0.6
+DOPP_PPGRAD_AORTIC: 33
+DOPP_PPGRAD_LVOT: 
+DOPP_PPGRAD_MITRAL: 
+DOPP_PPGRAD_PULM: 
+DOPP_PPGRAD_TRI: 
+DOPP_PVEL_AORTIC: 2.9
+DOPP_PVEL_LVOT: 1.1
+DOPP_PVEL_MITRAL: 
+DOPP_PVEL_PULM: 
+DOPP_PVEL_TRI: 
+DOPP_RVSP: 
+DOPP_VTI_AORTIC: 60
+DOPP_VTI_LVOT: 
+DOPP_VTI_MITRAL: 
+DOPP_VTI_PULM: 
+DOPP_VTI_TRI: 
+INISH_TIME: 
+FS: 
+INTUBATION:  
+INTUBATIONTEXT: 
+LA_LENGTH: 
+MITRAL_A_DEC_TIME: 
+MM_ABDOMINAL_AO: 
+MM_AO_ARCH: 
+MM_AO_CUSP_SEP: 
+MM_AO_ROOT: 
+MM_AORTIC_ANNULUS: 
+MM_DESCENDING_AORTA: 
+MM_EJ_MANUAL_ENTRY: T
+MM_ESTIMATED_EJ: 
+Mm_FS_Manual_Entry: T
+MM_IVS: 1.2
+MM_LA: 
+MM_LVED: 4.1
+MM_LVES: 
+MM_LVOT_D: 
+MM_PA: 
+MM_PW: 1.1
+MM_RV: 
+MM_SINOTUBULAR_JUNCTION: 
+MM_SINUS_OF_VALSALVA: 3.9
+NORMAL_STUDY: F
+PV_AO_RESISTANCE_MANUAL: F
+PV_AORTIC_AO_MEAN: 
+PV_AORTIC_AO_MNPR: 
+PV_AORTIC_AO_PKPR: 
+PV_AORTIC_AO_VMAX: 
+PV_AORTIC_AO_VTI: 
+PV_AORTIC_EJT: 
+PV_AORTIC_EOA: 
+PV_AORTIC_LVOT_DIAM: 
+PV_AORTIC_LVOT_MNPR: 
+PV_AORTIC_LVOT_VMAX: 
+PV_AORTIC_LVOT_VTI: 
+PV_AORTIC_PP:  
+PV_AORTIC_REGURGITATION:  
+PV_AORTIC_RESISTANCE: 
+PV_AORTIC_RR_INTERVAL: 
+PV_AORTIC_THROUGH:  
+PV_AORTIC_UNDEFINED:  
+PV_COMMENTS: 
+PV_MITRAL_DTI: 
+PV_MITRAL_EOA: 
+PV_MITRAL_LVOT_DIAM: 
+PV_MITRAL_LVOT_VTI: 
+PV_MITRAL_MEAN: 
+PV_MITRAL_MNPR: 
+PV_MITRAL_PHT: 
+PV_MITRAL_PP:  
+PV_MITRAL_REGURGITATION:  
+PV_MITRAL_RR_INTERVAL: 
+PV_MITRAL_THROUGH:  
+PV_MITRAL_UNDEFINED:  
+PV_MITRAL_VMAX: 
+PV_MITRAL_VTI: 
+PV_PULM_PA_MEAN: 
+PV_PULM_PA_MNPR: 
+PV_PULM_PA_PKPR: 
+PV_PULM_PA_VMAX: 
+PV_PULM_PA_VTI: 
+PV_PULM_PP:  
+PV_PULM_REGURGITATION:  
+PV_PULM_THROUGH:  
+PV_PULM_UNDEFINED:  
+PV_TRI_MEAN: 
+PV_TRI_MNPR: 
+PV_TRI_PHT: 
+PV_TRI_PP:  
+PV_TRI_REGURGITATION:  
+PV_TRI_THROUGH:  
+PV_TRI_UNDEFINED:  
+PV_TRI_VMAX: 
+RA_LENGTH: 
+START_NO:           
+START_TIME: 
+TAPE_NO:  
+TOE_INDICATION: 
+TOE_MAXIMUM: 
+TOE_POSTSO2: 
+TOE_PRESO2: 
+TOE_SERIAL_NUMBER_ID: 
+TOE_SO2: 
+TTE_INDICATION: 
+TTOE_WINDOW_QUALITY_ID: -1
+VALVE_AORTIC_NORMAL: F
+VALVE_AORTIC_TEXT: 
+VALVE_COMMENT: 
+VALVE_MITRAL_NORMAL: F
+VALVE_MITRAL_TEXT: 
+VALVE_NORMAL: F
+VALVE_PULM_NORMAL: F
+VALVE_PULM_TEXT: 
+VALVE_TRI_NORMAL: F
+VALVE_TRI_TEX: 
+""",,
+weight,"referral_details: TTE_INDICATION: STUDY_COMMENTS: OBJ_TIMESTAMP: 538739443OPERATOR_ONE_ID: 842OPERATOR_TWO_ID: -1OVERALL_IMPRESSION: ECG sinus rhythm at 80bpm. Patient BSA 1.64m_.
+Biventricular systolic function within normal limits. 
+No significant valvular abnormalities detected. PROCEDURE_ID: 147072HAMB_AO_ARCH_NORMAL: FCHAMB_AO_ARCH_TEXT: HAMB_AO_ASC_NORMAL: FHAMB_AO_ASC_TEXT: CHAMB_AO_DESC_NORMAL: FCHAMB_AO_DESC_TEXT: Flow in descending aorta 1.2m/s.
+CHAMB_COMMENT: CHAMB_IAS_INTACT: FCHAMB_IAS_TEXT: Not clearly visualised to assess.
+CHAMB_LA_NORMAL: FCHAMB_LA_TEXT: Not dilated, LAVI 25ml/m_
+CHAMB_LAA_NORMAL: FCHAMB_LAA_TEXT: CHAMB_LV_NORMAL: FCHAMB_LV_TEXT: Not dilated. Overall systolic function within normal limits, estimated visual EF >55%.
+Diastolic function within normal limits by MV inflow and TDI - averaged E/E' 5. 
+CHAMB_NORMAL: FCHAMB_RA_NORMAL: FCHAMB_RA_TEXT: Not dilated.
+CHAMB_RV_NORMAL: FCHAMB_RV_TEXT: Not dilated (RVD1 3.5cm). Overall function appears within normal limits. TAPSE 2.4cm
+DOPP_AR_DESC_T: DOPP_AR_SLOPE: DOPP_AREA_AORTIC: DOPP_AREA_MITRAL: DOPP_AREA_PULM: DOPP_AREA_TRI: DOPP_ARP12T: DOPP_EA_RATIO: 1.2DOPP_IVRT: DOPP_MITRAL_E_SLOPE: 254OPP_MPGRAD_AORTIC: DOPP_MPGRAD_LVOT: DOPP_MPGRAD_MITRAL: DOPP_MPGRAD_PULM: DOPP_MPGRAD_TRI: DOPP_MV2DAREA: DOPP_MVEL_AORTIC: DOPP_MVEL_LVOT: DOPP_MVEL_MITRAL: DOPP_MVEL_PULM: DOPP_MVEL_TRI: DOPP_MVP12T: DOPP_PEAK_A: 0.5DOPP_PEAK_E: 0.6DOPP_PPGRAD_AORTIC: DOPP_PPGRAD_LVOT: DOPP_PPGRAD_MITRAL: DOPP_PPGRAD_PULM: DOPP_PPGRAD_TRI: DOPP_PVEL_AORTIC: 1.1DOPP_PVEL_LVOT: 0.9DOPP_PVEL_MITRAL: DOPP_PVEL_PULM: 0.9DOPP_PVEL_TRI: DOPP_RVSP: DOPP_VTI_AORTIC: DOPP_VTI_LVOT: DOPP_VTI_MITRAL: DOPP_VTI_PULM: DOPP_VTI_TRI: INISH_TIME: FS: INTUBATION:  INTUBATIONTEXT: LA_LENGTH: MITRAL_A_DEC_TIME: MM_ABDOMINAL_AO: MM_AO_ARCH: MM_AO_CUSP_SEP: MM_AO_ROOT: MM_AORTIC_ANNULUS: MM_DESCENDING_AORTA: MM_EJ_MANUAL_ENTRY: TMM_ESTIMATED_EJ: Mm_FS_Manual_Entry: TMM_IVS: 0.8MM_LA: 3MM_LVED: 4.7MM_LVES: MM_LVOT_D: MM_PA: MM_PW: 0.9MM_RV: MM_SINOTUBULAR_JUNCTION: MM_SINUS_OF_VALSALVA: 2.8NORMAL_STUDY: FPV_AO_RESISTANCE_MANUAL: FPV_AORTIC_AO_MEAN: PV_AORTIC_AO_MNPR: PV_AORTIC_AO_PKPR: PV_AORTIC_AO_VMAX: PV_AORTIC_AO_VTI: PV_AORTIC_EJT: PV_AORTIC_EOA: PV_AORTIC_LVOT_DIAM: PV_AORTIC_LVOT_MNPR: PV_AORTIC_LVOT_VMAX: PV_AORTIC_LVOT_VTI: PV_AORTIC_PP:  PV_AORTIC_REGURGITATION:  PV_AORTIC_RESISTANCE: PV_AORTIC_RR_INTERVAL: PV_AORTIC_THROUGH:  PV_AORTIC_UNDEFINED:  PV_COMMENTS: PV_MITRAL_DTI: PV_MITRAL_EOA: PV_MITRAL_LVOT_DIAM: PV_MITRAL_LVOT_VTI: PV_MITRAL_MEAN: PV_MITRAL_MNPR: PV_MITRAL_PHT: PV_MITRAL_PP:  PV_MITRAL_REGURGITATION:  PV_MITRAL_RR_INTERVAL: PV_MITRAL_THROUGH:  PV_MITRAL_UNDEFINED:  PV_MITRAL_VMAX: PV_MITRAL_VTI: PV_PULM_PA_MEAN: PV_PULM_PA_MNPR: PV_PULM_PA_PKPR: PV_PULM_PA_VMAX: PV_PULM_PA_VTI: PV_PULM_PP:  PV_PULM_REGURGITATION:  PV_PULM_THROUGH:  PV_PULM_UNDEFINED:  PV_TRI_MEAN: PV_TRI_MNPR: PV_TRI_PHT: PV_TRI_PP:  PV_TRI_REGURGITATION:  PV_TRI_THROUGH:  PV_TRI_UNDEFINED:  PV_TRI_VMAX: RA_LENGTH: START_NO:           START_TIME: TAPE_NO:  TOE_INDICATION: TOE_MAXIMUM: TOE_POSTSO2: TOE_PRESO2: TOE_SERIAL_NUMBER_ID: TOE_SO2: TTE_INDICATION: TTOE_WINDOW_QUALITY_ID: -1VALVE_AORTIC_NORMAL: FVALVE_AORTIC_TEXT: Impression tricuspid morphology with minimally thickened cusps. Good cusp excursion. Trivial tricuspid regurgitation. VALVE_COMMENT: VALVE_MITRAL_NORMAL: FVALVE_MITRAL_TEXT: Very mildly thickened leaflets, open well. Trivial mitral regurgitation. VALVE_NORMAL: FVALVE_PULM_NORMAL: FVALVE_PULM_TEXT: Not clearly imaged, forward flow within normal limits.
+VALVE_TRI_NORMAL: FVALVE_TRI_TEX: Trace of tricuspid regurgitation, estimated RVSP in the region of 10mmHg + RA pressure (from suboptimal Doppler). IVC not dilated with >50% inspiratory collapse. ",,
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS: Patient approx 157cm and 84kg. BSA 1.85m_. ECG - sinus rhythm. HR approx 73bpm.",84,kg
+weight,"OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 80inches and unknown kg.  ECG - sinus rhythm. HR 75-85bpm.
+1. Non dilated LV with mildly impaired overall systolic function (see text).
+2. Normal atria.
+3. No significant valvular pathology.",,
+weight,"TTE_INDICATION
+STUDY_COMMENTS: Patient's approx H 5' 5*, W 9st 3lbs, BSA 1.64m_
+OBJ_TIMESTAMP: 522413808
+OPERATOR_ONE_ID: -1",59,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 530729049
+OPERATOR_ONE_ID: 604
+PROCEDURE_ID: 143493
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: ECG - sinus rhythm. HR approx bpm. Pt approx 5ft 3"" and 12stone 3 . BSA 2.21m_.
+Impression LV systolic function within normal limits. 
+Moderate aortic stenosis - see text.
+Consider cardiology review.",77.5,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 534516833
+OPERATOR_ONE_ID: -1
+PROCEDURE_ID: 147322
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Very poor imaging due to patient body habitus - limited information obtained. No subcostal views, very off axis apical window.
+Height: 155cm,  Weight: 127kg,  BSA: 2.2m_. ECG - sinus rhythm. HR approx 90bpm.
+See text.",127,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS: Patient approx 6foot and 58kg. BSA 1.54m_.
+ECG - sinus rhythm with BBB. HR approx 70bpm.",58,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS: Height: 168cm,  Weight: 76kg,  BSA: 1.86m_
+OBJ_TIMESTAMP: 541007937",76,kg
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 574268877
+OPERATOR_ONE_ID: 988
+PROCEDURE_ID: 180977
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 156cm and 83.05kg. BSA m_.
+ECG - sinus rhythm. HR 83bpm.",83.05,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS: Pt reported worsening of Angina. Advised to see the GP.
+OBJ_TIMESTAMP: 591895081
+OPERATOR_ONE_ID: 833
+PROCEDURE_ID: 193080
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Focussed study for LV assessment
+Patient approx 175cm and 92kg. BSA 2.08m_.
+ECG - sinus rhythm. HR 70bpm.",92,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS: Patient approx 163cm and 97kg. BSA 2.02m_.
+ECG - sinus rhythm. HR approx 73bpm.
+OBJ_TIMESTAMP: 616067212",97,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS: Patient approx 170cm and 67kg. BSA 1.78m_.
+ECG - sinus tachycardia. HR 102bpm.",67,kg
+weight,"OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Height 178cm, weight 66.8kg BSA 1.83m_
+ECG - sinus rhythm (BBB morphology). HR 65bpm.
+AV - see text. Overall impression moderate aortic stenosis.",66.8,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS: HT 178cm. WT 76kg. BSA 1.94m2
+OBJ_TIMESTAMP: 628699200",76,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS: Ht 175cm. Wt; 80kg. BSA 1.96m2",80,kg
+weight,"OVERALL_IMPRESSION: Difficult/very poor/off axis/non-diagnostic apical images. Off axis parasternal views. 
+Patient approx 163cm and 108.2kg. BSA 2.11m_.
+ECG - sinus rhythm. HR 70bpm.",108.2,kg
+weight,"OVERALL_IMPRESSION: Difficult/foreshortened apical views.
+Pt approx 180cm and 85.5kg. BSA 2.05m_.
+ECG - sinus rhythm (BBB morphology) with occasional VEs. HR approx 80bpm.",85.5,kg
+weight,"OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 165cm and 64kg. BSA 1.7m_.
+ECG - sinus rhythm. HR 75bpm.",64,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS: Patient approx 177cm and 80kg. BSA 1.97m_.
+OBJ_TIMESTAMP: 556992978",80,kg
+weight,"OVERALL_IMPRESSION: Herceptin protocol / limited study. Very suboptimal parasternal imaging. 
+Patient approx 168cm and 61kg. BSA 1.69m_.
+ECG sinus rhythm/bradycardia, HR approx. 55bpm",61,kg
+weight,"STUDY_COMMENTS: Patient approx 160cm and 48kg. BSA 1.5m_.
+ECG - sinus rhythm with frequent ectopics HR 90 bpm.",48,kg
+weight,"TTE_INDICATION
+OVERALL_IMPRESSION: ECG - sinus rhythm. HR 55bpm. Patient approx 170cm and 60kg. BSA 1.69m_.
+Biventricular systolic function appears within normal limits
+No significant valvular abnormalities detected.
+Dilated aortic root at SoV and ascending aorta. ",60,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS: HT 154cm. WT 74KG BSA 1.7msq",74,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS: Patient approx 160cm and 48.8kg. BSA 1.49m_.
+ECG - sinus rhythm. HR 75-80bpm.",48.8,kg
+weight,"OVERALL_IMPRESSION: ECG sinus rhythm at 90bpm. Patient height 164cm, weight 124kg, BSA 2.25m_.
+Mildly hypertrophied LV with overall normal systolic function. ",124,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS: Height: 188cm,  Weight: 66kg,  BSA: 1.90m_
+OBJ_TIMESTAMP: 531479047",66,kg
+weight,"OVERALL_IMPRESSION: Difficult/very suboptimal apical images.
+Pt approx 171cm and 100kg. BSA 2.11m_.
+ECG - sinus rhythm. HR approx 80bpm.
+Overall LV systolic function within normal limits. Est EF >55%
+No significant valvular abnormalities detected",100,kg
+weight,"OVERALL_IMPRESSION: Patient approx 182cm and 111kg. BSA 2.31m_.
+ECG - atrial fibrillation. HR approx 55bpm.",111,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS: Reviewed on echo meeting on the 30/07/2020. ***Echogenic mobile structure adjacent to the RA to be investigated on next scan.***
+Images reviewed by OEG. Follow-up appointment given for next week.
+Focussed report.
+Patient approx 183cm and 92kg. BSA 2.14m_.
+ECG - sinus rhythm with SVEs and VEs. HR 79bpm.",92,kg
+weight,"OVERALL_IMPRESSION: Patient approx 178cm and 76kg. BSA 1.94m_.
+ECG - sinus bradycardia. HR 50bpm.",76,kg
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS: Ht 167cm. Wt 60kg. BSA 1.67m2
+OBJ_TIMESTAMP: 617224963",60,kg
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 561463667
+OPERATOR_ONE_ID: -1
+PROCEDURE_ID: 167299
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 175cm and 76kg. BSA 1.9m_.
+ECG - sinus rhythm. HR 60bpm.",76,kg
+weight,"referral_details
+TTE_INDICATION: Atrial fibrillation
+
+STUDY_COMMENTS: very limited images obtained.
+LV appears to be normal size and LV function probably within normal limits.
+RV images limited see above.
+LA not dilated.
+No significant aortic or mitral valve pathology seen 
+OBJ_TIMESTAMP: 627143024
+OPERATOR_ONE_ID: -1
+PROCEDURE_ID: 239480
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 174cm and 88kg. BSA 2.03m_.
+",88,kg
+weight,"OVERALL_IMPRESSION: Herceptin protocol limited study
+Pt height 163cm and weight 91.2kg.BSA 1.96m_
+ECG - sinus rhythm. HR 65bpm.
+",91.2,kg
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS: Height: 170cm
+Weight: 77kg
+BSA: 1.88m2
+OBJ_TIMESTAMP: 470755209
+OPERATOR_ONE_ID: -1",77,kg
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 637759576
+OPERATOR_ONE_ID: -1
+PROCEDURE_ID: 244205
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 163cm and 64kg. BSA 1.69m_.
+ECG - sinus rhythm. HR bpm.",64,kg
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS: Patient approx 180cm and 100kg. BSA 2.20m_.
+ECG - sinus rhythm. HR approx 60bpm.
+
+OBJ_TIMESTAMP: 651319206
+OPERATOR_ONE_ID: 559
+PROCEDURE_ID: 261498
+OPERATOR_TWO_ID: -1",100,kg
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 556035208
+OPERATOR_ONE_ID: 842
+PROCEDURE_ID: 126418
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: ECG sinus rhythm/bradycardia at 55bpm. Patient height 165cm, weight 89kg, BSA 1.96m_.
+LV systolic function borderline within normal limits. Est visual EF ~55%. ",89,kg
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 619006956
+OPERATOR_ONE_ID: -1
+PROCEDURE_ID: 168520
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Focussed study. 
+Patient approx 173cm and 64kg. BSA 1.76m_.
+ECG - sinus bradycardia. HR 55bpm.",64,kg
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 587667188
+OPERATOR_ONE_ID: 850
+PROCEDURE_ID: 196604
+OPERATOR_TWO_ID: 559
+OVERALL_IMPRESSION: Patient approx 160 cm and 76 kg. BSA 1.79 m_.
+ECG - sinus rhythm. HR 80 bpm.
+Overall LV systolic function within normal limits. Est visual EF >55%
+No significant valvular abnormalities detected.",76,kg
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS: Patient approx 175 cm and 76 kg. BSA 1.91m_.
+ECG - sinus rhythm. HR 70 bpm.
+
+OBJ_TIMESTAMP: 636732740
+OPERATOR_ONE_ID: 1084
+PROCEDURE_ID: 250004
+OPERATOR_TWO_ID: -1",76,kg
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 564579028
+OPERATOR_ONE_ID: 148
+PROCEDURE_ID: 169800
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 183cm and 98.4kg. BSA 2.21m_.
+ECG - sinus rhythm. HR 75bpm.",98.4,kg
+weight,"TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 579966200
+OPERATOR_ONE_ID: 842
+PROCEDURE_ID: 181985
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: ECG sinus rhythm at 60bpm. Patient height 157cm, weight 64kg. BSA 1.64m_.
+AVR in situ. ",64,kg
+weight,"STUDY_COMMENTS: Patient approx 191 cm and 131 kg. BSA 2.57 m_.
+ECG - sinus bradycardia. HR 53 bpm.
+Difficult / sub-optimal apical images. ",131,kg
+weight,"OVERALL_IMPRESSION: Pt approx 175cm and 76.5kg. BSA 1.92m_.
+ECG - sinus rhythm. HR approx 85bpm.
+Overall biventricular systolic function within normal limits.
+Unable to estimate RVSP / PA pressure by TR gradient.
+HAMB_AO_ARCH_NORMAL: F
+CHAMB_AO_ARCH_TEXT: Not clearly seen",76.5,kg
+weight,"STUDY_COMMENTS: Patient approx 165cm and 73.5kg. BSA 1.81m_.
+ECG - sinus rhythm. HR 55bpm.
+OBJ_TIMESTAMP: 664310747
+",73.5,kg
+weight,"STUDY_COMMENTS: Patient approx 170 cm and 73 kg. BSA 1.84 m_.
+ECG - sinus rhythm. HR 60 bpm.
+ICD in situ.",73,kg
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS
+OBJ_TIMESTAMP: 618054608
+OPERATOR_ONE_ID: 842
+PROCEDURE_ID: 229234
+OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: ECG - sinus rhythm. HR 60bpm. Patient approx 162.5cm and 64kg. BSA 1.69m_.
+Biventricular systolic function appears within normal limits.
+No significant valvular abnormalities detected.
+HAMB_AO_ARCH_NORMAL: F",64,kg
+weight,"referral_details
+TTE_INDICATION
+STUDY_COMMENTS: Patient approx 160cm and 62kg. BSA 1.64 m_.
+ECG - sinus rhythm. HR 90 bpm.",62,kg
+weight,"OPERATOR_TWO_ID: -1
+OVERALL_IMPRESSION: Patient approx 185cm and 136kg. BSA 2.55m_.
+ECG - sinus rhythm. HR ~71bpm.
+Echogenicity in region of pacing wire(s) - see chamber comments -endocarditis cannot be exlcuded from TTE and in the presence of suboptimal/limited imaging
+Overall LV systolic function within normal limits.
+Est PASP ~48mmHg (inc RA pressure)
+HAMB_AO_ARCH_NORMAL: F",136,kg

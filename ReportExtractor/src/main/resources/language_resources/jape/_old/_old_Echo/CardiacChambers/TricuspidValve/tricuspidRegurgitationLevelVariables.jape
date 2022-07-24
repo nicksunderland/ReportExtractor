@@ -1,0 +1,197 @@
+Imports: {
+	import static gate.Utils.*;
+
+}
+
+
+/*
+*  tricuspidRegurgitationLevelVariables.jape
+*
+* Copyright (c) 2020- , University of Bristol, Bristol.
+*  Tim Dong, 31 January 2020 
+*  $Id: tricuspidRegurgitationLevelVariables.jape,v 1.0 2020/01/31 19:24:00 GMT
+*
+* The Phase separates Annotations of tricuspid regurgitation level Variable relations from Lookup Annotations 
+*/
+
+Phase: tricuspidRegurgitationLevelVariables
+Input: Token Lookup  
+Options: control=Appelt 
+
+Macro: tricuspidRegurgSeverityTerm
+(
+({Token.string ==~ "(?i)MINIMAL"} | {Token.string ==~ "(?i)MINIMUM"} | {Token.string ==~ "(?i)TRIVIAL"} | 
+{Token.string ==~ "(?i)VERY"} {Token.string ==~ "(?i)MILD"} | {Token.string ==~ "(?i)TRACE"}):trivial | 
+({Token.string ==~ "(?i)MILD"} | {Token.string ==~ "(?i)TRIVIAL-MILD"}):mild | 
+({Token.string ==~ "(?i)MODERATE"} | {Token.string ==~ "(?i)MILD-MODERATE"} | {Token.string ==~ "(?i)MOD"}):moderate |
+({Token.string ==~ "(?i)HEAVY"} | {Token.string ==~ "(?i)MARKED"} | {Token.string ==~ "(?i)PROMINENT"} | {Token.string ==~ "(?i)SEVERE"} | {Token.string ==~ "(?i)MODERATE-SEVERE"} | {Token.string ==~ "(?i)MODERATE"}
+{Token.string ==~ "(?i)TO"} {Token.string ==~ "(?i)SEVERE"}):severe
+)
+
+Rule: TricuspidRegurgitationLevelValueRule
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_RegurgitationLevel_Specific_WordExclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+
+tricuspidRegurgSeverityTerm 
+
+
+{Token.string ==~ "(?i)REGURGITATION"}  
+
+
+):context
+
+
+):TricuspidRegurgitationLevelValueGram 
+
+--> 
+:TricuspidRegurgitationLevelValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidRegurgitationLevelValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "3");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "0");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","TR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "TR level normal");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+ 
+ 
+Rule: TricuspidRegurgitationLevelAlternValueRule
+Priority: 10
+(
+(
+( {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)ATRIOVENTRICULAR"} {Token.string ==~ "(?i)VALVE"} | {Token.string ==~ "(?i)TV"} | {Token.string ==~ "(?i)RAVV"} | {Token.string ==~ "(?i)RIGHT"} {Token.string ==~ "(?i)AV"} {Token.string ==~ "(?i)VALVE"} )
+({Token.string !=~ "(?i)PULMONARY", !Lookup.majorType == Tricuspid_RegurgitationLevel_Specific_WordExclusion, Token.string !=~ "(?i)VENTRICLE", Token.string !=~ "(?i)LV", Token.string !=~ "(?i)LEFT", Token.string !=~ "(?i)MISCELLANEOUS", Token.string !=~ "(?i)MISC"} |{SpaceToken.string!=PEAK})*
+
+):context
+)
+
+(
+(
+
+tricuspidRegurgSeverityTerm
+
+
+{Token.kind == "word", !Lookup.majorType == severity_Level_All}
+
+{Token.string ==~ "(?i)REGURGITATION"}  
+
+
+):context
+
+
+):TricuspidRegurgitationLevelAlternValueGram 
+
+--> 
+:TricuspidRegurgitationLevelAlternValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidRegurgitationLevelAlternValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "3");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "0");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","TR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "TR level altern");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
+  
+Rule: TricuspidRegurgitationLevelAltern2ValueRule
+Priority: 10
+(
+(
+
+tricuspidRegurgSeverityTerm
+
+({Token.string ==~ "(?i)TR"} | {Token.string ==~ "(?i)TRICUSPID"} {Token.string ==~ "(?i)REGURGITATION"})
+
+
+):context
+
+
+):TricuspidRegurgitationLevelAltern2ValueGram 
+
+--> 
+:TricuspidRegurgitationLevelAltern2ValueGram
+  {
+
+	gate.AnnotationSet matchedcontext=(gate.AnnotationSet) bindings.get("context");
+	
+	gate.AnnotationSet matchedtrivial=(gate.AnnotationSet) bindings.get("trivial");
+	gate.AnnotationSet matchedmild=(gate.AnnotationSet) bindings.get("mild");
+	gate.AnnotationSet matchedmoderate=(gate.AnnotationSet) bindings.get("moderate");
+	gate.AnnotationSet matchedsevere=(gate.AnnotationSet) bindings.get("severe");
+	
+    gate.AnnotationSet matchedAnns= (gate.AnnotationSet) bindings.get("TricuspidRegurgitationLevelAltern2ValueGram");	
+	gate.FeatureMap newFeatures= Factory.newFeatureMap();
+	
+	if (matchedtrivial != null) {
+		newFeatures.put("varValue", "1");
+	} else if (matchedmild != null) {
+		newFeatures.put("varValue", "2");
+	} else if (matchedmoderate != null) {
+		newFeatures.put("varValue", "3");
+	} else if (matchedsevere != null) {
+		newFeatures.put("varValue", "4");
+	} else {
+		newFeatures.put("varValue", "0");
+	}
+	
+	newFeatures.put("unit", "scale 0 (no regurgitation) to 4 (Severe regurgitation)");
+	newFeatures.put("varType","TR level");
+	newFeatures.put("context", stringFor(doc, matchedcontext));
+	newFeatures.put("rule", "TR level altern2");
+	
+	outputAS.add(matchedAnns.firstNode(),matchedAnns.lastNode(),"VesselsMeasurements", newFeatures);
+  }
