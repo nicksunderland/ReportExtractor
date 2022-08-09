@@ -7,13 +7,14 @@ Imports: {
  * Ensure ReportSection phases run first (report_sections.jape)
  */
 
-/* This phase extends the Anatomy annotations based of things found within
- * the Aorta Report Section. e.g. "sinuses" could have a number of meanings if 
- * found elsewhere within a report, however if "sinuses" are found within the
- * "AORTA:" report section or a sentence talking about an aorta then it is 
- * highly likely that it is referring to the sinuses of Valsalva.
+/* These phases tag sentences that contain specific aorta references. If the 
+ * sentence following the sentence containing the reference doesn't contain
+ * another Anatomy annotation then this is also captured as it often can 
+ * contain useful information e.g. 'The SoV is 3.2cm. This is not dilated.'
+ * We first tag aorta sentences, then extend the annotations, then run the rest
+ * of the sentence tagging to ensure the extended annots can be used also. 
  */
-Phase: TagVarSentence
+Phase: TagVarSentenceAorta
 Input: Sentence Anatomy
 Options: control=All negationGrouping=false
 /*
@@ -27,10 +28,16 @@ Rule: var_sentence
 	
 ):var_sentence
 -->
-:var_sentence.VarSentence = {type = "aorta"}
+:var_sentence.VarSentence = {majorType = "aorta", minorType = "aorta"}
 
 
 
+/* This phase extends the Anatomy annotations based of things found within
+ * the Aorta Report Section. e.g. "sinuses" could have a number of meanings if 
+ * found elsewhere within a report, however if "sinuses" are found within the
+ * "AORTA:" report section or a sentence talking about an aorta then it is 
+ * highly likely that it is referring to the sinuses of Valsalva.
+ */
 Phase: ExtendAnatomyAnnotations
 Input: Token ReportSection VarSentence Lookup Anatomy
 Options: control=first negationGrouping=false
@@ -48,13 +55,13 @@ Rule: ext_anat_annots_1
 		Token notWithin {Anatomy.minorType == "sinus_venosus"},
 		Token notWithin {Lookup.majorType == "cardiac_rhythm"}} |
 	{Token.string ==~ "(?i)sinus(es)?", 
-		Token within {VarSentence.type == "aorta"},
+		Token within {VarSentence.majorType == "aorta"},
 		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"},
 		Token notWithin {Anatomy.minorType == "coronary_sinus"},
 		Token notWithin {Anatomy.minorType == "sinus_venosus"},
 		Token notWithin {Lookup.majorType == "cardiac_rhythm"}} |
 	{Token.string ==~ "(?i)valsalva", 
-		Token within {VarSentence.type == "aorta"},
+		Token within {VarSentence.majorType == "aorta"},
 		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"}} |
 	{Token.string ==~ "(?i)valsalva", 
 		Token within {ReportSection.type == "aorta"}, 
@@ -77,7 +84,7 @@ Rule: ext_anat_annots_2
 		Token within {ReportSection.type == "aorta"}} |
 	{Token.string ==~ "(?i)root",
 		Token notWithin {Anatomy.minorType == "aortic_root"},
-		Token within {VarSentence.type == "aorta"}}
+		Token within {VarSentence.majorType == "aorta"}}
 
 ):ext_anat_annots
 -->
@@ -95,8 +102,76 @@ Rule: ext_anat_annots_3
 		Token within {ReportSection.type == "aorta"}} |
 	{Token.string ==~ "(?i)arch",
 		Token notWithin {Anatomy.minorType == "aortic_arch"},
-		Token within {VarSentence.type == "aorta"}}
+		Token within {VarSentence.majorType == "aorta"}}
 
 ):ext_anat_annots
 -->
 :ext_anat_annots.Anatomy = {language = "en", majorType = "aorta", minorType = "aortic_arch"}
+
+
+
+Phase: TagVarSentenceAorticRoot
+Input: Sentence Anatomy
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * Tag sentences that contain aortic root references. 
+ */
+Rule: var_sentence
+(
+	{Sentence contains {Anatomy.minorType == "aortic_root"}}
+	({Sentence notContains {Anatomy.minorType != "aortic_root"}})?
+					
+):var_sentence
+-->
+:var_sentence.VarSentence = {majorType = "aorta", minorType = "aortic_root"}
+
+Phase: TagVarSentenceAortaSoV
+Input: Sentence Anatomy
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * Tag sentences that refer to the sinuses of valsalva +/- the sentence after it 
+ * as long as it doesn't contain other anatomical words
+ */
+Rule: var_sentence
+(
+	{Sentence contains {Anatomy.minorType == "sinus_of_valsalva"}}
+	({Sentence notContains {Anatomy.minorType != "sinus_of_valsalva"}})?
+					
+):var_sentence
+-->
+:var_sentence.VarSentence = {majorType = "aorta", minorType = "sinus_of_valsalva"}
+
+Phase: TagVarSentenceAortaStJ
+Input: Sentence Anatomy
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * Tag sentences that refer to the sinotubular junction +/- the sentence after it 
+ * as long as it doesn't contain other anatomical words
+ */
+Rule: var_sentence
+(
+	{Sentence contains {Anatomy.minorType == "sinotubular_junction"}}
+	({Sentence notContains {Anatomy.minorType != "sinotubular_junction"}})?
+					
+):var_sentence
+-->
+:var_sentence.VarSentence = {majorType = "aorta", minorType = "sinotubular_junction"}
+
+Phase: TagVarSentenceAortaAscending
+Input: Sentence Anatomy
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * Tag sentences that contain ascending aorta references. 
+ */
+Rule: var_sentence
+(
+	{Sentence contains {Anatomy.minorType == "ascending_aorta"}}
+	({Sentence notContains {Anatomy.minorType != "ascending_aorta"}})?
+					
+):var_sentence
+-->
+:var_sentence.VarSentence = {majorType = "aorta", minorType = "ascending_aorta"}

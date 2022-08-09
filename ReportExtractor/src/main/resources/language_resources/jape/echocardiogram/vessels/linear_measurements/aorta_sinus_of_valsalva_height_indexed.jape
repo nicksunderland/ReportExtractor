@@ -12,7 +12,7 @@ Options: control=Appelt negationGrouping=false
 Macro: CONTEXT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "sinus_of_valsalva"},
+		Anatomy within {VarSentence.minorType == "sinus_of_valsalva"},
 		Anatomy.minorType == "sinus_of_valsalva"}
 )
 
@@ -23,23 +23,23 @@ Macro: FILTER
 		!Units.majorType == "z_score",
 		!Lookup.majorType == "body_surface_area",
 		!Lookup.majorType == "quantity_change", 
-		Token within {VarSentence.type == "sinus_of_valsalva"}}
+		Token within {VarSentence.minorType == "sinus_of_valsalva"}}
 )
 
 Macro: VALUE
 (
 	{Numeric,
-		Numeric within {VarSentence.type == "sinus_of_valsalva"}, 
+		Numeric within {VarSentence.minorType == "sinus_of_valsalva"}, 
 		Numeric.type == "double"} |
 	{Numeric,
-		Numeric within {VarSentence.type == "sinus_of_valsalva"}, 
+		Numeric within {VarSentence.minorType == "sinus_of_valsalva"}, 
 		Numeric.type == "integer"}
 )
 
 Macro: UNITS
 (
 	{Units,
-		Units within {VarSentence.type == "sinus_of_valsalva"},
+		Units within {VarSentence.minorType == "sinus_of_valsalva"},
 		Units.majorType == "length/length"}
 )
 
@@ -81,7 +81,7 @@ Priority: 98
 	(
 		{Lookup,
 			Lookup.majorType == "indexed",
-			Lookup within {VarSentence.type == "sinus_of_valsalva"}}
+			Lookup within {VarSentence.minorType == "sinus_of_valsalva"}}
 		({Token})?
 		{Lookup.majorType == "height"}
 		({Token})?
@@ -119,7 +119,7 @@ Priority: 97
 	(
 		{Lookup,
 			Lookup.majorType == "indexed",
-			Lookup within {VarSentence.type == "sinus_of_valsalva"}}
+			Lookup within {VarSentence.minorType == "sinus_of_valsalva"}}
 		( CONTEXT )
 	):context
 	

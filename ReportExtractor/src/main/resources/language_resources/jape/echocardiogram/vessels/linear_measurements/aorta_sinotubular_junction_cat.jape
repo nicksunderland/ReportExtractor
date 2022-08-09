@@ -4,24 +4,6 @@ Imports: {
 }
 
 
-Phase: TagVarSentence
-Input: Sentence Anatomy
-Options: control=All negationGrouping=false
-/*
- * Description:
- * Tag sentences that refer to the sinotubular junction +/- the sentence after it 
- * as long as it doesn't contain other anatomical words
- */
-Rule: var_sentence
-(
-	{Sentence contains {Anatomy.minorType == "sinotubular_junction"}}
-	({Sentence notContains {Anatomy.minorType != "sinotubular_junction"}})?
-					
-):var_sentence
--->
-:var_sentence.VarSentence = {type = "sinotubular_junction"}
-
-
 
 Phase: AortaStjVisualDiameter
 Input: Token Anatomy VarSentence Units Categorical Numeric Lookup Split
@@ -30,7 +12,7 @@ Options: control=Appelt negationGrouping=false
 Macro: CONTEXT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "sinotubular_junction"},
+		Anatomy within {VarSentence.minorType == "sinotubular_junction"},
 		Anatomy.minorType == "sinotubular_junction"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
@@ -38,7 +20,7 @@ Macro: CONTEXT
 Macro: CONTEXT_OTHER_AORTA
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "sinotubular_junction"},
+		Anatomy within {VarSentence.minorType == "sinotubular_junction"},
 		Anatomy.majorType == "aorta"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
@@ -46,28 +28,38 @@ Macro: CONTEXT_OTHER_AORTA
 Macro: FILTER
 (
 	{Token,
-		Token.string != ",", //don't allow commas that aren't captured as "conjunctions" in the context
-		!Anatomy, //don't read over anatomy not captured in context
+		!Anatomy,
+		!Lookup.minorType == "conjunction",
 		!Categorical,
 		!Split.kind == "external",
-		Token within {VarSentence.type == "sinotubular_junction"}}
+		Token within {VarSentence.minorType == "sinotubular_junction"}}
+)
+
+Macro: FILTER_ALLOW_NEG_MODIF
+(
+	{Token,
+		!Anatomy,
+		!Lookup.minorType == "conjunction",
+		!Categorical.minorType != "negative_modifier",
+		!Split.kind == "external",
+		Token within {VarSentence.minorType == "sinotubular_junction"}}
 )
 
 Macro: VALUE
 (
 	({Categorical, 
 		Categorical.minorType == "dilated", 
-		Categorical within {VarSentence.type == "sinotubular_junction"}}) |
+		Categorical within {VarSentence.minorType == "sinotubular_junction"}}) |
 	({Categorical, 
 		Categorical.minorType == "nondilated",
-		Categorical within {VarSentence.type == "sinotubular_junction"}})
+		Categorical within {VarSentence.minorType == "sinotubular_junction"}})
 )
 
 Macro: MODIFIER
 (
 	{Categorical, 
 		Categorical.minorType == "negative_modifier",
-		Categorical within {VarSentence.type == "sinotubular_junction"}}
+		Categorical within {VarSentence.minorType == "sinotubular_junction"}}
 )
 
 /*
@@ -86,7 +78,7 @@ Priority: 100
 		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
 	):context
 	
-	( FILTER )[0,10]
+	( FILTER_ALLOW_NEG_MODIF )[0,20]
 			
 	( (MODIFIER)? ):modifier
 	
@@ -109,6 +101,7 @@ Priority: 100
  * Description:
  * Of the forms...
  * e.g. 'Non-dilated StJ'
+ * e.g. 'No evidence of significant dilation of the StJ'
  * e.g. 'Not dilated at the StJ'
  * e.g. 'Non-dilated aortic root at the STJ'
  * e.g. 'Non-dilated aortic root at the Sov and Stj'
@@ -118,14 +111,14 @@ Priority: 99
 (
 	( (MODIFIER)? ):modifier
 	
-	( FILTER )[0,2]
+	( FILTER )[0,3]
 
 	( VALUE ):value
 	
 	(
 		{Anatomy,
 			Anatomy.minorType == "aortic_root",
-			Anatomy within {VarSentence.type == "sinotubular_junction"}}
+			Anatomy within {VarSentence.minorType == "sinotubular_junction"}}
 		{Lookup.minorType == "preposition"}
 	)?
 			
@@ -135,6 +128,221 @@ Priority: 99
 		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
 		((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
 		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
+	):context
+	
+):ao_stj_cat 
+--> 
+:ao_stj_cat
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_stj_cat", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * Of the forms...
+ * e.g. 'Non-dilated StJ'
+ * e.g. 'Not dilated at the StJ'
+ * e.g. 'Non-dilated aortic root at the StJ'
+ * e.g. 'Non-dilated ascending aorta at the StJ level'
+ * e.g. 'Non dilated proximal aorta to StJ level.'
+ * e.g. 'Non-dilated aortic root at the StJ and Asc Ao'
+ */
+Rule: ao_stj_cat_3
+Priority: 98
+(
+	( (MODIFIER)? ):modifier
+	
+	( FILTER )[0,2]
+
+	( VALUE ):value
+	
+	(
+		({Anatomy,
+			Anatomy.minorType == "aortic_root",
+			Anatomy within {VarSentence.minorType == "sinotubular_junction"}} |
+		 {Anatomy,
+			Anatomy.minorType == "ascending_aorta",
+			Anatomy within {VarSentence.minorType == "sinotubular_junction"}})
+		{Lookup.minorType == "preposition"}
+	)?
+			
+	( FILTER )[0,3]
+	
+	(
+		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
+		((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
+		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
+	):context
+	
+):ao_stj_cat 
+--> 
+:ao_stj_cat
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_stj_cat", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * Of the form...
+ * e.g. 'Sinotubular junction 4.1cm, proximal ascending aorta 4.3cm, neither are dilated'
+ * e.g. 'SoV 4.1cm, Stj 4.1cm, Asc Ao 4.1cm, all are dilated'
+ */
+Rule: ao_stj_cat_4
+Priority: 97
+(
+	( CONTEXT ):context	
+	
+	( {Token,
+		!Categorical,
+		!Split.kind == "external",
+		Token within {VarSentence.majorType == "aorta"}} )[0,20]
+
+	( {Lookup.minorType == "distributive_determiner"} |
+	  
+	  ({Lookup.minorType == "distributive_determiner",
+	  		Categorical.minorType == "negative_modifier",
+	  		Categorical within {VarSentence.majorType == "aorta"}}):modifier )
+	
+	( {Token,
+		!Anatomy,
+		!Categorical,
+		!Split.kind == "external",
+		Token within {VarSentence.majorType == "aorta"}} )[0,2]
+
+	( ({Categorical, 
+		Categorical.minorType == "dilated", 
+		Categorical within {VarSentence.majorType == "aorta"}}) |
+	  ({Categorical, 
+		Categorical.minorType == "nondilated",
+		Categorical within {VarSentence.majorType == "aorta"}}) ):value
+	
+):ao_stj_cat 
+--> 
+:ao_stj_cat
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_stj_cat", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * Of the forms...
+ * e.g. 'Sov to Asc Ao is dilated'
+ * e.g. 'Sov - Asc Ao is nondilated'
+ */
+Rule: ao_stj_cat_5
+Priority: 96
+(
+	(
+		{Anatomy,
+			Anatomy within {VarSentence.majorType == "aorta"},
+			Anatomy.minorType == "sinus_of_valsalva"}
+		{Token,
+			Token within {VarSentence.majorType == "aorta"},
+			Token.string ==~ "to|[-]"}
+		{Anatomy,
+			Anatomy within {VarSentence.majorType == "aorta"},
+			Anatomy.minorType == "ascending_aorta"}
+	):context
+	
+	( {Token,
+		!Anatomy,
+		!Categorical,
+		!Split.kind == "external",
+		Token within {VarSentence.majorType == "aorta"}} )[0,2]
+			
+	( 
+		({Categorical, 
+			Categorical.minorType == "negative_modifier",
+			Categorical within {VarSentence.majorType == "aorta"}})? 
+	):modifier
+
+	( 
+		({Categorical, 
+			Categorical.minorType == "dilated", 
+			Categorical within {VarSentence.majorType == "aorta"}}) |
+		({Categorical, 
+			Categorical.minorType == "nondilated",
+			Categorical within {VarSentence.majorType == "aorta"}}) 
+	):value
+	
+):ao_stj_cat 
+--> 
+:ao_stj_cat
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_stj_cat", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * Of the forms...
+ * e.g. 'Dilated aortic root from SoV to prox. ascending aorta'
+ */
+Rule: ao_stj_cat_6
+Priority: 95
+(
+	( 
+		({Categorical, 
+			Categorical.minorType == "negative_modifier",
+			Categorical within {VarSentence.majorType == "aorta"}})? 
+	):modifier
+	
+	( {Token,
+		!Anatomy,
+		!Categorical,
+		!Split.kind == "external",
+		Token within {VarSentence.majorType == "aorta"}} )[0,2]
+
+	( 
+		({Categorical, 
+			Categorical.minorType == "dilated", 
+			Categorical within {VarSentence.majorType == "aorta"}}) |
+		({Categorical, 
+			Categorical.minorType == "nondilated",
+			Categorical within {VarSentence.majorType == "aorta"}}) 
+	):value
+	
+	(
+		({Anatomy,
+			Anatomy.minorType == "aortic_root",
+			Anatomy within {VarSentence.majorType == "aorta"}} |
+		 {Anatomy,
+			Anatomy.minorType == "ascending_aorta",
+			Anatomy within {VarSentence.majorType == "aorta"}})
+		{Lookup.minorType == "preposition"}
+	)?
+			
+	( {Token,
+		!Anatomy,
+		!Categorical,
+		!Split.kind == "external",
+		Token within {VarSentence.majorType == "aorta"}} )[0,3]
+	
+	(
+		{Anatomy,
+			Anatomy within {VarSentence.majorType == "aorta"},
+			Anatomy.minorType == "sinus_of_valsalva"}
+		{Token,
+			Token within {VarSentence.majorType == "aorta"},
+			Token.string ==~ "to|[-]"}
+		{Anatomy,
+			Anatomy within {VarSentence.majorType == "aorta"},
+			Anatomy.minorType == "ascending_aorta"}
 	):context
 	
 ):ao_stj_cat 

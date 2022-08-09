@@ -5,34 +5,24 @@ Imports: {
 
 
 
-Phase: TagVarSentence
-Input: Sentence Anatomy
-Options: control=All negationGrouping=false
-/*
- * Description:
- * Tag sentences that refer to the sinuses of valsalva +/- the sentence after it 
- * as long as it doesn't contain other anatomical words
- */
-Rule: var_sentence
-(
-	{Sentence contains {Anatomy.minorType == "sinus_of_valsalva"}}
-	({Sentence notContains {Anatomy.minorType != "sinus_of_valsalva"}})?
-					
-):var_sentence
--->
-:var_sentence.VarSentence = {type = "sinus_of_valsalva"}
-
-
-
 Phase: AortaSinusOfValsalvaDiameter
-Input: Token Anatomy Numeric Units Lookup VarSentence Split
+Input: Token Anatomy Numeric Units Lookup VarSentence Split Categorical
 Options: control=Appelt negationGrouping=false
 
 Macro: CONTEXT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "sinus_of_valsalva"},
+		Anatomy within {VarSentence.minorType == "sinus_of_valsalva"},
 		Anatomy.minorType == "sinus_of_valsalva"}
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
+)
+
+Macro: CONTEXT_OTHER_AORTA
+(
+	{Anatomy,
+		Anatomy within {VarSentence.minorType == "sinus_of_valsalva"},
+		Anatomy.majorType == "aorta"}
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
 
 Macro: FILTER
@@ -46,8 +36,11 @@ Macro: FILTER
 		!Units.majorType == "length/length", 
 		!Units.majorType == "z_score", 
 		!Lookup.majorType == "quantity_change",
+		//!Lookup.minorType == "conjunction", 
+		//!Lookup.minorType == "preposition",
+		//Token.string !=~ "[/,]",	
 		!Split,
-		Token within {VarSentence.type == "sinus_of_valsalva"}}
+		Token within {VarSentence.minorType == "sinus_of_valsalva"}}
 )
 
 
@@ -58,28 +51,28 @@ Macro: FILTER_RELAXED
 		!Units.majorType == "length",
 		!Anatomy.minorType != "ascending_aorta",
 		!Lookup.majorType == "height",
-		//!Lookup.majorType == "body_surface_area",
-		//!Units.majorType == "length/length", 
-		//!Units.majorType == "z_score", 
 		!Lookup.majorType == "quantity_change",
+		!Lookup.minorType == "conjunction", 
+		!Lookup.minorType == "preposition",
+		Token.string !=~ "[/,]",	
 		!Split,
-		Token within {VarSentence.type == "ascending_aorta"}}
+		Token within {VarSentence.minorType == "ascending_aorta"}}
 )
 
 Macro: VALUE
 (
 	{Numeric, 
-		Numeric within {VarSentence.type == "sinus_of_valsalva"},
+		Numeric within {VarSentence.minorType == "sinus_of_valsalva"},
 		Numeric.type == "double"} |
 	{Numeric,
-		Numeric within {VarSentence.type == "sinus_of_valsalva"}, 
+		Numeric within {VarSentence.minorType == "sinus_of_valsalva"}, 
 		Numeric.type == "integer"}
 )
 
 Macro: UNITS
 (
 	{Units,
-		Units within {VarSentence.type == "sinus_of_valsalva"},
+		Units within {VarSentence.minorType == "sinus_of_valsalva"},
 		Units.majorType == "length"}
 )
 
@@ -91,9 +84,9 @@ Rule: ao_idx_sov_blocker
 Priority: 100
 (	
 	{Lookup.majorType == "indexed", 
-		Lookup within {VarSentence.type == "sinus_of_valsalva"}}
+		Lookup within {VarSentence.minorType == "sinus_of_valsalva"}}
 	{Anatomy,
-		Anatomy within {VarSentence.type == "sinus_of_valsalva"},
+		Anatomy within {VarSentence.minorType == "sinus_of_valsalva"},
 		Anatomy.minorType == "sinus_of_valsalva"}
 ):sov_blocker
 -->
@@ -102,11 +95,16 @@ Priority: 100
 /*
  * Description:
  * e.g. 'the sov is dilated at 45mm'
+ * e.g. 'the `Sov and Stj are both 3.0cm'
  */
 Rule: ao_sov_diam_1
 Priority: 99
 (	
-	( CONTEXT ):context
+	(
+		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
+		((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
+		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
+	):context	
 	
 	( FILTER )[0,15]
 
@@ -134,17 +132,13 @@ Priority: 99
 
 /*
  * Description:
- * The rule captures more complicated phrases of the form:  "Aortic root measures 4,2cm at the level of the sinuses."
+ * The rule captures more complicated phrases of the form:  
+ * e.g. "Aortic root measures 4,2cm at the level of the sinuses."
  */
 Rule: ao_sov_diam_2
 Priority: 99
 (
-	// General aortic root context
-	(
-		{Anatomy,
-			Anatomy.minorType == "aortic_root",
-			Anatomy notWithin {Anatomy.minorType != "aortic_root"}}
-	)
+	{Anatomy.minorType == "aortic_root"}
 	
 	( FILTER )[0,5]
 	
@@ -171,11 +165,71 @@ Priority: 99
 
 /*
  * Description:
- * The rule uses a more relaxed filter but enforces the units.
- * e.g. SoV within normal limits when indexed for BSA = 4.2cm (indexed 1.9cm/m2)
+ * The rule captures things of the forms:
+ * e.g. "non-dilated aortic root (33mm Sov level)"
+ * e.g. "non-dilated aortic root (33mm Sov, 35mm Stj)"
+ * e.g. "non-dilated aortic root (35mm Stj, 33mm Sov)"
+ * e.g. "aortic root non dilated (3.5cm sinuses)"
+ * e.g. "Non dilated proximal aorta (3.5cm Sinus of Valsalva)"
  */
 Rule: ao_sov_diam_3
 Priority: 98
+(
+	(
+		{Anatomy.minorType == "aortic_root"} |
+		{Anatomy.minorType == "ascending_aorta"}
+	)
+	
+	({Categorical})[0,2]
+			
+	{Token.kind == "punctuation", Token.position == "startpunct"}
+	
+	(
+		( VALUE )
+		( (UNITS)? )
+		( {Lookup.minorType == "preposition"} )?
+		( {Anatomy.majorType == "aorta"} )
+		( {Token} )[0,1]
+		( {Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} )?
+	)[0,2]
+	
+	
+	( VALUE ):value
+	( (UNITS)? ):unit
+	( {Lookup.minorType == "preposition"} )?
+	( {Anatomy.minorType == "sinus_of_valsalva"} ):context
+	( {Token} )[0,1]
+	( {Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} )?
+	
+	(
+		( VALUE )
+		( (UNITS)? )
+		( {Lookup.minorType == "preposition"} )?
+		( {Anatomy.majorType == "aorta"} )
+		( {Token} )[0,1]
+		( {Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} )?
+	)[0,2]
+			
+	{Token.kind == "punctuation", Token.position == "endpunct"}
+	
+):ao_sov_diam 
+--> 
+:ao_sov_diam
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_sov_diam", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * The rule uses a more relaxed filter but enforces the units.
+ * e.g. SoV within normal limits when indexed for BSA = 4.2cm (indexed 1.9cm/m2)
+ */
+Rule: ao_sov_diam_4
+Priority: 97
 (
 	( CONTEXT ):context
 	

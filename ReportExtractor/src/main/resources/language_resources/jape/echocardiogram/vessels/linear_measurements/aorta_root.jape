@@ -4,33 +4,25 @@ Imports: {
 }
 
 
-Phase: TagVarSentence
-Input: Sentence Anatomy
-Options: control=All negationGrouping=false
-/*
- * Description:
- * ....
- */
-Rule: var_sentence
-(
-	{Sentence contains {Anatomy.minorType == "aortic_root"}}
-	({Sentence notContains {Anatomy.minorType != "aortic_root"}})?
-					
-):var_sentence
--->
-:var_sentence.VarSentence = {type = "aortic_root"}
-
-
 
 Phase: AorticRootDiameter
-Input: Token Anatomy Numeric Units Lookup VarSentence Split
+Input: Token Anatomy Numeric Units Lookup VarSentence Split Categorical
 Options: control=Appelt negationGrouping=false
 
 Macro: CONTEXT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "aortic_root"},
+		Anatomy within {VarSentence.minorType == "aortic_root"},
 		Anatomy.minorType == "aortic_root"}
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
+)
+
+Macro: CONTEXT_OTHER_AORTA
+(
+	{Anatomy,
+		Anatomy within {VarSentence.minorType == "aortic_root"},
+		Anatomy.majorType == "aorta"}
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
 
 Macro: FILTER
@@ -46,25 +38,57 @@ Macro: FILTER
 		!Units.majorType == "length/length", 
 		!Units.majorType == "z_score", 
 		!Lookup.majorType == "quantity_change", 
-		Token within {VarSentence.type == "aortic_root"}}
+		Token within {VarSentence.minorType == "aortic_root"}}
 )
 
 Macro: VALUE
 (
 	{Numeric,
-		Numeric within {VarSentence.type == "aortic_root"}, 
+		Numeric within {VarSentence.minorType == "aortic_root"}, 
 		Numeric.type == "double"} |
 	{Numeric,
-		Numeric within {VarSentence.type == "aortic_root"}, 
+		Numeric within {VarSentence.minorType == "aortic_root"}, 
 		Numeric.type == "integer"}
 )
 
 Macro: UNITS
 (
 	{Units,
-		Units within {VarSentence.type == "aortic_root"},
+		Units within {VarSentence.minorType == "aortic_root"},
 		Units.majorType == "length"}
 )
+
+/*
+ * Description:
+ * block general references to the proximal aorta followed by a more 
+ * specific reference to part of the proximal aorta BUT the value-context 
+ * is reversed such that the normal rules do not block it.
+ * e.g. 'aortic root non-dilated (33mm at Sov level)'
+ * e.g. 'non-dilated aortic root (33mm Sov level)'
+ */
+Rule: ao_root_blocker_1
+Priority: 101
+(	
+	( CONTEXT )
+	
+	({Categorical})[0,2]
+			
+	{Token.kind == "punctuation", Token.position == "startpunct"}
+
+	(
+		( VALUE )
+		( (UNITS)? )
+		( {Lookup.minorType == "preposition"} )?
+		( {Anatomy.majorType == "aorta"} )
+		( {Token} )[0,1]
+		( {Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} )?
+	)[0,3]
+			
+	{Token.kind == "punctuation", Token.position == "endpunct"}
+			
+):root_blocker
+-->
+:root_blocker.Blocked = {type = "ao_root_blocker"}
 
 /*
  * Description:
@@ -73,7 +97,11 @@ Macro: UNITS
 Rule: ao_root_diam_1
 Priority:100
 (
-	( CONTEXT ):context
+	(
+		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
+		((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
+		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
+	):context	
 	
 	( FILTER )[0,10]
 	

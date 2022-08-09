@@ -1,4 +1,5 @@
 var_name,text,expected_value,expected_units
+ao_asc_diam,the ascending aorta and Sov are both 4.1cm,4.1,cm
 ao_asc_diam,Non dilated proximal aorta (3.5cm sinus level). No arch views available,,
 ao_asc_diam,Non dilated proximal aorta (3.5cm Sinus of Valsalva). No arch views available. ,,
 ao_asc_diam,"SoV = 4.1cm (indexed for BSA = 1.8cm/m_), ST junction 3.9cm, proximal ascending aorta within normal limits when indexed for BSA = 4.2cm (indexed 1.9cm/m_,",4.2,cm

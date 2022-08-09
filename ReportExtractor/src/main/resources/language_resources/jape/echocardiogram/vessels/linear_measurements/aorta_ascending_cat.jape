@@ -4,24 +4,6 @@ Imports: {
 }
 
 
-Phase: TagVarSentence
-Input: Sentence Anatomy
-Options: control=All negationGrouping=false
-/*
- * Description:
- * Tag sentences that refer to the ascending aorta +/- the sentence after it 
- * as long as it doesn't contain other anatomical words
- */
-Rule: var_sentence
-(
-	{Sentence contains {Anatomy.minorType == "ascending_aorta"}}
-	({Sentence notContains {Anatomy.minorType != "ascending_aorta"}})?
-					
-):var_sentence
--->
-:var_sentence.VarSentence = {type = "ascending_aorta"}
-
-
 
 Phase: AortaAscVisualDiameter
 Input: Token Anatomy VarSentence Units Categorical Numeric Lookup Split
@@ -30,7 +12,7 @@ Options: control=Appelt negationGrouping=false
 Macro: CONTEXT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "ascending_aorta"},
+		Anatomy within {VarSentence.minorType == "ascending_aorta"},
 		Anatomy.minorType == "ascending_aorta"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
@@ -38,7 +20,7 @@ Macro: CONTEXT
 Macro: CONTEXT_OTHER_AORTA
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "ascending_aorta"},
+		Anatomy within {VarSentence.minorType == "ascending_aorta"},
 		Anatomy.majorType == "aorta"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
@@ -46,29 +28,125 @@ Macro: CONTEXT_OTHER_AORTA
 Macro: FILTER
 (
 	{Token,
-		Token.string != ",", //don't allow commas that aren't captured as "conjunctions" in the context
-		!Anatomy, //don't read over anatomy not captured in context
+		!Anatomy,
+		!Lookup.minorType == "conjunction",
 		!Categorical,
 		!Split.kind == "external",
-		Token within {VarSentence.type == "ascending_aorta"}}
+		Token within {VarSentence.minorType == "ascending_aorta"}}
+)
+
+Macro: FILTER_ALLOW_NEG_MODIF
+(
+	{Token,
+		!Anatomy,
+		!Lookup.minorType == "conjunction",
+		!Categorical.minorType != "negative_modifier",
+		!Split.kind == "external",
+		Token within {VarSentence.minorType == "ascending_aorta"}}
 )
 
 Macro: VALUE
 (
 	({Categorical, 
 		Categorical.minorType == "dilated", 
-		Categorical within {VarSentence.type == "ascending_aorta"}}) |
+		Categorical within {VarSentence.minorType == "ascending_aorta"}}) |
 	({Categorical, 
 		Categorical.minorType == "nondilated",
-		Categorical within {VarSentence.type == "ascending_aorta"}})
+		Categorical within {VarSentence.minorType == "ascending_aorta"}})
 )
 
 Macro: MODIFIER
 (
 	{Categorical, 
 		Categorical.minorType == "negative_modifier",
-		Categorical within {VarSentence.type == "ascending_aorta"}}
+		Categorical within {VarSentence.minorType == "ascending_aorta"}}
 )
+
+/*
+ * Description:
+ * block general references to the proximal aorta followed by a more 
+ * specific reference to part of the proximal aorta
+ * e.g. 'Proximal Aorta is upper limits of normal at sinus of valsalva'
+ */
+Rule: ao_asc_blocker_1
+Priority: 101
+(	
+	( CONTEXT ):context
+	
+	( FILTER_ALLOW_NEG_MODIF )[0,10]
+			
+	( (MODIFIER)? ):modifier
+	
+	( FILTER )[0,2]
+
+	( VALUE ):value
+	
+	{Lookup.minorType == "preposition"}
+	
+	( FILTER )[0,2]
+	
+	( CONTEXT_OTHER_AORTA )
+			
+):ao_asc_blocker
+-->
+:ao_asc_blocker.Blocked = {type = "ao_asc_cat_blocker"}
+
+/*
+ * Description:
+ * block general references to the proximal aorta followed by a more 
+ * specific reference to part of the proximal aorta
+ * e.g. 'Dilated Proximal Aorta at sinus of valsalva'
+ * e.g. 'No significant evidence of dilation of the ascending aorta at sinus of valsalva'
+ */
+Rule: ao_asc_blocker_2
+Priority: 101
+(				
+	( (MODIFIER)? ):modifier
+	
+	( FILTER )[0,3]
+
+	( VALUE ):value
+	
+	( FILTER )[0,2]
+	
+	( CONTEXT ):context
+	
+	{Lookup.minorType == "preposition"}
+	
+	( FILTER )[0,2]
+	
+	( CONTEXT_OTHER_AORTA )
+			
+):ao_asc_blocker
+-->
+:ao_asc_blocker.Blocked = {type = "ao_asc_cat_blocker"}
+
+/*
+ * Description:
+ * block general references to the proximal aorta followed by a more 
+ * specific reference to part of the proximal aorta
+ * e.g. 'Proximal Aorta: nondilated sinus of valsalva'
+ */
+Rule: ao_asc_blocker_3
+Priority: 101
+(	
+	( CONTEXT ):context
+	
+	( {Token.string ==~ "[:-]"} | {Split.kind == "external"} )
+	
+	( FILTER_ALLOW_NEG_MODIF )[0,10]
+			
+	( (MODIFIER)? ):modifier
+	
+	( FILTER )[0,2]
+
+	( VALUE ):value
+	
+	( CONTEXT_OTHER_AORTA )
+			
+):ao_asc_blocker
+-->
+:ao_asc_blocker.Blocked = {type = "ao_asc_cat_blocker"}
 
 /*
  * Description:
@@ -77,7 +155,7 @@ Macro: MODIFIER
  * e.g. 'Sov, Stj, Asc ao are not dilated'
  * e.g. 'Asc. Ao and SOV are not dilated'
  */
-Rule: ao_asc_cat
+Rule: ao_asc_cat_1
 Priority: 100
 (
 	(
@@ -86,7 +164,7 @@ Priority: 100
 		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
 	):context
 	
-	( FILTER )[0,10]
+	( FILTER_ALLOW_NEG_MODIF )[0,20]
 			
 	( (MODIFIER)? ):modifier
 	
@@ -108,24 +186,25 @@ Priority: 100
 /*
  * Description:
  * Of the forms...
- * e.g. 'Non-dilated StJ'
- * e.g. 'Not dilated at the StJ'
- * e.g. 'Non-dilated aortic root at the STJ'
- * e.g. 'Non-dilated aortic root at the Sov and Stj'
+ * e.g. 'Non-dilated Asc Ao'
+ * e.g. 'No evidence of significant dilation of the Asc Ao'
+ * e.g. 'Not dilated at the Asc Ao'
+ * e.g. 'Non-dilated aortic root at the Asc Ao'
+ * e.g. 'Non-dilated aortic root at the Sov and Asc Ao'
  */
-Rule: ao_asc_cat
+Rule: ao_asc_cat_2
 Priority: 99
 (
 	( (MODIFIER)? ):modifier
 	
-	( FILTER )[0,2]
+	( FILTER )[0,3]
 
 	( VALUE ):value
 	
 	(
 		{Anatomy,
 			Anatomy.minorType == "aortic_root",
-			Anatomy within {VarSentence.type == "ascending_aorta"}}
+			Anatomy within {VarSentence.minorType == "ascending_aorta"}}
 		{Lookup.minorType == "preposition"}
 	)?
 			

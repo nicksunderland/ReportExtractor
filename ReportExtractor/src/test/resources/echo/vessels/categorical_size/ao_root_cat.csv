@@ -1,4 +1,5 @@
 var_name,text,expected_value,expected_units
+ao_root_cat,aortic root not well imaged measures approx 3.9cm - not dilated indexed to BSA,nondilated,
 ao_root_cat,Normal aortic root with a dilated asc ao (4.1cm).,nondilated,
 ao_root_cat,AORTA: Dilated aortic root from Sinus fo Valsalva to proximal ascending aorta for height.,dilated,
 ao_root_cat,Aorta No evidence of significant dilatation of the aortic root.  ,nondilated,
@@ -9,7 +10,7 @@ ao_root_cat,"Great Vessels
 Non dilated proximal aorta. Arch and abdominal aorta appear normal in dimension. Normal descending aortic flow velocity. ",,
 ao_root_cat,Aorta Visually no significant dilatation of the aortic root at sinus level.  ,,
 ao_root_cat,"Great Vessels
-Mildly dilated proximal aorta (3.9cm at sinus level extending through to the arch) with loss of ST geometry.",dilated,
+Mildly dilated proximal aorta (3.9cm at sinus level extending through to the arch) with loss of ST geometry.",,
 ao_root_cat,"Great Vessels
 Non dilated proximal aorta. The aortic arch appears mildly dilated (3.8cm). ",,
 ao_root_cat,"Great Vessels
@@ -168,7 +169,7 @@ ao_root_cat,"Aorta:
 ao_root_cat,"Aorta:
  Normal aortic root, proximal ascending aorta and aortic arch dimensions. ",nondilated,
 ao_root_cat,"Aorta:
- Severely dilated with a loss of geometry",dilated,
+ Severely dilated with a loss of geometry",,
 ao_root_cat,"Aorta:
  Sinus of Valsalva= 3.8 cm, Sino tubular Junction = 2.8  cm, ascending aorta = 3.1  cm. The SoV is outside normal limits (2.5-3.4cm for gender and age range)
  No coarctation",,

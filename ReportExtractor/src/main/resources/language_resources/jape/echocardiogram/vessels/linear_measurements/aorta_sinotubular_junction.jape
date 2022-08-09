@@ -5,48 +5,42 @@ Imports: {
 
 
 
-Phase: TagVarSentence
-Input: Sentence Anatomy
-Options: control=All negationGrouping=false
-/*
- * Description:
- * ....
- */
-Rule: var_sentence
-(
-	{Sentence contains {Anatomy.minorType == "sinotubular_junction"}}
-	({Sentence notContains {Anatomy.minorType != "sinotubular_junction"}})?
-					
-):var_sentence
--->
-:var_sentence.VarSentence = {type = "sinotubular_junction"}
-
-
-
 Phase: AortaSinotubularJunction
-Input: Token Anatomy Numeric Units Lookup VarSentence Split
+Input: Token Anatomy Numeric Units Lookup VarSentence Split Categorical
 Options: control=Appelt negationGrouping=false
 
 Macro: CONTEXT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "sinotubular_junction"},
+		Anatomy within {VarSentence.minorType == "sinotubular_junction"},
 		Anatomy.minorType == "sinotubular_junction"}
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
+)
+
+Macro: CONTEXT_OTHER_AORTA
+(
+	{Anatomy,
+		Anatomy within {VarSentence.minorType == "sinotubular_junction"},
+		Anatomy.majorType == "aorta"}
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
 
 Macro: FILTER
 (
 	{Token,
-		!Numeric, //force carry on
-		!Units.majorType == "length", //force carry on
+		!Numeric, 
+		!Units.majorType == "length",
 		!Anatomy.minorType != "sinotubular_junction",
 		!Lookup.majorType == "height",
 		!Lookup.majorType == "body_surface_area",
 		!Units.majorType == "length/length", 
 		!Units.majorType == "z_score", 
 		!Lookup.majorType == "quantity_change",
+		//!Lookup.minorType == "conjunction", 
+		//!Lookup.minorType == "preposition",
+		//Token.string !=~ "[/,]",	
 		!Split,
-		Token within {VarSentence.type == "sinotubular_junction"}}
+		Token within {VarSentence.minorType == "sinotubular_junction"}}
 )
 
 Macro: FILTER_RELAXED
@@ -56,28 +50,28 @@ Macro: FILTER_RELAXED
 		!Units.majorType == "length",
 		!Anatomy.minorType != "ascending_aorta",
 		!Lookup.majorType == "height",
-		//!Lookup.majorType == "body_surface_area",
-		//!Units.majorType == "length/length", 
-		//!Units.majorType == "z_score", 
 		!Lookup.majorType == "quantity_change",
+		!Lookup.minorType == "conjunction", 
+		!Lookup.minorType == "preposition",
+		Token.string !=~ "[/,]",	
 		!Split,
-		Token within {VarSentence.type == "ascending_aorta"}}
+		Token within {VarSentence.minorType == "ascending_aorta"}}
 )
 
 Macro: VALUE
 (
 	{Numeric, 
-		Numeric within {VarSentence.type == "sinotubular_junction"},
+		Numeric within {VarSentence.minorType == "sinotubular_junction"},
 		Numeric.type == "double"} |
 	{Numeric,
-		Numeric within {VarSentence.type == "sinotubular_junction"}, 
+		Numeric within {VarSentence.minorType == "sinotubular_junction"}, 
 		Numeric.type == "integer"}
 )
 
 Macro: UNITS
 (
 	{Units,
-		Units within {VarSentence.type == "sinotubular_junction"},
+		Units within {VarSentence.minorType == "sinotubular_junction"},
 		Units.majorType == "length"}
 )
 
@@ -89,9 +83,9 @@ Rule: ao_idx_stj_blocker
 Priority: 100
 (	
 	{Lookup.majorType == "indexed", 
-		Lookup within {VarSentence.type == "sinotubular_junction"}}
+		Lookup within {VarSentence.minorType == "sinotubular_junction"}}
 	{Anatomy,
-		Anatomy within {VarSentence.type == "sinotubular_junction"},
+		Anatomy within {VarSentence.minorType == "sinotubular_junction"},
 		Anatomy.minorType == "sinotubular_junction"}
 ):stj_blocker
 -->
@@ -101,12 +95,18 @@ Priority: 100
 
 /*
  * Description:
- * This is the most common form, e.g. 'the Stj is dilated at 45mm'
+ * This is the most common form: 
+ * e.g. 'the Stj is dilated at 45mm'
+ * e.g. 'the `Stj and Sov are both 3.0cm'
  */
 Rule: ao_stj_diam_1
 Priority: 99
 (
-	( CONTEXT ):context
+	(	
+		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
+		((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
+		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
+	):context	
 	
 	( FILTER )[0,15]
 
@@ -169,11 +169,71 @@ Priority: 99
 
 /*
  * Description:
- * The rule uses a more relaxed filter but enforces the units.
- * e.g. STJ within normal limits when indexed for BSA = 4.2cm (indexed 1.9cm/m2)
+ * The rule captures things of the forms:
+ * e.g. "non-dilated aortic root (33mm Stj level)"
+ * e.g. "non-dilated aortic root (33mm Sov, 35mm Stj)"
+ * e.g. "non-dilated aortic root (35mm Stj, 33mm Sov)"
+ * e.g. "aortic root non dilated (3.5cm stj)"
+ * e.g. "Non dilated proximal aorta (3.5cm stj)"
  */
 Rule: ao_stj_diam_3
 Priority: 98
+(
+	(
+		{Anatomy.minorType == "aortic_root"} |
+		{Anatomy.minorType == "ascending_aorta"}
+	)
+	
+	({Categorical})[0,2]
+			
+	{Token.kind == "punctuation", Token.position == "startpunct"}
+	
+	(
+		( VALUE )
+		( (UNITS)? )
+		( {Lookup.minorType == "preposition"} )?
+		( {Anatomy.majorType == "aorta"} )
+		( {Token} )[0,1]
+		( {Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} )?
+	)[0,2]
+	
+	
+	( VALUE ):value
+	( (UNITS)? ):unit
+	( {Lookup.minorType == "preposition"} )?
+	( {Anatomy.minorType == "sinotubular_junction"} ):context
+	( {Token} )[0,1]
+	( {Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} )?
+	
+	(
+		( VALUE )
+		( (UNITS)? )
+		( {Lookup.minorType == "preposition"} )?
+		( {Anatomy.majorType == "aorta"} )
+		( {Token} )[0,1]
+		( {Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} )?
+	)[0,2]
+			
+	{Token.kind == "punctuation", Token.position == "endpunct"}
+	
+):ao_stj_diam 
+--> 
+:ao_stj_diam
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_stj_diam", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * The rule uses a more relaxed filter but enforces the units.
+ * e.g. STJ within normal limits when indexed for BSA = 4.2cm (indexed 1.9cm/m2)
+ */
+Rule: ao_stj_diam_4
+Priority: 97
 (
 	( CONTEXT ):context
 	

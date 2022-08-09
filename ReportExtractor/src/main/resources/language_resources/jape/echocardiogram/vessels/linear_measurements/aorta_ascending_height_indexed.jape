@@ -12,7 +12,7 @@ Options: control=Appelt negationGrouping=false
 Macro: CONTEXT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "ascending_aorta"},
+		Anatomy within {VarSentence.minorType == "ascending_aorta"},
 		Anatomy.minorType == "ascending_aorta"}
 )
 
@@ -23,23 +23,23 @@ Macro: FILTER
 		!Units.majorType == "z_score",
 		!Lookup.majorType == "body_surface_area",
 		!Lookup.majorType == "quantity_change", 
-		Token within {VarSentence.type == "ascending_aorta"}}
+		Token within {VarSentence.minorType == "ascending_aorta"}}
 )
 
 Macro: VALUE
 (
 	{Numeric,
-		Numeric within {VarSentence.type == "ascending_aorta"}, 
+		Numeric within {VarSentence.minorType == "ascending_aorta"}, 
 		Numeric.type == "double"} |
 	{Numeric,
-		Numeric within {VarSentence.type == "ascending_aorta"}, 
+		Numeric within {VarSentence.minorType == "ascending_aorta"}, 
 		Numeric.type == "integer"}
 )
 
 Macro: UNITS
 (
 	{Units,
-		Units within {VarSentence.type == "ascending_aorta"},
+		Units within {VarSentence.minorType == "ascending_aorta"},
 		Units.majorType == "length/length"}
 )
 
@@ -79,7 +79,7 @@ Priority: 99
 	( CONTEXT ):context
 	
 	({Token,
-		Token within VarSentence.type == "ascending_aorta",
+		Token within VarSentence.minorType == "ascending_aorta",
 		!Anatomy.minorType != "ascending_aorta",
 		!Lookup.majorType == "quantity_change"})[0,20] // Relaxed filter
 	
@@ -113,7 +113,7 @@ Priority: 98
 	(
 		{Lookup,
 			Lookup.majorType == "indexed",
-			Lookup within {VarSentence.type == "ascending_aorta"}}
+			Lookup within {VarSentence.minorType == "ascending_aorta"}}
 		({Token})?
 		{Lookup.majorType == "height"}
 		({Token})?
@@ -151,7 +151,7 @@ Priority: 97
 	(
 		{Lookup,
 			Lookup.majorType == "indexed",
-			Lookup within {VarSentence.type == "ascending_aorta"}}
+			Lookup within {VarSentence.minorType == "ascending_aorta"}}
 		( CONTEXT )
 	):context
 	

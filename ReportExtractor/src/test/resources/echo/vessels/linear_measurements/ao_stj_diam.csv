@@ -1,4 +1,5 @@
 var_name,text,expected_value,expected_units
+ao_stj_diam,the STJ and SOV are both 3.1cm,3.1,cm
 ao_stj_diam,"AORTA:
  Normal dimension of the aortic root. Sinuses 2.8cm
  Ascending aorta and arch if not well imaged",,

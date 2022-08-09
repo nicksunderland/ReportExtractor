@@ -1,184 +1,185 @@
-var_name,text,expected_value,expected_units,
-ao_sov_diam,Sinus of valslava / root replacement 4.8cm,4.8,cm,
-ao_sov_diam,Non dilated proximal aorta (3.5cm Sinus of Valsalva). No arch views available. ,3.5,cm,
-ao_sov_diam,SoV (measured as per 2020 BSE guidelines i-i edge in end diastole) 39.4mm (21.5 mm/m)  not dilated,3.94,cm,
-ao_sov_diam,"Both the aortic root and SOV are around 3,1-3,3 cm.",3.2,cm,
-ao_sov_diam, MM_SINOTUBULAR_JUNCTION: 0. MM_SINUS_OF_VALSALVA: 0. ,,,
+var_name,text,expected_value,expected_units
+ao_sov_diam,"Both the SOV and aortic root are around 3,1-3,3 cm",3.2,cm
+ao_sov_diam,Sinus of valslava / root replacement 4.8cm,4.8,cm
+ao_sov_diam,Non dilated proximal aorta (3.5cm Sinus of Valsalva). No arch views available. ,3.5,cm
+ao_sov_diam,SoV (measured as per 2020 BSE guidelines i-i edge in end diastole) 39.4mm (21.5 mm/m)  not dilated,3.94,cm
+ao_sov_diam,"Both the aortic root and SOV are around 3,1-3,3 cm.",3.2,cm
+ao_sov_diam, MM_SINOTUBULAR_JUNCTION: 0. MM_SINUS_OF_VALSALVA: 0. ,,
 ao_sov_diam,"**this is a test block AS AR MS MR TS TR PS PR this is a test block*.    Sinus of valsalva: 2.6 cm 
- TAPSE: 3.1 cm",2.6,cm,
-ao_sov_diam,Organised structure seen on the posterior aspect of the sinus of valsalva approx 1.1 x 1.5cm (short axis ).,,,
+ TAPSE: 3.1 cm",2.6,cm
+ao_sov_diam,Organised structure seen on the posterior aspect of the sinus of valsalva approx 1.1 x 1.5cm (short axis ).,,
 ao_sov_diam,"Great Vessels
 
 Mildly dilated proximal aorta (3.9cm at sinus level extending through to the arch) with loss of ST geometry. Laminar descending aortic flow velocity. The main PA and RPA appear significantly dilated (MPA ~3.7cm). 
   Sinus of valsalva: 3.9 cm 
-  TAPSE: 1.8 cm ",3.9,cm,
+  TAPSE: 1.8 cm ",3.9,cm
 ao_sov_diam,"Great Vessels
 
 Non dilated proximal aorta. The aortic arch appears mildly dilated (3.8cm). 
-  Sinus of valsalva: 3.5 cm ",3.5,cm,
-ao_sov_diam, Sinus of valsalva: 2.6 cm ,2.6,cm,
+  Sinus of valsalva: 3.5 cm ",3.5,cm
+ao_sov_diam, Sinus of valsalva: 2.6 cm ,2.6,cm
 ao_sov_diam,"Great Vessels
 
-The aortic root is normal size. The aortic arch was not well seen on this scan. ",,,
+The aortic root is normal size. The aortic arch was not well seen on this scan. ",,
 ao_sov_diam,"Great Vessels
 
-Non dilated proximal aorta by dimension (3.4cm) but visually appears mildly dilated. The root appears mildly calcified at sinus level. Normal arch views and descending aortic flow velocity.   Sinus of valsalva: 3.4 cm ",3.4,cm,
+Non dilated proximal aorta by dimension (3.4cm) but visually appears mildly dilated. The root appears mildly calcified at sinus level. Normal arch views and descending aortic flow velocity.   Sinus of valsalva: 3.4 cm ",3.4,cm
 ao_sov_diam,"Great Vessels
 
 Non dilated proximal aorta to sinus level. Unable to visualise beyond this point on parasternal views. The arch views are suboptimal and the arch itself is not clearly seen but the impression is that it is dilated (~3.9cm) at the level of the innominate artery. The descending limb of the aorta is not dilated and flow is normal. 
   RA area: 23.2 cm2 
 
-  Sinus of valsalva: 2.6 cm ",2.6,cm,
-ao_sov_diam,"As far as can be seen, the proximal aorta does not appear dilated. Arch views are suboptimal. ",,,
+  Sinus of valsalva: 2.6 cm ",2.6,cm
+ao_sov_diam,"As far as can be seen, the proximal aorta does not appear dilated. Arch views are suboptimal. ",,
 ao_sov_diam,"AORTA:
  Normal dimension of the aortic root. Sinuses 2.8cm
  Ascending aorta and arch if not well imaged
-",2.8,cm,
+",2.8,cm
 ao_sov_diam," Aorta:
  Aortic root and proximal ascending aorta not visualised. 
  Aortic arch is of normal dimensions. No abnormal flow detected in the descending aorta. 
  Aortic Arch: 3.6cm.
- ",,,
+ ",,
 ao_sov_diam," Aorta:
  Dilated ascending aorta. Ascending aorta = 4.6cm (LE-LE as per departmental protocol)
- Could not clearly visualise aortic arch.",,,
+ Could not clearly visualise aortic arch.",,
 ao_sov_diam,"AORTA:
  Normal dimension of the aortic root
  Sinuses 3.5cm, Ascending aorta 3.3cm, LVOT 2.2cm
- Aortic arch is not well imaged",3.5,cm,
+ Aortic arch is not well imaged",3.5,cm
 ao_sov_diam,"AORTA:
  Normal dimension of the aortic root
  Sinuses 2.8cm, ST junction 2.4cm, Ascending aorta 3.0cm
- Normal appearance of the aortic arch with no obvious evidence of co-arctation",2.8,cm,
+ Normal appearance of the aortic arch with no obvious evidence of co-arctation",2.8,cm
 ao_sov_diam,"Aorta:
  Sinus of Valsalva=  3.5cm (inner-inner, end diastole)
- No coarctation",3.5,cm,
+ No coarctation",3.5,cm
 ao_sov_diam," Aorta:
  Normal aortic root, proximal ascending aorta and aortic arch dimensions. 
  No abnormal flow detected in the descending aorta. 
  Sinus of Valsalva: 2.8cm.  Sinotubular Junction: 2.4cm. Proximal ascending aorta = 2.6cm.  Aortic Arch: 2.5cm.
- (All aortic measurements are Leading edge to leading edge in accordance with departmental protocol).",2.8,cm,
+ (All aortic measurements are Leading edge to leading edge in accordance with departmental protocol).",2.8,cm
 ao_sov_diam,"Aorta:
  Severely dilated with a loss of geometry
  Sinus of Valsalva= 2.9 cm,  ascending aorta = 6.3  cm (LE-LE)
- No coarctation",2.9,cm,
+ No coarctation",2.9,cm
 ao_sov_diam,"Aorta:
  Sinus of Valsalva= 3.8 cm, Sino tubular Junction = 2.8  cm, ascending aorta = 3.1  cm. The SoV is outside normal limits (2.5-3.4cm for gender and age range)
- No coarctation",3.8,cm,
+ No coarctation",3.8,cm
 ao_sov_diam,"AORTA:
  Aortic root dimensions; upper limits of normal.
  Sinuses 3.9cm, ST junction 3.3cm, Ascending aorta 3.8cm
- No suprasternal views.",3.9,cm,
+ No suprasternal views.",3.9,cm
 ao_sov_diam,"  Aorta:
  Normal - Sinus of Valsalva=  2.4 cm, Sino tubular Junction = 2.1 cm, ascending aorta = 2.2 cm, LE to LE, end diastole
- No coarctation",2.4,cm,
+ No coarctation",2.4,cm
 ao_sov_diam,"  Aorta:root dilated
  Sinus of Valsalva=  4.1cm, Sino tubular Junction =   3.3cm, ascending aorta =   4.1cm
- No coarctation (previous coarctation repair at 156 years old)",4.1,cm,
+ No coarctation (previous coarctation repair at 156 years old)",4.1,cm
 ao_sov_diam," Aorta:
  M-mode 2.9cm normal size
- No coarctation",,,
+ No coarctation",,
 ao_sov_diam,"AORTA:
  Aortic root dimensions; normal 
  Sinuses 3.1cm, ST junction 2.2cm,
- No suprasternal views.",3.1,cm,
+ No suprasternal views.",3.1,cm
 ao_sov_diam," Aortic root not dilated indexed to BSA.
  Leading edge- leading edge 2D measurements end diastole: -
  Sinus of Valsalva : 38  mm, sino tubular junction :25   mm, ascending aorta:25  mm (max mid -systole), aortic arch: 22 mm, abdominal aorta: 19mm. 
- No coarctation.",3.8,cm,
+ No coarctation.",3.8,cm
 ao_sov_diam,"AORTA:
  Upper normal dimension of the aortic root
  Sinuses 3.9 cm, Ascending aorta 3.7 cm
- Normal appearance of the aortic arch with no obvious evidence of co-arctation",3.9,cm,
+ Normal appearance of the aortic arch with no obvious evidence of co-arctation",3.9,cm
 ao_sov_diam,"CHAMB_COMMENT: Dilated pulmonary arteries
 CHAMB_IAS_INTACT: F
-CHAMB_IAS_TEXT: Large sinus venosus type defect 1.7 cm x 1.7 cm with predominantly left to right shunt",,,
+CHAMB_IAS_TEXT: Large sinus venosus type defect 1.7 cm x 1.7 cm with predominantly left to right shunt",,
 ao_sov_diam,"CHAMB_COMMENT: Coronary sinus appears slightly dilated approx 1.5 x 1.2cm 
-MM_SINUS_OF_VALSALVA: 3.2",3.2,cm,
+MM_SINUS_OF_VALSALVA: 3.2",3.2,cm
 ao_sov_diam,"HAMB_AO_ASC_TEXT: Proximal ascending aorta 3.1cm.
 MM_SINOTUBULAR_JUNCTION: 
-MM_SINUS_OF_VALSALVA: 3.1",3.1,cm,
-ao_sov_diam,MM_SINUS_OF_VALSALVA: 3.04.,3.04,cm,
+MM_SINUS_OF_VALSALVA: 3.1",3.1,cm
+ao_sov_diam,MM_SINUS_OF_VALSALVA: 3.04.,3.04,cm
 ao_sov_diam,"HAMB_AO_ASC_NORMAL: F
 HAMB_AO_ASC_TEXT: Aortic root measures 4,2cm at the level of the sinuses. This is within normal limits when indexed to BSA
-CHAMB_AO_DESC_NORMAL: F",4.2,cm,
+CHAMB_AO_DESC_NORMAL: F",4.2,cm
 ao_sov_diam,"HAMB_AO_ASC_TEXT: Mildly dilated SoV - up to 4,2 cm. 
-_ASC_TEXT:",4.2,cm,
+_ASC_TEXT:",4.2,cm
 ao_sov_diam,"Please note: sinus of Valsalva dimension has increased by approx 9 mm since 2009.
 Ao root - dilated at sinus of Valsalva level (corrected to BSA) - measures 4.4cm. Trace of aortic regurgitation.
 Ao annulus 1.9cm. STJ 2.2cm. Prox asc Ao approx 2.5cm. Ao arch not well imaged to assess.
 MM_SINOTUBULAR_JUNCTION: 2.2
 MM_SINUS_OF_VALSALVA: 4.3
-NORMAL_STUDY: F",4.3,cm,
+NORMAL_STUDY: F",4.3,cm
 ao_sov_diam,"HAMB_AO_ARCH_NORMAL: F
 CHAMB_AO_ARCH_TEXT: Not clearly imaged however appears normal size.
 HAMB_AO_ASC_NORMAL: F
 HAMB_AO_ASC_TEXT: Ao annulus 2.6cm. Sinus of Valsalva 3.5cm. STJ 3.3cm. Proximal ascending aorta 3.6cm.
 Z scores within normal limits for patient's age/height/weight. SoV z-score +0.81.
 STJ z-score upper limits of normal at +1.93
-CHAMB_AO_DESC_NORMAL: F",3.5,cm,
+CHAMB_AO_DESC_NORMAL: F",3.5,cm
 ao_sov_diam,"HAMB_AO_ASC_TEXT: Dilated Aortic root
 Sinus of valsalva 4.4cm (normal range for BSA 2.8-3.8cm)
 Sino-tubular junction 3.5cm (normal range for BSA 2.4-3.2cm)
-Proximal ascending aorta 4.0cm",4.4,cm,
-ao_sov_diam,.Sinus of Valsalva 33mm (18mm/m) from inner edge to inner edge.,3.3,cm,
-ao_sov_diam,.Sinus of Valsalva is borderline dilated 37mm (22mm/m) from inner edge to inner edge.,3.7,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 34mm (19mm/m) from inner edge to inner edge.,3.4,cm,
-ao_sov_diam,.Sinus of Valsalva measures 3.2cm this is not dilated when corrected to BSA (Z2) however is dilated when indexed to height (Z3). ,3.2,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 37mm (20.8mm/m) from inner edge to inner edge.,3.7,cm,
-ao_sov_diam,.SoV = 39.6mm (21.4mm/m). Borderline normal.,3.96,cm,
-ao_sov_diam,.Sinus of Valsalva is dilated 40.2mm (24.2mm/m) from inner edge to inner edge. ,4.02,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 35mm (20.1mm/m) from inner edge to inner edge.,3.5,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 32.6mm (19mm/m) from inner edge to inner edge. ,3.26,cm,
-ao_sov_diam,.Sinus of Valsalva measures 3.8cm (leading to leading edge) - not dilated indexed to BSA ,3.8,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 34mm (18.3mm/m) from inner edge to inner edge.,3.4,cm,
-ao_sov_diam,.Sinus of Valsalva is borderline dilated 33mm (21mm/m) from inner edge to inner edge.,3.3,cm,
-ao_sov_diam,.Proximal ascending aorta 30mm. This is not dilated indexed to height at 19.1mm/m.,,,
-ao_sov_diam,.Sinus of Valsalva is not dilated 32.8mm (18.4mm/m) from inner edge to inner edge.,3.28,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 36mm (20.6mm/m) from inner edge to inner edge.,3.6,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 33mm (18mm/m) from inner edge to inner edge.,3.3,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 31.7mm (18.9mm/m) from inner edge to inner edge.,3.17,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 37.8mm (21.2mm/m) from inner edge to inner edge.,3.78,cm,
-ao_sov_diam,.Sinus of Valsalva is borderline dilated 41mm (22.5mm/m) from inner edge to inner edge.,4.1,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 38.7mm (20.9mm/m) from inner edge to inner edge.,3.87,cm,
-ao_sov_diam,".Sinus of Valsalva measures 3.8cm, this is borderline/dilated when corrected to BSA (Z2 2.20). ",3.8,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 35mm (18.4mm/m) from inner edge to inner edge.,3.5,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 32mm (17 mm/m) from inner edge to inner edge.,3.2,cm,
-ao_sov_diam,.Sinus of Valsalva is dilated 43mm (24.6mm/m) from inner edge to inner edge.,4.3,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 42mm (19mm/m) from inner edge to inner edge. (Normal <21.8mm/m) ,4.2,cm,
-ao_sov_diam,.Sinus of Valsalva is borderline dilated 37mm (21mm/m) from inner edge to inner edge.,3.7,cm,
-ao_sov_diam,.Sinus of Valsalva is not dilated 32.4mm (19.3mm/m) from inner edge to inner edge.,3.24,cm,
-ao_sov_diam,"Aorta:. Normal aortic root, proximal ascending aorta and aortic arch dimensions. . No abnormal flow detected in the descending aorta. . Sinus of Valsalva: 2.8cm. Sinotubular Junction: 2.4cm. Proximal ascending aorta = 2.6cm. Aortic Arch: 2.5cm.. (All aortic measurements are Leading edge to leading edge in accordance with departmental protocol)..",2.8,cm,
-ao_sov_diam,"AORTA: Aortic root dimensions; normal Sinuses 3.1cm, ST junction 2.2cm,. No suprasternal views..",3.1,cm,
-ao_sov_diam,"Aorta:. Dilated. Sinus of Valsalva= 4.2 cm, Sino tubular Junction = 4.3 cm, ascending aorta = 5.2 cm (leading edge to leading edge, end diastole). ",4.2,cm,
-ao_sov_diam,"Aorta:. Sinus of Valsalva=2.9 cm, Sino tubular Junction =2.8 cm, ascending aorta = 2.7 cm. No coarctation. .",2.9,cm,
-ao_sov_diam,"AORTA:. Normal dimension of the aortic root. Sinuses 3.5cm, ST junction 2.8cm, Ascending aorta 3.3cm, LVOT 2.3cm. ",3.5,cm,
-ao_sov_diam,Normal aortic root. Aortic arch not well seen.. Sinus of valsalva 3.5cm. STJ 3.2cm. Asc Ao. 3.4cm.. ,3.5,cm,
-ao_sov_diam,"Aortic root not dilated.. Sinus of Valsalva 3.1 cm, sinotubular junction 2.8 cm, ascending aorta 3.3 cm.. No coarctation.. ",3.1,cm,
-ao_sov_diam,"Sinus Valsalva measured 3.4 cm, sino tube junction 2.5 cm and ascending aorta 3.1 cm. This is nondilated.",3.4,cm,
-ao_sov_diam, The aortic root is not dilated. Sinus of Valsalva = 2.6 cm.. No evidence of coarctation.. . ,2.6,cm,
-ao_sov_diam,AORTA:. Normal dimension of the aortic root. Normal appearance of the aortic arch with no obvious evidence of coarctation. .,,,
-ao_sov_diam,"AORTA:. Normal dimension of the aortic root. Sinuses 3.4cm, ST junction 3.1cm, Ascending aorta 4.0cm. Normal appearance of the aortic arch with no obvious evidence of co-arctation. ",3.4,cm,
-ao_sov_diam," The ascending aorta appears dilated measuring 38 mm. The sinus Valsalva 35 mm. Arch nondilated, no coarctation.. .",3.5,cm,
-ao_sov_diam,"Aortic root not dilated.. Leading edge- leading edge 2D measurements end diastole: -. Sinus of Valsalva : 33 mm, sino tubular junction : 28 mm, ascending aorta: 30 mm, aortic arch: 24 mm. No coarctation.. . ",3.3,cm,
-ao_sov_diam,"The ascending aorta was not dilated.. Sinus Valsalva measured 3.7 cm, sino tube junction 3.3 cm and ascending aorta 3.1 cm.. No coarctation.. ",3.7,cm,
-ao_sov_diam," AORTA:. Normal calibre root, no arch trace.. SOV 32mm, ST Junction 30mm, Proximal ascending aorta 36mm - internal measurements end diastole. . . . ",3.2,cm,
-ao_sov_diam,"CHAMB_AO_ARCH_TEXT: Not dilated, 32.8mm (1.5cm/m2). HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: SoV dilated, 54.8mm (31.2mm/m). STJ effaced, not measured. Prox Asc Ao dilated, 66.0mm (37.5 mm/m). ",5.48,cm,
-ao_sov_diam,CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: Sinus of valsalva 4.3cm. . Sino-tubular junction 2.9cm. . . CHAMB_AO_DESC_NORMAL: F. CHAMB_AO_DESC_TEXT. CHAMB_COMMENT. CHAMB_IAS_INTACT: F. CHAMB_IAS_TEXT: Not clearly visualised to assess. . . ,4.3,cm,
-ao_sov_diam,HAMB_AO_ARCH_NORMAL: F. CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: Proximal ascending aorta 3.5cm. This is not dilated indexed to BSA at 1.9cm/m_.. . . MM_SINUS_OF_VALSALVA: 3.5. NORMAL_STUDY: F. ,3.5,cm,
-ao_sov_diam,CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: Proximal ascending aorta 3.3cm. . CHAMB_AO_DESC_NORMAL: F.  MM_SINUS_OF_VALSALVA: 2.9. ,2.9,cm,
-ao_sov_diam,"HAMB_AO_ASC_TEXT: not clearly seen, dilated at SOV level 4.8cm. ",4.8,cm,
-ao_sov_diam,HAMB_AO_ASC_TEXT: Sinus of Valsalva measures 2.7cm (inner edge to inner edge).. . .,2.7,cm,
-ao_sov_diam,"Sinus of valsalva dilated when indexed to BSA.. HAMB_AO_ARCH_NORMAL: F. CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: Sinus of valsalva, approx. 4.3cm - this is dilated when indexed to BSA (Z1 2.33).. . Proximal ascending aorta 3.9cm - not dilated when indexed to BSA, 1.9cm/m_.",4.3,cm,
-ao_sov_diam,"HAMB_AO_ASC_TEXT: Sinus of Valsalva 3.7cm (not dilated when corrected to BSA, dilated normalised to height, Z3 = 2.74).. . Sino-tubular junction 2.7cm. Proximal ascending aorta 3.2cm (not dilated when corrected to BSA)",3.7,cm,
-ao_sov_diam,"referral_details. TTE_INDICATION. STUDY_COMMENTS. OBJ_TIMESTAMP: 488994351. OPERATOR_ONE_ID: 559. PROCEDURE_ID: 111763. OPERATOR_TWO_ID: -1. OVERALL_IMPRESSION: ECG sinus rhythm at 65bpm. . Overall impression left ventricular systolic function within normal limits, estimated visual EF approx >55%. . . Right ventricular size and function within normal limits. . . No obvious intracardiac thrombus seen however unable to fully exclude this from TTE images.. HAMB_AO_ARCH_NORMAL: F. CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT. CHAMB_AO_DESC_NORMAL: F. CHAMB_AO_DESC_TEXT: Flow in descending aorta 0.7m/s. . . CHAMB_COMMENT. CHAMB_IAS_INTACT: F. CHAMB_IAS_TEXT: Not clearly visualised to assess. . . CHAMB_LA_NORMAL: F. CHAMB_LA_TEXT: Upper limits of normal size. Area approx 19cm_.. CHAMB_LAA_NORMAL: F. CHAMB_LAA_TEXT. CHAMB_LV_NORMAL: F. CHAMB_LV_TEXT: Not dilated with slight sigmoid septum. Irregular septal motion. Overall impression systolic function within normal limits from views obtained. Unable to exclude regional wall motion abnormalities due. . to image quality. Estimated visual EF approx >55%. . . Probable thickened band seen within the apex.. CHAMB_NORMAL: F. CHAMB_RA_NORMAL: F. CHAMB_RA_TEXT: Visually not dilated. . CHAMB_RV_NORMAL: F. CHAMB_RV_TEXT: Not dilated. Overall function within normal limits, TAPSE >2cm. . DOPP_AR_DESC_T. DOPP_AR_SLOPE: 0. DOPP_AREA_AORTIC: 0. DOPP_AREA_MITRAL: 0. DOPP_AREA_PULM. DOPP_AREA_TRI. DOPP_ARP12T: 0. DOPP_EA_RATIO: 0.86. DOPP_IVRT: 0. DOPP_MITRAL_E_SLOPE: 0. OPP_MPGRAD_AORTIC: 0. DOPP_MPGRAD_LVOT: 0. DOPP_MPGRAD_MITRAL: 0. DOPP_MPGRAD_PULM. DOPP_MPGRAD_TRI: 0. DOPP_MV2DAREA: 0. DOPP_MVEL_AORTIC: 0. DOPP_MVEL_LVOT: 0. DOPP_MVEL_MITRAL: 0. DOPP_MVEL_PULM. DOPP_MVEL_TRI. DOPP_MVP12T: 0. DOPP_PEAK_A: 0.7. DOPP_PEAK_E: 0.6. DOPP_PPGRAD_AORTIC: 0. DOPP_PPGRAD_LVOT: 0. DOPP_PPGRAD_MITRAL: 0. DOPP_PPGRAD_PULM: 0. DOPP_PPGRAD_TRI: 0. DOPP_PVEL_AORTIC: 1.2. DOPP_PVEL_LVOT: 0.9. DOPP_PVEL_MITRAL: 0. DOPP_PVEL_PULM: 0.8. DOPP_PVEL_TRI: 0. DOPP_RVSP: 0. DOPP_VTI_AORTIC: 0. DOPP_VTI_LVOT: 0. DOPP_VTI_MITRAL: 0. DOPP_VTI_PULM. DOPP_VTI_TRI. INISH_TIME. FS: 0. INTUBATION: . INTUBATIONTEXT. LA_LENGTH. MITRAL_A_DEC_TIME: 0. MM_ABDOMINAL_AO. MM_AO_ARCH: 0. MM_AO_CUSP_SEP: 0. MM_AO_ROOT: 0. MM_AORTIC_ANNULUS: 0. MM_DESCENDING_AORTA. MM_EJ_MANUAL_ENTRY: T. MM_ESTIMATED_EJ: 0. Mm_FS_Manual_Entry: T. MM_IVS: 0.7. MM_LA: 3.1. MM_LVED: 4.1. MM_LVES: 2.5. MM_LVOT_D: 0. MM_PA: 0. MM_PW: 0.9. MM_RV: 0. MM_SINOTUBULAR_JUNCTION: 0. MM_SINUS_OF_VALSALVA: 3.4. NORMAL_STUDY: F. PV_AO_RESISTANCE_MANUAL: F. PV_AORTIC_AO_MEAN. PV_AORTIC_AO_MNPR. PV_AORTIC_AO_PKPR. PV_AORTIC_AO_VMAX. PV_AORTIC_AO_VTI. PV_AORTIC_EJT. PV_AORTIC_EOA. PV_AORTIC_LVOT_DIAM. PV_AORTIC_LVOT_MNPR. PV_AORTIC_LVOT_VMAX. PV_AORTIC_LVOT_VTI. PV_AORTIC_PP: . PV_AORTIC_REGURGITATION: . PV_AORTIC_RESISTANCE. PV_AORTIC_RR_INTERVAL. PV_AORTIC_THROUGH: . PV_AORTIC_UNDEFINED: . PV_COMMENTS. PV_MITRAL_DTI. PV_MITRAL_EOA. PV_MITRAL_LVOT_DIAM. PV_MITRAL_LVOT_VTI. PV_MITRAL_MEAN. PV_MITRAL_MNPR. PV_MITRAL_PHT. PV_MITRAL_PP: . PV_MITRAL_REGURGITATION: . PV_MITRAL_RR_INTERVAL. PV_MITRAL_THROUGH: . PV_MITRAL_UNDEFINED: . PV_MITRAL_VMAX. PV_MITRAL_VTI. PV_PULM_PA_MEAN. PV_PULM_PA_MNPR. PV_PULM_PA_PKPR. PV_PULM_PA_VMAX. PV_PULM_PA_VTI. PV_PULM_PP: . PV_PULM_REGURGITATION: . PV_PULM_THROUGH: . PV_PULM_UNDEFINED: . PV_TRI_MEAN. PV_TRI_MNPR. PV_TRI_PHT. PV_TRI_PP: . PV_TRI_REGURGITATION: . PV_TRI_THROUGH: . PV_TRI_UNDEFINED: . PV_TRI_VMAX. RA_LENGTH: 0. START_NO: . START_TIME. TAPE_NO: IE33. TOE_INDICATION. TOE_MAXIMUM. TOE_POSTSO2. TOE_PRESO2. TOE_SERIAL_NUMBER_ID: 0. TOE_SO2. TTE_INDICATION2. TTOE_WINDOW_QUALITY_ID: 9. VALVE_AORTIC_NORMAL: F. VALVE_AORTIC_TEXT: Tricupsid morphology with minimally thickened cusps. Good cusp excursion. Trace of aortic regurgitation. . VALVE_COMMENT. VALVE_MITRAL_NORMAL: F. VALVE_MITRAL_TEXT: Minimally thickened leaflets, open well with very mild mitral regurgitation. . VALVE_NORMAL: F. VALVE_PULM_NORMAL: F. VALVE_PULM_TEXT: Not well visualised, forward flow within normal limits. Trivial pulmonary regurgitation. . VALVE_TRI_NORMAL: F. VALVE_TRI_TEX: Thin mobile leaflets, open well with trivial tricuspid regurgitation. Unable to estimate RVSP. . . IVC not dilated with >50% inspiratory collapse. ",3.4,cm,
-ao_sov_diam,Sinus of Valsalva is mildly dilated 35mm (22mm/m) from inner edge to inner edge.. . Sino-tubular junction is borderline dilated = 18mm/m.. . Proximal ascending aorta 28mm. This is not dilated indexed to height at 17mm/m..,3.5,cm,
-ao_sov_diam,"HAMB_AO_ASC_TEXT: Aortic root at SoV measures 3.9cm, this is dilated for both patient height and BSA.. . Proximal ascending aorta 4.2cm. This is dilated indexed to BSA at 2.5cm/m_.",3.9,cm,
-ao_sov_diam,"HAMB_AO_ASC_TEXT: Sinus of Valsalva 3.6cm, indexed to BSA = 1.9cm/msq. . Proximal ascending aorta 2.9cm. . . ",3.6,cm,
-ao_sov_diam,HAMB_AO_ASC_TEXT: Proximal ascending aorta 4.1cm. This is not dilated indexed to BSA at 1.8cm/m_.. . Sinus of Valsalva measures 4.3cm this is not dilated when corrected to BSA (Z2 1.34).. . however is dilated when indexed to height (Z3 4.98).,4.3,cm,
-ao_sov_diam,HAMB_AO_ASC_TEXT: Sinus of Valsalva is not dilated 31.7mm (17.6mm/m) from inner edge to inner edge.. . Sino-tubular junction is not dilated = 15mm/m.. . Proximal ascending aorta 30mm. This is not dilated indexed to height at 16.5mm/m.. . . MM_SINOTUBULAR_JUNCTION: 0. MM_SINUS_OF_VALSALVA: 0. ,3.17,cm,
-ao_sov_diam,HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: Sinus of Valsalva is not dilated 41.4mm (21.7 mm/m) from inner edge to inner edge.. . Proximal ascending aorta 41.9mm. This is borderline dilated indexed to height at 21.9 mm/m..,4.14,cm,
-ao_sov_diam,"HAMB_AO_ASC_TEXT: Aortic root - Sinus of valsalva = 3.4cm, ST junction 3.3cm, ascending aorta 3.6cm. CHAMB_AO_DESC_NORMAL: F.",3.4,cm,
+Proximal ascending aorta 4.0cm",4.4,cm
+ao_sov_diam,.Sinus of Valsalva 33mm (18mm/m) from inner edge to inner edge.,3.3,cm
+ao_sov_diam,.Sinus of Valsalva is borderline dilated 37mm (22mm/m) from inner edge to inner edge.,3.7,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 34mm (19mm/m) from inner edge to inner edge.,3.4,cm
+ao_sov_diam,.Sinus of Valsalva measures 3.2cm this is not dilated when corrected to BSA (Z2) however is dilated when indexed to height (Z3). ,3.2,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 37mm (20.8mm/m) from inner edge to inner edge.,3.7,cm
+ao_sov_diam,.SoV = 39.6mm (21.4mm/m). Borderline normal.,3.96,cm
+ao_sov_diam,.Sinus of Valsalva is dilated 40.2mm (24.2mm/m) from inner edge to inner edge. ,4.02,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 35mm (20.1mm/m) from inner edge to inner edge.,3.5,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 32.6mm (19mm/m) from inner edge to inner edge. ,3.26,cm
+ao_sov_diam,.Sinus of Valsalva measures 3.8cm (leading to leading edge) - not dilated indexed to BSA ,3.8,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 34mm (18.3mm/m) from inner edge to inner edge.,3.4,cm
+ao_sov_diam,.Sinus of Valsalva is borderline dilated 33mm (21mm/m) from inner edge to inner edge.,3.3,cm
+ao_sov_diam,.Proximal ascending aorta 30mm. This is not dilated indexed to height at 19.1mm/m.,,
+ao_sov_diam,.Sinus of Valsalva is not dilated 32.8mm (18.4mm/m) from inner edge to inner edge.,3.28,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 36mm (20.6mm/m) from inner edge to inner edge.,3.6,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 33mm (18mm/m) from inner edge to inner edge.,3.3,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 31.7mm (18.9mm/m) from inner edge to inner edge.,3.17,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 37.8mm (21.2mm/m) from inner edge to inner edge.,3.78,cm
+ao_sov_diam,.Sinus of Valsalva is borderline dilated 41mm (22.5mm/m) from inner edge to inner edge.,4.1,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 38.7mm (20.9mm/m) from inner edge to inner edge.,3.87,cm
+ao_sov_diam,".Sinus of Valsalva measures 3.8cm, this is borderline/dilated when corrected to BSA (Z2 2.20). ",3.8,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 35mm (18.4mm/m) from inner edge to inner edge.,3.5,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 32mm (17 mm/m) from inner edge to inner edge.,3.2,cm
+ao_sov_diam,.Sinus of Valsalva is dilated 43mm (24.6mm/m) from inner edge to inner edge.,4.3,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 42mm (19mm/m) from inner edge to inner edge. (Normal <21.8mm/m) ,4.2,cm
+ao_sov_diam,.Sinus of Valsalva is borderline dilated 37mm (21mm/m) from inner edge to inner edge.,3.7,cm
+ao_sov_diam,.Sinus of Valsalva is not dilated 32.4mm (19.3mm/m) from inner edge to inner edge.,3.24,cm
+ao_sov_diam,"Aorta:. Normal aortic root, proximal ascending aorta and aortic arch dimensions. . No abnormal flow detected in the descending aorta. . Sinus of Valsalva: 2.8cm. Sinotubular Junction: 2.4cm. Proximal ascending aorta = 2.6cm. Aortic Arch: 2.5cm.. (All aortic measurements are Leading edge to leading edge in accordance with departmental protocol)..",2.8,cm
+ao_sov_diam,"AORTA: Aortic root dimensions; normal Sinuses 3.1cm, ST junction 2.2cm,. No suprasternal views..",3.1,cm
+ao_sov_diam,"Aorta:. Dilated. Sinus of Valsalva= 4.2 cm, Sino tubular Junction = 4.3 cm, ascending aorta = 5.2 cm (leading edge to leading edge, end diastole). ",4.2,cm
+ao_sov_diam,"Aorta:. Sinus of Valsalva=2.9 cm, Sino tubular Junction =2.8 cm, ascending aorta = 2.7 cm. No coarctation. .",2.9,cm
+ao_sov_diam,"AORTA:. Normal dimension of the aortic root. Sinuses 3.5cm, ST junction 2.8cm, Ascending aorta 3.3cm, LVOT 2.3cm. ",3.5,cm
+ao_sov_diam,Normal aortic root. Aortic arch not well seen.. Sinus of valsalva 3.5cm. STJ 3.2cm. Asc Ao. 3.4cm.. ,3.5,cm
+ao_sov_diam,"Aortic root not dilated.. Sinus of Valsalva 3.1 cm, sinotubular junction 2.8 cm, ascending aorta 3.3 cm.. No coarctation.. ",3.1,cm
+ao_sov_diam,"Sinus Valsalva measured 3.4 cm, sino tube junction 2.5 cm and ascending aorta 3.1 cm. This is nondilated.",3.4,cm
+ao_sov_diam, The aortic root is not dilated. Sinus of Valsalva = 2.6 cm.. No evidence of coarctation.. . ,2.6,cm
+ao_sov_diam,AORTA:. Normal dimension of the aortic root. Normal appearance of the aortic arch with no obvious evidence of coarctation. .,,
+ao_sov_diam,"AORTA:. Normal dimension of the aortic root. Sinuses 3.4cm, ST junction 3.1cm, Ascending aorta 4.0cm. Normal appearance of the aortic arch with no obvious evidence of co-arctation. ",3.4,cm
+ao_sov_diam," The ascending aorta appears dilated measuring 38 mm. The sinus Valsalva 35 mm. Arch nondilated, no coarctation.. .",3.5,cm
+ao_sov_diam,"Aortic root not dilated.. Leading edge- leading edge 2D measurements end diastole: -. Sinus of Valsalva : 33 mm, sino tubular junction : 28 mm, ascending aorta: 30 mm, aortic arch: 24 mm. No coarctation.. . ",3.3,cm
+ao_sov_diam,"The ascending aorta was not dilated.. Sinus Valsalva measured 3.7 cm, sino tube junction 3.3 cm and ascending aorta 3.1 cm.. No coarctation.. ",3.7,cm
+ao_sov_diam," AORTA:. Normal calibre root, no arch trace.. SOV 32mm, ST Junction 30mm, Proximal ascending aorta 36mm - internal measurements end diastole. . . . ",3.2,cm
+ao_sov_diam,"CHAMB_AO_ARCH_TEXT: Not dilated, 32.8mm (1.5cm/m2). HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: SoV dilated, 54.8mm (31.2mm/m). STJ effaced, not measured. Prox Asc Ao dilated, 66.0mm (37.5 mm/m). ",5.48,cm
+ao_sov_diam,CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: Sinus of valsalva 4.3cm. . Sino-tubular junction 2.9cm. . . CHAMB_AO_DESC_NORMAL: F. CHAMB_AO_DESC_TEXT. CHAMB_COMMENT. CHAMB_IAS_INTACT: F. CHAMB_IAS_TEXT: Not clearly visualised to assess. . . ,4.3,cm
+ao_sov_diam,HAMB_AO_ARCH_NORMAL: F. CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: Proximal ascending aorta 3.5cm. This is not dilated indexed to BSA at 1.9cm/m_.. . . MM_SINUS_OF_VALSALVA: 3.5. NORMAL_STUDY: F. ,3.5,cm
+ao_sov_diam,CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: Proximal ascending aorta 3.3cm. . CHAMB_AO_DESC_NORMAL: F.  MM_SINUS_OF_VALSALVA: 2.9. ,2.9,cm
+ao_sov_diam,"HAMB_AO_ASC_TEXT: not clearly seen, dilated at SOV level 4.8cm. ",4.8,cm
+ao_sov_diam,HAMB_AO_ASC_TEXT: Sinus of Valsalva measures 2.7cm (inner edge to inner edge).. . .,2.7,cm
+ao_sov_diam,"Sinus of valsalva dilated when indexed to BSA.. HAMB_AO_ARCH_NORMAL: F. CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: Sinus of valsalva, approx. 4.3cm - this is dilated when indexed to BSA (Z1 2.33).. . Proximal ascending aorta 3.9cm - not dilated when indexed to BSA, 1.9cm/m_.",4.3,cm
+ao_sov_diam,"HAMB_AO_ASC_TEXT: Sinus of Valsalva 3.7cm (not dilated when corrected to BSA, dilated normalised to height, Z3 = 2.74).. . Sino-tubular junction 2.7cm. Proximal ascending aorta 3.2cm (not dilated when corrected to BSA)",3.7,cm
+ao_sov_diam,"referral_details. TTE_INDICATION. STUDY_COMMENTS. OBJ_TIMESTAMP: 488994351. OPERATOR_ONE_ID: 559. PROCEDURE_ID: 111763. OPERATOR_TWO_ID: -1. OVERALL_IMPRESSION: ECG sinus rhythm at 65bpm. . Overall impression left ventricular systolic function within normal limits, estimated visual EF approx >55%. . . Right ventricular size and function within normal limits. . . No obvious intracardiac thrombus seen however unable to fully exclude this from TTE images.. HAMB_AO_ARCH_NORMAL: F. CHAMB_AO_ARCH_TEXT. HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT. CHAMB_AO_DESC_NORMAL: F. CHAMB_AO_DESC_TEXT: Flow in descending aorta 0.7m/s. . . CHAMB_COMMENT. CHAMB_IAS_INTACT: F. CHAMB_IAS_TEXT: Not clearly visualised to assess. . . CHAMB_LA_NORMAL: F. CHAMB_LA_TEXT: Upper limits of normal size. Area approx 19cm_.. CHAMB_LAA_NORMAL: F. CHAMB_LAA_TEXT. CHAMB_LV_NORMAL: F. CHAMB_LV_TEXT: Not dilated with slight sigmoid septum. Irregular septal motion. Overall impression systolic function within normal limits from views obtained. Unable to exclude regional wall motion abnormalities due. . to image quality. Estimated visual EF approx >55%. . . Probable thickened band seen within the apex.. CHAMB_NORMAL: F. CHAMB_RA_NORMAL: F. CHAMB_RA_TEXT: Visually not dilated. . CHAMB_RV_NORMAL: F. CHAMB_RV_TEXT: Not dilated. Overall function within normal limits, TAPSE >2cm. . DOPP_AR_DESC_T. DOPP_AR_SLOPE: 0. DOPP_AREA_AORTIC: 0. DOPP_AREA_MITRAL: 0. DOPP_AREA_PULM. DOPP_AREA_TRI. DOPP_ARP12T: 0. DOPP_EA_RATIO: 0.86. DOPP_IVRT: 0. DOPP_MITRAL_E_SLOPE: 0. OPP_MPGRAD_AORTIC: 0. DOPP_MPGRAD_LVOT: 0. DOPP_MPGRAD_MITRAL: 0. DOPP_MPGRAD_PULM. DOPP_MPGRAD_TRI: 0. DOPP_MV2DAREA: 0. DOPP_MVEL_AORTIC: 0. DOPP_MVEL_LVOT: 0. DOPP_MVEL_MITRAL: 0. DOPP_MVEL_PULM. DOPP_MVEL_TRI. DOPP_MVP12T: 0. DOPP_PEAK_A: 0.7. DOPP_PEAK_E: 0.6. DOPP_PPGRAD_AORTIC: 0. DOPP_PPGRAD_LVOT: 0. DOPP_PPGRAD_MITRAL: 0. DOPP_PPGRAD_PULM: 0. DOPP_PPGRAD_TRI: 0. DOPP_PVEL_AORTIC: 1.2. DOPP_PVEL_LVOT: 0.9. DOPP_PVEL_MITRAL: 0. DOPP_PVEL_PULM: 0.8. DOPP_PVEL_TRI: 0. DOPP_RVSP: 0. DOPP_VTI_AORTIC: 0. DOPP_VTI_LVOT: 0. DOPP_VTI_MITRAL: 0. DOPP_VTI_PULM. DOPP_VTI_TRI. INISH_TIME. FS: 0. INTUBATION: . INTUBATIONTEXT. LA_LENGTH. MITRAL_A_DEC_TIME: 0. MM_ABDOMINAL_AO. MM_AO_ARCH: 0. MM_AO_CUSP_SEP: 0. MM_AO_ROOT: 0. MM_AORTIC_ANNULUS: 0. MM_DESCENDING_AORTA. MM_EJ_MANUAL_ENTRY: T. MM_ESTIMATED_EJ: 0. Mm_FS_Manual_Entry: T. MM_IVS: 0.7. MM_LA: 3.1. MM_LVED: 4.1. MM_LVES: 2.5. MM_LVOT_D: 0. MM_PA: 0. MM_PW: 0.9. MM_RV: 0. MM_SINOTUBULAR_JUNCTION: 0. MM_SINUS_OF_VALSALVA: 3.4. NORMAL_STUDY: F. PV_AO_RESISTANCE_MANUAL: F. PV_AORTIC_AO_MEAN. PV_AORTIC_AO_MNPR. PV_AORTIC_AO_PKPR. PV_AORTIC_AO_VMAX. PV_AORTIC_AO_VTI. PV_AORTIC_EJT. PV_AORTIC_EOA. PV_AORTIC_LVOT_DIAM. PV_AORTIC_LVOT_MNPR. PV_AORTIC_LVOT_VMAX. PV_AORTIC_LVOT_VTI. PV_AORTIC_PP: . PV_AORTIC_REGURGITATION: . PV_AORTIC_RESISTANCE. PV_AORTIC_RR_INTERVAL. PV_AORTIC_THROUGH: . PV_AORTIC_UNDEFINED: . PV_COMMENTS. PV_MITRAL_DTI. PV_MITRAL_EOA. PV_MITRAL_LVOT_DIAM. PV_MITRAL_LVOT_VTI. PV_MITRAL_MEAN. PV_MITRAL_MNPR. PV_MITRAL_PHT. PV_MITRAL_PP: . PV_MITRAL_REGURGITATION: . PV_MITRAL_RR_INTERVAL. PV_MITRAL_THROUGH: . PV_MITRAL_UNDEFINED: . PV_MITRAL_VMAX. PV_MITRAL_VTI. PV_PULM_PA_MEAN. PV_PULM_PA_MNPR. PV_PULM_PA_PKPR. PV_PULM_PA_VMAX. PV_PULM_PA_VTI. PV_PULM_PP: . PV_PULM_REGURGITATION: . PV_PULM_THROUGH: . PV_PULM_UNDEFINED: . PV_TRI_MEAN. PV_TRI_MNPR. PV_TRI_PHT. PV_TRI_PP: . PV_TRI_REGURGITATION: . PV_TRI_THROUGH: . PV_TRI_UNDEFINED: . PV_TRI_VMAX. RA_LENGTH: 0. START_NO: . START_TIME. TAPE_NO: IE33. TOE_INDICATION. TOE_MAXIMUM. TOE_POSTSO2. TOE_PRESO2. TOE_SERIAL_NUMBER_ID: 0. TOE_SO2. TTE_INDICATION2. TTOE_WINDOW_QUALITY_ID: 9. VALVE_AORTIC_NORMAL: F. VALVE_AORTIC_TEXT: Tricupsid morphology with minimally thickened cusps. Good cusp excursion. Trace of aortic regurgitation. . VALVE_COMMENT. VALVE_MITRAL_NORMAL: F. VALVE_MITRAL_TEXT: Minimally thickened leaflets, open well with very mild mitral regurgitation. . VALVE_NORMAL: F. VALVE_PULM_NORMAL: F. VALVE_PULM_TEXT: Not well visualised, forward flow within normal limits. Trivial pulmonary regurgitation. . VALVE_TRI_NORMAL: F. VALVE_TRI_TEX: Thin mobile leaflets, open well with trivial tricuspid regurgitation. Unable to estimate RVSP. . . IVC not dilated with >50% inspiratory collapse. ",3.4,cm
+ao_sov_diam,Sinus of Valsalva is mildly dilated 35mm (22mm/m) from inner edge to inner edge.. . Sino-tubular junction is borderline dilated = 18mm/m.. . Proximal ascending aorta 28mm. This is not dilated indexed to height at 17mm/m..,3.5,cm
+ao_sov_diam,"HAMB_AO_ASC_TEXT: Aortic root at SoV measures 3.9cm, this is dilated for both patient height and BSA.. . Proximal ascending aorta 4.2cm. This is dilated indexed to BSA at 2.5cm/m_.",3.9,cm
+ao_sov_diam,"HAMB_AO_ASC_TEXT: Sinus of Valsalva 3.6cm, indexed to BSA = 1.9cm/msq. . Proximal ascending aorta 2.9cm. . . ",3.6,cm
+ao_sov_diam,HAMB_AO_ASC_TEXT: Proximal ascending aorta 4.1cm. This is not dilated indexed to BSA at 1.8cm/m_.. . Sinus of Valsalva measures 4.3cm this is not dilated when corrected to BSA (Z2 1.34).. . however is dilated when indexed to height (Z3 4.98).,4.3,cm
+ao_sov_diam,HAMB_AO_ASC_TEXT: Sinus of Valsalva is not dilated 31.7mm (17.6mm/m) from inner edge to inner edge.. . Sino-tubular junction is not dilated = 15mm/m.. . Proximal ascending aorta 30mm. This is not dilated indexed to height at 16.5mm/m.. . . MM_SINOTUBULAR_JUNCTION: 0. MM_SINUS_OF_VALSALVA: 0. ,3.17,cm
+ao_sov_diam,HAMB_AO_ASC_NORMAL: F. HAMB_AO_ASC_TEXT: Sinus of Valsalva is not dilated 41.4mm (21.7 mm/m) from inner edge to inner edge.. . Proximal ascending aorta 41.9mm. This is borderline dilated indexed to height at 21.9 mm/m..,4.14,cm
+ao_sov_diam,"HAMB_AO_ASC_TEXT: Aortic root - Sinus of valsalva = 3.4cm, ST junction 3.3cm, ascending aorta 3.6cm. CHAMB_AO_DESC_NORMAL: F.",3.4,cm
 ao_sov_diam,"Normal aortic arch dimensions.
 Ao Desc: Visually appears of normal . Normal forward flow. 
-report:     indexed sov: 2.1cm",,,
+report:     indexed sov: 2.1cm",,

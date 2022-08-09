@@ -1,7 +1,8 @@
 var_name,text,expected_value,expected_units
+ao_sov_cat,SOV not well imaged measures approx 3.9cm - not dilated indexed to BSA,nondilated,
+ao_sov_cat,No evidence of significant dilatation of the SOV.,nondilated,
 ao_sov_cat,"Sinus of Valsalva 4.1cm. Proximal ascending aorta 4.3cm, (neither dilated when related to BSA).",nondilated,
-ao_sov_cat,"Sinus of Valsalva measures 3.6cm, this is not dilated when corrected to BSA (Z2 -0.39), however is 
-dilated when indexed to height (Z3 2.27).",dilated,
+ao_sov_cat,"Sinus of Valsalva measures 3.6cm, this is not dilated when corrected to BSA (Z2 -0.39), however is dilated when indexed to height (Z3 2.27).",dilated,
 ao_sov_cat,AORTA: Dilated aortic root from Sinus fo Valsalva to proximal ascending aorta for height.,dilated,
 ao_sov_cat,"AORTA: Sinus of Valsalva measures 43.2mm, this is dilated indexed to height at 24mm/m.",dilated,
 ao_sov_cat,"SOV 4.1cm - this is not dilated when corrected to BSA, however, it is dilated when indexed to height ",dilated,

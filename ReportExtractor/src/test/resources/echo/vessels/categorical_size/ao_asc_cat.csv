@@ -1,4 +1,6 @@
 var_name,text,expected_value,expected_units
+ao_asc_cat,Dilated proximal aorta at the SoV,,
+ao_asc_cat,No evidence of significant dilatation of the proximal ascending aorta,nondilated,
 ao_asc_cat,Normal aortic root with a dilated asc ao (4.1cm).,dilated,
 ao_asc_cat,HAMB_AO_ASC_TEXT: Upper limits of normal at sinus of valsalva,,
 ao_asc_cat,"HAMB_AO_ASC_TEXT: Dilated sinus of valsalva, measures 4.0cm",,
@@ -62,7 +64,7 @@ ao_asc_cat,"Great Vessels
 Non dilated proximal aorta to sinus level. Unable to visualise beyond this point on parasternal views. The arch views are suboptimal and the arch itself is not clearly seen but the impression is that it is dilated (~3.9cm) at the level of the innominate artery. The descending limb of the aorta is not dilated and flow is normal. 
 
 
-",nondilated,
+",,
 ao_asc_cat,"Great Vessels
 Non dilated proximal aorta. The arch appears mildly dilated at 3.4cm. Abdominal aorta appears non dilated and pulsatile. 
 ",nondilated,

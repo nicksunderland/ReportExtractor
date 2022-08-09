@@ -1,5 +1,8 @@
 var_name,text,expected_value,expected_units
+ao_stj_cat,STJ not well imaged measures approx 3.9cm - not dilated indexed to BSA,nondilated,
+ao_stj_cat,No evidence of significant dilatation of the STJ.,nondilated,
 ao_stj_cat,"STJ 4.1cm. Proximal ascending aorta 4.3cm, (neither dilated when related to BSA).",nondilated,
+ao_stj_cat,Sinus fo Valsalva to proximal ascending aorta is dilated.,dilated,
 ao_stj_cat,AORTA: Dilated aortic root from Sinus fo Valsalva to proximal ascending aorta for height.,dilated,
 ao_stj_cat," Sinus of Valsalva=  4.2cm, Sino tubular Junction =   3.6cm, upper limit of normal",nondilated,
 ao_stj_cat,Dilated aortic root at STJ. ,dilated,

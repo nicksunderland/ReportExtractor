@@ -5,33 +5,24 @@ Imports: {
 
 
 
-Phase: TagVarSentence
-Input: Sentence Anatomy
-Options: control=All negationGrouping=false
-/*
- * Description:
- * ....
- */
-Rule: var_sentence
-(
-	{Sentence contains {Anatomy.minorType == "ascending_aorta"}}
-	({Sentence notContains {Anatomy.minorType != "ascending_aorta"}})?
-					
-):var_sentence
--->
-:var_sentence.VarSentence = {type = "ascending_aorta"}
-
-
-
 Phase: AortaAscending
-Input: Token Anatomy Numeric Units Lookup VarSentence Split
+Input: Token Anatomy Numeric Units Lookup VarSentence Split Categorical
 Options: control=Appelt negationGrouping=false
 
 Macro: CONTEXT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "ascending_aorta"},
+		Anatomy within {VarSentence.minorType == "ascending_aorta"},
 		Anatomy.minorType == "ascending_aorta"}
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
+)
+
+Macro: CONTEXT_OTHER_AORTA
+(
+	{Anatomy,
+		Anatomy within {VarSentence.minorType == "ascending_aorta"},
+		Anatomy.majorType == "aorta"}
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
 
 Macro: FILTER
@@ -45,8 +36,11 @@ Macro: FILTER
 		!Units.majorType == "length/length", 
 		!Units.majorType == "z_score", 
 		!Lookup.majorType == "quantity_change",
+		//!Lookup.minorType == "conjunction", 
+		//!Lookup.minorType == "preposition",
+		//Token.string !=~ "[/,]",		
 		!Split,
-		Token within {VarSentence.type == "ascending_aorta"}}
+		Token within {VarSentence.minorType == "ascending_aorta"}}
 )
 
 Macro: FILTER_RELAXED
@@ -56,28 +50,28 @@ Macro: FILTER_RELAXED
 		!Units.majorType == "length",
 		!Anatomy.minorType != "ascending_aorta",
 		!Lookup.majorType == "height",
-		//!Lookup.majorType == "body_surface_area",
-		//!Units.majorType == "length/length", 
-		//!Units.majorType == "z_score", 
 		!Lookup.majorType == "quantity_change",
+		!Lookup.minorType == "conjunction", 
+		!Lookup.minorType == "preposition",
+		Token.string !=~ "[/,]",	
 		!Split,
-		Token within {VarSentence.type == "ascending_aorta"}}
+		Token within {VarSentence.minorType == "ascending_aorta"}}
 )
 
 Macro: VALUE
 (
 	{Numeric, 
-		Numeric within {VarSentence.type == "ascending_aorta"},
+		Numeric within {VarSentence.minorType == "ascending_aorta"},
 		Numeric.type == "double"} |
 	{Numeric,
-		Numeric within {VarSentence.type == "ascending_aorta"}, 
+		Numeric within {VarSentence.minorType == "ascending_aorta"}, 
 		Numeric.type == "integer"}
 )
 
 Macro: UNITS
 (
 	{Units,
-		Units within {VarSentence.type == "ascending_aorta"},
+		Units within {VarSentence.minorType == "ascending_aorta"},
 		Units.majorType == "length"}
 )
 
@@ -89,23 +83,60 @@ Rule: ao_idx_asc_blocker
 Priority: 100
 (	
 	{Lookup.majorType == "indexed", 
-		Lookup within {VarSentence.type == "ascending_aorta"}}
+		Lookup within {VarSentence.minorType == "ascending_aorta"}}
 	{Anatomy,
-		Anatomy within {VarSentence.type == "ascending_aorta"},
+		Anatomy within {VarSentence.minorType == "ascending_aorta"},
 		Anatomy.minorType == "ascending_aorta"}
 ):asc_blocker
 -->
 :asc_blocker.Blocked = {}
 
+/*
+ * Description:
+ * block general references to the proximal aorta followed by a more 
+ * specific reference to part of the proximal aorta BUT the value-context 
+ * is reversed such that the normal rules do not block it.
+ * e.g. 'proximal aorta non-dilated (33mm at Sov level)'
+ * e.g. 'non-dilated proximal aorta (33mm Sov level)'
+ */
+Rule: ao_asc_blocker_1
+Priority: 101
+(	
+	( CONTEXT )
+	
+	({Categorical})[0,2]
+			
+	{Token.kind == "punctuation", Token.position == "startpunct"}
+
+	(
+		( VALUE )
+		( (UNITS)? )
+		( {Lookup.minorType == "preposition"} )?
+		( {Anatomy.majorType == "aorta"} )
+		( {Token} )[0,1]
+		( {Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} )?
+	)[0,3]
+			
+	{Token.kind == "punctuation", Token.position == "endpunct"}
+			
+):root_blocker
+-->
+:root_blocker.Blocked = {type = "ao_asc_blocker"}
 
 /*
  * Description:
- * This is the most common form, e.g. 'the Asc Ao is dilated at 45mm'
+ * This is the most common form, 
+ * e.g. 'the Asc Ao is dilated at 45mm'
+ * e.g. 'the Asc ao and Stj and Sov are all 3.0cm'
  */
 Rule: ao_asc_diam_1
 Priority: 99
 (
-	( CONTEXT ):context
+	(	
+		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
+		((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
+		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
+	):context	
 	
 	( FILTER )[0,15]
 
@@ -168,11 +199,71 @@ Priority: 99
 
 /*
  * Description:
- * The rule uses a more relaxed filter but enforces the units.
- * e.g. proximal ascending aorta within normal limits when indexed for BSA = 4.2cm (indexed 1.9cm/m2)
+ * The rule captures things of the forms:
+ * e.g. "non-dilated aortic root (33mm asc Ao level)"
+ * e.g. "non-dilated aortic root (33mm asc Ao, 35mm Stj)"
+ * e.g. "non-dilated aortic root (35mm Stj, 33mm asc Ao)"
+ * e.g. "aortic root non dilated (3.5cm asc Ao)"
+ * e.g. "Non dilated proximal aorta (3.5cm asc Ao)"
  */
 Rule: ao_asc_diam_3
 Priority: 98
+(
+	(
+		{Anatomy.minorType == "aortic_root"} |
+		{Anatomy.minorType == "ascending_aorta"}
+	)
+	
+	({Categorical})[0,2]
+			
+	{Token.kind == "punctuation", Token.position == "startpunct"}
+	
+	(
+		( VALUE )
+		( (UNITS)? )
+		( {Lookup.minorType == "preposition"} )?
+		( {Anatomy.majorType == "aorta"} )
+		( {Token} )[0,1]
+		( {Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} )?
+	)[0,2]
+	
+	
+	( VALUE ):value
+	( (UNITS)? ):unit
+	( {Lookup.minorType == "preposition"} )?
+	( {Anatomy.minorType == "ascending_aorta"} ):context
+	( {Token} )[0,1]
+	( {Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} )?
+	
+	(
+		( VALUE )
+		( (UNITS)? )
+		( {Lookup.minorType == "preposition"} )?
+		( {Anatomy.majorType == "aorta"} )
+		( {Token} )[0,1]
+		( {Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} )?
+	)[0,2]
+			
+	{Token.kind == "punctuation", Token.position == "endpunct"}
+	
+):ao_asc_diam 
+--> 
+:ao_asc_diam
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_asc_diam", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * The rule uses a more relaxed filter but enforces the units.
+ * e.g. proximal ascending aorta within normal limits when indexed for BSA = 4.2cm (indexed 1.9cm/m2)
+ */
+Rule: ao_asc_diam_4
+Priority: 97
 (
 	( CONTEXT ):context
 	

@@ -12,7 +12,7 @@ Options: control=Appelt negationGrouping=false
 Macro: CONTEXT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "aortic_root"},
+		Anatomy within {VarSentence.minorType == "aortic_root"},
 		Anatomy.minorType == "aortic_root"}
 )
 
@@ -23,23 +23,23 @@ Macro: FILTER
 		!Lookup.majorType == "body_surface_area",
 		!Units.majorType == "z_score", 
 		!Lookup.majorType == "quantity_change", 
-		Token within {VarSentence.type == "aortic_root"}}
+		Token within {VarSentence.minorType == "aortic_root"}}
 )
 
 Macro: VALUE
 (
 	{Numeric,
-		Numeric within {VarSentence.type == "aortic_root"}, 
+		Numeric within {VarSentence.minorType == "aortic_root"}, 
 		Numeric.type == "double"} |
 	{Numeric,
-		Numeric within {VarSentence.type == "aortic_root"}, 
+		Numeric within {VarSentence.minorType == "aortic_root"}, 
 		Numeric.type == "integer"}
 )
 
 Macro: UNITS
 (
 	{Units,
-		Units within {VarSentence.type == "aortic_root"},
+		Units within {VarSentence.minorType == "aortic_root"},
 		Units.majorType == "length/length"}
 )
 
@@ -79,7 +79,7 @@ Priority: 98
 	(
 		{Lookup,
 			Lookup.majorType == "indexed",
-			Lookup within {VarSentence.type == "aortic_root"}}
+			Lookup within {VarSentence.minorType == "aortic_root"}}
 		({Token})?
 		{Lookup.majorType == "height"}
 		({Token})?
@@ -117,7 +117,7 @@ Priority: 97
 	(
 		{Lookup,
 			Lookup.majorType == "indexed",
-			Lookup within {VarSentence.type == "aortic_root"}}
+			Lookup within {VarSentence.minorType == "aortic_root"}}
 		( CONTEXT )
 	):context
 	

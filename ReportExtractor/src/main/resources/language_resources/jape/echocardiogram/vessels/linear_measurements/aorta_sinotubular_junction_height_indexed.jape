@@ -12,7 +12,7 @@ Options: control=Appelt negationGrouping=false
 Macro: CONTEXT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "sinotubular_junction"},
+		Anatomy within {VarSentence.minorType == "sinotubular_junction"},
 		Anatomy.minorType == "sinotubular_junction"}
 )
 
@@ -23,23 +23,23 @@ Macro: FILTER
 		!Units.majorType == "z_score",
 		!Lookup.majorType == "body_surface_area",
 		!Lookup.majorType == "quantity_change", 
-		Token within {VarSentence.type == "sinotubular_junction"}}
+		Token within {VarSentence.minorType == "sinotubular_junction"}}
 )
 
 Macro: VALUE
 (
 	{Numeric,
-		Numeric within {VarSentence.type == "sinotubular_junction"}, 
+		Numeric within {VarSentence.minorType == "sinotubular_junction"}, 
 		Numeric.type == "double"} |
 	{Numeric,
-		Numeric within {VarSentence.type == "sinotubular_junction"}, 
+		Numeric within {VarSentence.minorType == "sinotubular_junction"}, 
 		Numeric.type == "integer"}
 )
 
 Macro: UNITS
 (
 	{Units,
-		Units within {VarSentence.type == "sinotubular_junction"},
+		Units within {VarSentence.minorType == "sinotubular_junction"},
 		Units.majorType == "length/length"}
 )
 
@@ -80,7 +80,7 @@ Priority: 98
 	(
 		{Lookup,
 			Lookup.majorType == "indexed",
-			Lookup within {VarSentence.type == "sinotubular_junction"}}
+			Lookup within {VarSentence.minorType == "sinotubular_junction"}}
 		({Token})?
 		{Lookup.majorType == "height"}
 		({Token})?
@@ -118,7 +118,7 @@ Priority: 97
 	(
 		{Lookup,
 			Lookup.majorType == "indexed",
-			Lookup within {VarSentence.type == "sinotubular_junction"}}
+			Lookup within {VarSentence.minorType == "sinotubular_junction"}}
 		( CONTEXT )
 	):context
 	

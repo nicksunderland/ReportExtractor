@@ -4,24 +4,6 @@ Imports: {
 }
 
 
-Phase: TagVarSentence
-Input: Sentence Anatomy
-Options: control=All negationGrouping=false
-/*
- * Description:
- * Tag sentences that refer to the sinuses of valsalva +/- the sentence after it 
- * as long as it doesn't contain other anatomical words
- */
-Rule: var_sentence
-(
-	{Sentence contains {Anatomy.minorType == "sinus_of_valsalva"}}
-	({Sentence notContains {Anatomy.minorType != "sinus_of_valsalva"}})?
-					
-):var_sentence
--->
-:var_sentence.VarSentence = {type = "sinus_of_valsalva"}
-
-
 
 Phase: AortaSovVisualDiameter
 Input: Token Anatomy VarSentence Units Categorical Numeric Lookup Split
@@ -30,7 +12,7 @@ Options: control=Appelt negationGrouping=false
 Macro: CONTEXT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "sinus_of_valsalva"},
+		Anatomy within {VarSentence.minorType == "sinus_of_valsalva"},
 		Anatomy.minorType == "sinus_of_valsalva"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
@@ -38,7 +20,7 @@ Macro: CONTEXT
 Macro: CONTEXT_OTHER_AORTA
 (
 	{Anatomy,
-		Anatomy within {VarSentence.type == "sinus_of_valsalva"},
+		Anatomy within {VarSentence.minorType == "sinus_of_valsalva"},
 		Anatomy.majorType == "aorta"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
@@ -46,29 +28,80 @@ Macro: CONTEXT_OTHER_AORTA
 Macro: FILTER
 (
 	{Token,
-		Token.string != ",", //don't allow commas that aren't captured as "conjunctions" in the context
-		!Anatomy, //don't read over anatomy not captured in context
-		!Categorical,
+		!Anatomy,
+		!Lookup.minorType == "conjunction",
+		!Categorical, 
 		!Split.kind == "external",
-		Token within {VarSentence.type == "sinus_of_valsalva"}}
+		Token within {VarSentence.minorType == "sinus_of_valsalva"}}
+)
+
+Macro: FILTER_ALLOW_NEG_MODIF
+(
+	{Token,
+		!Anatomy,
+		!Lookup.minorType == "conjunction",
+		!Categorical.minorType != "negative_modifier",
+		!Split.kind == "external",
+		Token within {VarSentence.minorType == "sinus_of_valsalva"}}
 )
 
 Macro: VALUE
 (
 	({Categorical, 
 		Categorical.minorType == "dilated", 
-		Categorical within {VarSentence.type == "sinus_of_valsalva"}}) |
+		Categorical within {VarSentence.minorType == "sinus_of_valsalva"}}) |
 	({Categorical, 
 		Categorical.minorType == "nondilated",
-		Categorical within {VarSentence.type == "sinus_of_valsalva"}})
+		Categorical within {VarSentence.minorType == "sinus_of_valsalva"}})
 )
 
 Macro: MODIFIER
 (
 	{Categorical, 
 		Categorical.minorType == "negative_modifier",
-		Categorical within {VarSentence.type == "sinus_of_valsalva"}}
+		Categorical within {VarSentence.minorType == "sinus_of_valsalva"}}
 )
+
+/*
+ * Description:
+ * Of the form... (we want the height indexed if both are specified)
+ * e.g. 'Sov is not dilated when corrected to BSA, however is dilated when indexed to height.
+ */
+Rule: ao_sov_cat_1
+Priority: 101
+(
+	(
+		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
+		((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
+		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
+	):context
+	
+	( 	{Token,
+			!Anatomy, 
+			!Split.kind == "external",
+			Token within {VarSentence.minorType == "sinus_of_valsalva"}} )[0,30]
+			
+	( (MODIFIER)? ):modifier
+	
+	( FILTER )[0,2]
+
+	( VALUE ):value
+	
+	({Token})?
+	 {Lookup.majorType == "indexed"}
+	({Lookup.minorType == "preposition"})?
+	 {Lookup.majorType == "height"}
+
+):ao_sov_cat 
+--> 
+:ao_sov_cat
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_sov_cat", doc, bindings, outputAS);
+}
 
 /*
  * Description:
@@ -76,8 +109,9 @@ Macro: MODIFIER
  * e.g. 'Sinus of Valsalva is not dilated for height'
  * e.g. 'Sov, Stj, Asc ao are not dilated'
  * e.g. 'Stj and SOV are not dilated'
+ * e.g. 'Stj and SOV, neither are dilated'
  */
-Rule: ao_sov_cat_1
+Rule: ao_sov_cat_2
 Priority: 100
 (
 	(
@@ -86,7 +120,7 @@ Priority: 100
 		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
 	):context
 	
-	( FILTER )[0,10]
+	( FILTER_ALLOW_NEG_MODIF )[0,20]
 			
 	( (MODIFIER)? ):modifier
 	
@@ -109,23 +143,29 @@ Priority: 100
  * Description:
  * Of the forms...
  * e.g. 'Non-dilated Sov'
+ * e.g. 'No evidence of significant dilation of the SoV'
  * e.g. 'Not dilated at the Sov'
  * e.g. 'Non-dilated aortic root at the Sov'
+ * e.g. 'Non-dilated ascending aorta at the Sov level'
+ * e.g. 'Non dilated proximal aorta to sinus level.'
  * e.g. 'Non-dilated aortic root at the Sov and Stj'
  */
-Rule: ao_sov_cat_2
+Rule: ao_sov_cat_3
 Priority: 99
 (
 	( (MODIFIER)? ):modifier
 	
-	( FILTER )[0,2]
+	( FILTER )[0,3]
 
 	( VALUE ):value
 	
 	(
-		{Anatomy,
+		({Anatomy,
 			Anatomy.minorType == "aortic_root",
-			Anatomy within {VarSentence.type == "sinus_of_valsalva"}}
+			Anatomy within {VarSentence.minorType == "sinus_of_valsalva"}} |
+		 {Anatomy,
+			Anatomy.minorType == "ascending_aorta",
+			Anatomy within {VarSentence.minorType == "sinus_of_valsalva"}})
 		{Lookup.minorType == "preposition"}
 	)?
 			
@@ -136,6 +176,52 @@ Priority: 99
 		((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
 		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
 	):context
+	
+):ao_sov_cat 
+--> 
+:ao_sov_cat
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_sov_cat", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * Of the form...
+ * e.g. 'Sinus of Valsalva 4.1cm, proximal ascending aorta 4.3cm, neither are dilated'
+ * e.g. 'SoV 4.1cm, Stj 4.1cm, Asc Ao 4.1cm, all are dilated'
+ */
+Rule: ao_sov_cat_4
+Priority: 98
+(
+	( CONTEXT ):context	
+	
+	( {Token,
+		!Categorical,
+		!Split.kind == "external",
+		Token within {VarSentence.majorType == "aorta"}} )[0,20]
+
+	( {Lookup.minorType == "distributive_determiner"} |
+	  
+	  ({Lookup.minorType == "distributive_determiner",
+	  		Categorical.minorType == "negative_modifier",
+	  		Categorical within {VarSentence.majorType == "aorta"}}):modifier )
+	
+	( {Token,
+		!Anatomy,
+		!Categorical,
+		!Split.kind == "external",
+		Token within {VarSentence.majorType == "aorta"}} )[0,2]
+
+	( ({Categorical, 
+		Categorical.minorType == "dilated", 
+		Categorical within {VarSentence.majorType == "aorta"}}) |
+	  ({Categorical, 
+		Categorical.minorType == "nondilated",
+		Categorical within {VarSentence.majorType == "aorta"}}) ):value
 	
 ):ao_sov_cat 
 --> 
