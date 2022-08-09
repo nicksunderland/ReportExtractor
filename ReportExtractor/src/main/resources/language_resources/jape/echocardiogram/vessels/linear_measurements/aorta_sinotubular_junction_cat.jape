@@ -13,12 +13,12 @@ Macro: CONTEXT
 (
 	{Anatomy,
 		Anatomy within {VarSentence.minorType == "sinotubular_junction"},
-		Anatomy.minorType == "sinotubular_junction"}
-	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
+		Anatomy.minorType == "sinotubular_junction"}	
 )
 
 Macro: CONTEXT_OTHER_AORTA
 (
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 	{Anatomy,
 		Anatomy within {VarSentence.minorType == "sinotubular_junction"},
 		Anatomy.majorType == "aorta"}
@@ -150,13 +150,14 @@ Priority: 99
  * e.g. 'Non-dilated ascending aorta at the StJ level'
  * e.g. 'Non dilated proximal aorta to StJ level.'
  * e.g. 'Non-dilated aortic root at the StJ and Asc Ao'
+ * e.g. 'Non dilated proximal aorta (3.1cm at the level of the STJ).'
  */
 Rule: ao_stj_cat_3
 Priority: 98
 (
 	( (MODIFIER)? ):modifier
 	
-	( FILTER )[0,2]
+	( FILTER )[0,3]
 
 	( VALUE ):value
 	
@@ -167,10 +168,13 @@ Priority: 98
 		 {Anatomy,
 			Anatomy.minorType == "ascending_aorta",
 			Anatomy within {VarSentence.minorType == "sinotubular_junction"}})
+		
+		( FILTER )[0,5]
+				
 		{Lookup.minorType == "preposition"}
 	)?
 			
-	( FILTER )[0,3]
+	( FILTER )[0,4]
 	
 	(
 		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |

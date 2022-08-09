@@ -1,4 +1,6 @@
 var_name,text,expected_value,expected_units
+ao_sov_cat,Non dilated proximal aorta (3.2cm sinus level).,nondilated,
+ao_sov_cat,Non dilated proximal aorta (3.0cm at sinus level),nondilated,
 ao_sov_cat,SOV not well imaged measures approx 3.9cm - not dilated indexed to BSA,nondilated,
 ao_sov_cat,No evidence of significant dilatation of the SOV.,nondilated,
 ao_sov_cat,"Sinus of Valsalva 4.1cm. Proximal ascending aorta 4.3cm, (neither dilated when related to BSA).",nondilated,

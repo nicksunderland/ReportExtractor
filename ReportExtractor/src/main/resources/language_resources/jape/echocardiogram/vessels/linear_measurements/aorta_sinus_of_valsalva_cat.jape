@@ -14,11 +14,11 @@ Macro: CONTEXT
 	{Anatomy,
 		Anatomy within {VarSentence.minorType == "sinus_of_valsalva"},
 		Anatomy.minorType == "sinus_of_valsalva"}
-	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
 
 Macro: CONTEXT_OTHER_AORTA
 (
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 	{Anatomy,
 		Anatomy within {VarSentence.minorType == "sinus_of_valsalva"},
 		Anatomy.majorType == "aorta"}
@@ -149,6 +149,7 @@ Priority: 100
  * e.g. 'Non-dilated ascending aorta at the Sov level'
  * e.g. 'Non dilated proximal aorta to sinus level.'
  * e.g. 'Non-dilated aortic root at the Sov and Stj'
+ * e.g. 'Non dilated proximal aorta (3.1cm at the level of the SOV).'
  */
 Rule: ao_sov_cat_3
 Priority: 99
@@ -166,16 +167,57 @@ Priority: 99
 		 {Anatomy,
 			Anatomy.minorType == "ascending_aorta",
 			Anatomy within {VarSentence.minorType == "sinus_of_valsalva"}})
+		
+		( FILTER )[0,5]
+				
 		{Lookup.minorType == "preposition"}
 	)?
-			
-	( FILTER )[0,3]
 	
+	( FILTER )[0,4]
+			
 	(
 		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
 		((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
 		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
-	):context
+	):context	
+	
+):ao_sov_cat 
+--> 
+:ao_sov_cat
+{
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", "ao_sov_cat", doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * Of the form...
+ * e.g. 'Non dilated proximal aorta (3.1cm SOV level).'
+ */
+Rule: ao_sov_cat_4
+Priority: 98
+(
+	( (MODIFIER)? ):modifier
+	
+	( FILTER )[0,3]
+
+	( VALUE ):value
+	
+	({Anatomy,
+		Anatomy.minorType == "aortic_root",
+		Anatomy within {VarSentence.minorType == "sinus_of_valsalva"}} |
+	 {Anatomy,
+		Anatomy.minorType == "ascending_aorta",
+		Anatomy within {VarSentence.minorType == "sinus_of_valsalva"}})
+	
+	{Token.kind == "punctuation", Token.position == "startpunct"}
+	
+	( FILTER )[0,4]
+			
+	( CONTEXT ):context
 	
 ):ao_sov_cat 
 --> 
@@ -194,8 +236,8 @@ Priority: 99
  * e.g. 'Sinus of Valsalva 4.1cm, proximal ascending aorta 4.3cm, neither are dilated'
  * e.g. 'SoV 4.1cm, Stj 4.1cm, Asc Ao 4.1cm, all are dilated'
  */
-Rule: ao_sov_cat_4
-Priority: 98
+Rule: ao_sov_cat_5
+Priority: 97
 (
 	( CONTEXT ):context	
 	

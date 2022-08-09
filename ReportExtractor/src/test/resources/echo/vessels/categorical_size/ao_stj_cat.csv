@@ -1,4 +1,5 @@
 var_name,text,expected_value,expected_units
+ao_stj_cat,Non dilated proximal aorta (3.1cm at the level of the STJ).,nondilated,
 ao_stj_cat,STJ not well imaged measures approx 3.9cm - not dilated indexed to BSA,nondilated,
 ao_stj_cat,No evidence of significant dilatation of the STJ.,nondilated,
 ao_stj_cat,"STJ 4.1cm. Proximal ascending aorta 4.3cm, (neither dilated when related to BSA).",nondilated,

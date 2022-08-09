@@ -28,17 +28,14 @@ Macro: CONTEXT_OTHER_AORTA
 Macro: FILTER
 (
 	{Token,
-		!Numeric, //force carry on
-		!Units.majorType == "length", //force carry on
+		!Numeric, 
+		!Units.majorType == "length",
 		!Anatomy.minorType != "sinus_of_valsalva",
 		!Lookup.majorType == "height",
 		!Lookup.majorType == "body_surface_area",
 		!Units.majorType == "length/length", 
 		!Units.majorType == "z_score", 
 		!Lookup.majorType == "quantity_change",
-		//!Lookup.minorType == "conjunction", 
-		//!Lookup.minorType == "preposition",
-		//Token.string !=~ "[/,]",	
 		!Split,
 		Token within {VarSentence.minorType == "sinus_of_valsalva"}}
 )
@@ -49,14 +46,14 @@ Macro: FILTER_RELAXED
 	{Token,
 		!Numeric,
 		!Units.majorType == "length",
-		!Anatomy.minorType != "ascending_aorta",
+		!Anatomy.minorType != "sinus_of_valsalva",
 		!Lookup.majorType == "height",
 		!Lookup.majorType == "quantity_change",
 		!Lookup.minorType == "conjunction", 
 		!Lookup.minorType == "preposition",
 		Token.string !=~ "[/,]",	
 		!Split,
-		Token within {VarSentence.minorType == "ascending_aorta"}}
+		Token within {VarSentence.minorType == "sinus_of_valsalva"}}
 )
 
 Macro: VALUE
@@ -113,7 +110,7 @@ Priority: 99
 	( (UNITS)? ):unit
 			
 	({Token, 
-		!Lookup.minorType == "preposition",
+		//!Lookup.minorType == "preposition",
 		!Anatomy.majorType == "misc_echo_descriptor",
 		!Units} | {Split})
 

@@ -1,5 +1,6 @@
 var_name,text,expected_value,expected_units
-ao_root_diam,Sinus of valslava / root replacement 4.8cm,4.8,cm
+ao_root_diam," Normal calibre proximal aortic root, sinus of Valsalva 3.3cm.",,
+ao_root_diam,Sinus of valslava / root replacement 4.8cm,,
 ao_root_diam,Aortic root dimensions consistent with previous scan (March 2020).,,
 ao_root_diam,SUMMARY: Dilated aortic root. No significant change in size since previous scan in 08/2020.,,
 ao_root_diam,"The aortic root is normal size. The aortic arch was not well seen on this scan. 
@@ -90,7 +91,6 @@ Ao root diam(2D): 2.7 cm
 
 
 ",2.7,cm
-ao_root_diam,"Both the aortic root and STJ are around 3,1-3,3 cm.",3.2,cm
 ao_root_diam,aortic root = 33mm (18mm/m) from inner edge to inner edge.,3.3,cm
 ao_root_diam,"HAMB_AO_ASC_NORMAL: F
 HAMB_AO_ASC_TEXT: Aortic root measures 4,2cm at the level of the sinuses. This is within normal limits when indexed to BSA

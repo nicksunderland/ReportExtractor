@@ -172,9 +172,10 @@ public class Data {
 				
 				//Get all of the annotations found, and then get only those variables in our variable dictionary (this dictionary will be different for different examination types)
 				AnnotationSet annotation_set = doc.getAnnotations().get( variable_dictionary.getVariableNameSet() );
+				List<Annotation> ordered_annots = annotation_set.inDocumentOrder();
 				
 				// Cycle each annotation
-				for (Annotation anno : annotation_set) {
+				for (Annotation anno : ordered_annots) {
 					
 					// Extract the variable type (e.g. lv_ivs), value (e.g. 1.2) and unit (e.g. cm)
 					String var_name  = (String) anno.getType();

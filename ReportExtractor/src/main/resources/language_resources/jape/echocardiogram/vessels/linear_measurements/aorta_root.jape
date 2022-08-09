@@ -97,11 +97,7 @@ Priority: 101
 Rule: ao_root_diam_1
 Priority:100
 (
-	(
-		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
-		((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
-		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
-	):context	
+	( CONTEXT ):context	
 	
 	( FILTER )[0,10]
 	

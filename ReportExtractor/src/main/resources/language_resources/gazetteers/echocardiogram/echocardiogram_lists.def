@@ -26,6 +26,7 @@ vessels/aorta_ascending.lst:aorta:ascending_aorta:en:Anatomy
 vessels/aorta_descending.lst:aorta:descending_aorta:en:Anatomy
 vessels/aorta_abdominal.lst:aorta:abdominal_aorta:en:Anatomy
 vessels/aorta_arch.lst:aorta:aortic_arch:en:Anatomy
+vessels/aortic_graft.lst:aorta:aortic_graft:en:Anatomy
 vessels/pulmonary_artery.lst:pulmonary_artery::en:Anatomy
 vessels/coronary_sinus.lst:coronary_sinus:coronary_sinus:en:Anatomy
 aortic_valve/metallic_aortic_valve.lst:aortic_valve:metallic_aortic_valve:en:Anatomy

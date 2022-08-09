@@ -81,9 +81,11 @@ Rule: ext_anat_annots_2
 (
 	{Token.string ==~ "(?i)root",
 		Token notWithin {Anatomy.minorType == "aortic_root"},
+		Token notWithin {Anatomy.minorType == "aortic_graft"},
 		Token within {ReportSection.type == "aorta"}} |
 	{Token.string ==~ "(?i)root",
 		Token notWithin {Anatomy.minorType == "aortic_root"},
+		Token notWithin {Anatomy.minorType == "aortic_graft"},
 		Token within {VarSentence.majorType == "aorta"}}
 
 ):ext_anat_annots
@@ -108,6 +110,23 @@ Rule: ext_anat_annots_3
 -->
 :ext_anat_annots.Anatomy = {language = "en", majorType = "aorta", minorType = "aortic_arch"}
 
+/*
+ * Description:
+ * Tag 'descending' as relating to the aorta if it appears in a
+ * sentence or report sections about aortas
+ */
+Rule: ext_anat_annots_4
+(
+	{Token.string ==~ "(?i)descending",
+		Token notWithin {Anatomy.minorType == "descending_aorta"},
+		Token within {ReportSection.type == "aorta"}} |
+	{Token.string ==~ "(?i)descending",
+		Token notWithin {Anatomy.minorType == "descending_aorta"},
+		Token within {VarSentence.majorType == "aorta"}}
+
+):ext_anat_annots
+-->
+:ext_anat_annots.Anatomy = {language = "en", majorType = "aorta", minorType = "descending_aorta"}
 
 
 Phase: TagVarSentenceAorticRoot

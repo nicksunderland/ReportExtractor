@@ -36,9 +36,6 @@ Macro: FILTER
 		!Units.majorType == "length/length", 
 		!Units.majorType == "z_score", 
 		!Lookup.majorType == "quantity_change",
-		//!Lookup.minorType == "conjunction", 
-		//!Lookup.minorType == "preposition",
-		//Token.string !=~ "[/,]",		
 		!Split,
 		Token within {VarSentence.minorType == "ascending_aorta"}}
 )
@@ -145,7 +142,7 @@ Priority: 99
 	( (UNITS)? ):unit
 			
 	({Token, 
-		!Lookup.minorType == "preposition",
+		//!Lookup.minorType == "preposition",
 		!Anatomy.majorType == "misc_echo_descriptor",
 		!Units} | {Split})
 	
@@ -274,7 +271,7 @@ Priority: 97
 	( UNITS ):unit
 	
 	({Token, 
-		!Lookup.minorType == "preposition",
+		//!Lookup.minorType == "preposition",
 		!Anatomy.majorType == "misc_echo_descriptor",
 		!Units} | {Split})
 

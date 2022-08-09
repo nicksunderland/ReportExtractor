@@ -14,11 +14,11 @@ Macro: CONTEXT
 	{Anatomy,
 		Anatomy within {VarSentence.minorType == "ascending_aorta"},
 		Anatomy.minorType == "ascending_aorta"}
-	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
 
 Macro: CONTEXT_OTHER_AORTA
 (
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 	{Anatomy,
 		Anatomy within {VarSentence.minorType == "ascending_aorta"},
 		Anatomy.majorType == "aorta"}
@@ -81,6 +81,8 @@ Priority: 101
 
 	( VALUE ):value
 	
+	( FILTER )[0,5]
+	
 	{Lookup.minorType == "preposition"}
 	
 	( FILTER )[0,2]
@@ -96,6 +98,7 @@ Priority: 101
  * block general references to the proximal aorta followed by a more 
  * specific reference to part of the proximal aorta
  * e.g. 'Dilated Proximal Aorta at sinus of valsalva'
+ * e.g. 'Non dilated proximal aorta (3.1cm at sinus level)'
  * e.g. 'No significant evidence of dilation of the ascending aorta at sinus of valsalva'
  */
 Rule: ao_asc_blocker_2
@@ -111,6 +114,8 @@ Priority: 101
 	
 	( CONTEXT ):context
 	
+	( FILTER )[0,5]
+	
 	{Lookup.minorType == "preposition"}
 	
 	( FILTER )[0,2]
@@ -124,10 +129,46 @@ Priority: 101
 /*
  * Description:
  * block general references to the proximal aorta followed by a more 
+ * specific reference to part of the proximal aorta BUT the value-context 
+ * is reversed such that the normal rules do not block it.
+ * e.g. 'proximal aorta non-dilated (33mm at Sov level)'
+ * e.g. 'non-dilated proximal aorta (33mm Sov level)'
+ */
+Rule: ao_asc_blocker_3
+Priority: 101
+(	
+	( (MODIFIER)? ):modifier
+	
+	( FILTER )[0,3]
+
+	( VALUE ):value
+	
+	( FILTER )[0,2]
+		
+	( CONTEXT )
+			
+	{Token.kind == "punctuation", Token.position == "startpunct"}
+
+	(
+		( FILTER )[0,5]
+		( {Lookup.minorType == "preposition"} )?
+		( FILTER )[0,5]
+		( {Anatomy, 
+			Anatomy.majorType == "aorta", 
+			Anatomy.minorType != "ascending_aorta"} )
+	)
+			
+):root_blocker
+-->
+:root_blocker.Blocked = {type = "ao_asc_cat_blocker"}
+
+/*
+ * Description:
+ * block general references to the proximal aorta followed by a more 
  * specific reference to part of the proximal aorta
  * e.g. 'Proximal Aorta: nondilated sinus of valsalva'
  */
-Rule: ao_asc_blocker_3
+Rule: ao_asc_blocker_4
 Priority: 101
 (	
 	( CONTEXT ):context
@@ -191,6 +232,7 @@ Priority: 100
  * e.g. 'Not dilated at the Asc Ao'
  * e.g. 'Non-dilated aortic root at the Asc Ao'
  * e.g. 'Non-dilated aortic root at the Sov and Asc Ao'
+ * e.g. 'Non dilated aortic root (3.1cm at the level of the ascending aorta)'
  */
 Rule: ao_asc_cat_2
 Priority: 99
@@ -205,10 +247,13 @@ Priority: 99
 		{Anatomy,
 			Anatomy.minorType == "aortic_root",
 			Anatomy within {VarSentence.minorType == "ascending_aorta"}}
+		
+		( FILTER )[0,5]
+				
 		{Lookup.minorType == "preposition"}
 	)?
 			
-	( FILTER )[0,3]
+	( FILTER )[0,4]
 	
 	(
 		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |

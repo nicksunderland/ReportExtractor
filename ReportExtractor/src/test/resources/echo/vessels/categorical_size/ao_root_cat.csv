@@ -1,4 +1,6 @@
 var_name,text,expected_value,expected_units
+ao_root_cat,"HAMB_AO_ASC_TEXT: Proximal ascending aorta 55cm. This is not dilated indexed to BSA.
+Aortic root at SoV measures 44cm, this is dilated.  ",,
 ao_root_cat,aortic root not well imaged measures approx 3.9cm - not dilated indexed to BSA,nondilated,
 ao_root_cat,Normal aortic root with a dilated asc ao (4.1cm).,nondilated,
 ao_root_cat,AORTA: Dilated aortic root from Sinus fo Valsalva to proximal ascending aorta for height.,dilated,
