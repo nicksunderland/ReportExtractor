@@ -55,6 +55,12 @@ Rule: ext_anat_annots_1
 		Token notWithin {Anatomy.minorType == "sinus_venosus"},
 		Token notWithin {Lookup.majorType == "cardiac_rhythm"}} |
 	{Token.string ==~ "(?i)sinus(es)?", 
+		Token within {ReportSection.type == "aortic_valve"}, 
+		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"},
+		Token notWithin {Anatomy.minorType == "coronary_sinus"},
+		Token notWithin {Anatomy.minorType == "sinus_venosus"},
+		Token notWithin {Lookup.majorType == "cardiac_rhythm"}} |
+	{Token.string ==~ "(?i)sinus(es)?", 
 		Token within {VarSentence.majorType == "aorta"},
 		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"},
 		Token notWithin {Anatomy.minorType == "coronary_sinus"},
@@ -65,6 +71,9 @@ Rule: ext_anat_annots_1
 		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"}} |
 	{Token.string ==~ "(?i)valsalva", 
 		Token within {ReportSection.type == "aorta"}, 
+		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"}} |
+	{Token.string ==~ "(?i)valsalva", 
+		Token within {ReportSection.type == "aortic_valve"}, 
 		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"}}
 		
 
@@ -83,6 +92,10 @@ Rule: ext_anat_annots_2
 		Token notWithin {Anatomy.minorType == "aortic_root"},
 		Token notWithin {Anatomy.minorType == "aortic_graft"},
 		Token within {ReportSection.type == "aorta"}} |
+	{Token.string ==~ "(?i)root",
+		Token notWithin {Anatomy.minorType == "aortic_root"},
+		Token notWithin {Anatomy.minorType == "aortic_graft"},
+		Token within {ReportSection.type == "aortic_valve"}} |
 	{Token.string ==~ "(?i)root",
 		Token notWithin {Anatomy.minorType == "aortic_root"},
 		Token notWithin {Anatomy.minorType == "aortic_graft"},

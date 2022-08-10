@@ -43,12 +43,12 @@ Macro: CONTEXT
 Macro: FILTER
 (
 	//Blocking rules (pure negation doesn't work with JAPE Plus Transducer)
-	({Token, 
+	{Token, 
 		Token within {VarSentence.type == "weight"},
 		!Lookup.minorType == "indexed",
 		!ReportSection, 
 		!Anatomy, 
-		!Measurement})[0,8]
+		!Measurement}
 )
 
 Macro: METRIC_WEIGHT
@@ -88,7 +88,7 @@ Priority: 103
 					Lookup within {VarSentence.type == "weight"}, 
 					Lookup.minorType == "patient"} )
 	
-	( FILTER )
+	( FILTER )[0,2]
 	
 	( (METRIC_WEIGHT METRIC_MASS_UNITS) | (IMPERIAL_WEIGHT) )
 	
@@ -114,7 +114,7 @@ Priority: 102
 					Lookup within {VarSentence.type == "weight"}, 
 					Lookup.minorType == "patient"} )
 	
-	( FILTER )
+	( FILTER )[0,2]
 	
 	(
 		{Lookup.minorType == "height"} |
@@ -141,7 +141,7 @@ Priority: 101
 					Lookup within {VarSentence.type == "weight"}, 
 					Lookup.minorType == "patient"} )
 	
-	( FILTER )
+	( FILTER )[0,8]
 	
 	{Token within Lookup.majorType == "quantity_change"}
 	
@@ -170,7 +170,7 @@ Priority: 100
 					Lookup within {VarSentence.type == "weight"}, 
 					Lookup.minorType == "patient"} ):context
 	
-	( FILTER )
+	( FILTER )[0,8]
 	
 	( METRIC_WEIGHT ):value
 	
@@ -199,7 +199,7 @@ Priority: 99
 					Lookup within {VarSentence.type == "weight"}, 
 					Lookup.minorType == "patient"} ):context
 	
-	( FILTER )
+	( FILTER )[0,8]
 	
 	( IMPERIAL_WEIGHT ):value
 

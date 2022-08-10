@@ -43,12 +43,12 @@ Macro: CONTEXT
 Macro: FILTER
 (
 	//Blocking rules (pure negation doesn't work with JAPE Plus Transducer)
-	({Token, 
+	{Token, 
 		Token within {VarSentence.type == "height"},
 		!Lookup.minorType == "indexed",
 		!ReportSection, 
 		!Anatomy,
-		!Measurement})[0,8]
+		!Measurement}
 )
 
 Macro: METRIC_LENGTH
@@ -101,7 +101,7 @@ Priority: 102
 		
 ):blocker
 -->
-:blocker.Blocked = {type = "height"}
+:blocker.Blocked = {type = "height1"}
 
 /*
  * Description:
@@ -115,7 +115,7 @@ Priority: 101
 					Lookup within {VarSentence.type == "height"}, 
 					Lookup.minorType == "patient"} )
 			
-	( FILTER )
+	( FILTER )[0,2]
 	
 	(
 		{Lookup.minorType == "weight"} |
@@ -128,7 +128,7 @@ Priority: 101
 		
 ):blocker
 -->
-:blocker.Blocked = {type = "height"}
+:blocker.Blocked = {type = "height2"}
 
 /*
  * Description:
@@ -142,7 +142,7 @@ Priority: 100
 					Lookup within {VarSentence.type == "height"}, 
 					Lookup.minorType == "patient"} ):context
 	
-	( FILTER )
+	( FILTER )[0,8]
 	
 	( METRIC_LENGTH ):value
 	
@@ -171,7 +171,7 @@ Priority: 99
 					Lookup within {VarSentence.type == "height"}, 
 					Lookup.minorType == "patient"} ):context
 	
-	( FILTER )
+	( FILTER )[0,8]
 	
 	( IMPERIAL_LENGTH ):value
 
