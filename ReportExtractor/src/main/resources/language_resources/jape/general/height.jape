@@ -148,9 +148,9 @@ Priority: 100
 	
 	( METRIC_LENGTH_UNITS ):unit
 	
-):height 
+):annot 
 --> 
-:height
+:annot
 {
 	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
 	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
@@ -175,9 +175,9 @@ Priority: 99
 	
 	( IMPERIAL_LENGTH ):value
 
-):height 
+):annot 
 --> 
-:height
+:annot
 {
 	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
 	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
@@ -201,9 +201,9 @@ Priority: 98
 	
 	{!Units} // Negative lookahead
 
-):height 
+):annot 
 --> 
-:height
+:annot
 {
 	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
 	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output

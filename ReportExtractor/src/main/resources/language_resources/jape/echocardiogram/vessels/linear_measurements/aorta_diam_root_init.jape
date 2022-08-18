@@ -1,0 +1,23 @@
+Imports: {
+	import static gate.Utils.*;
+	import BHI.ReportExtractor.JapeRhsProcessor;
+}
+
+
+
+Phase: InitiatiseAortaRootDiameter
+Input: Token
+Options: control=Once negationGrouping=false
+
+Template: variable_name = "ao_root_diam"
+Template: descriptor    = "aortic_root${suffix}"
+
+/*
+ * Description:
+ * A rule that does nothing, just so this phase fires and sets the appropriate templates
+ */
+Rule: init_ao_root
+(	
+	{Token}
+):init
+--> {}

@@ -2,7 +2,7 @@ var_name,text,expected_value,expected_units
 ao_sov_diam,"Sinus of Valsalva is dilated 41mm (22.4mm/m) from inner edge to inner edge.
 MM_SINUS_OF_VALSALVA: 3.3.",4.1,cm
 ao_sov_diam, Sinus of valslava / root replacement 4.8cm,4.8,cm
-ao_sov_diam,"Both the SOV and aortic root are around 3,1-3,3 cm",3.2,cm
+ao_sov_diam,"Both the SOV and Asc Ao. are around 3,1-3,3 cm",3.2,cm
 ao_sov_diam,Sinus of valslava / root replacement 4.8cm,4.8,cm
 ao_sov_diam,Non dilated proximal aorta (3.5cm Sinus of Valsalva). No arch views available. ,3.5,cm
 ao_sov_diam,SoV (measured as per 2020 BSE guidelines i-i edge in end diastole) 39.4mm (21.5 mm/m)  not dilated,3.94,cm
@@ -113,7 +113,7 @@ Ao root - dilated at sinus of Valsalva level (corrected to BSA) - measures 4.4cm
 Ao annulus 1.9cm. STJ 2.2cm. Prox asc Ao approx 2.5cm. Ao arch not well imaged to assess.
 MM_SINOTUBULAR_JUNCTION: 2.2
 MM_SINUS_OF_VALSALVA: 4.3
-NORMAL_STUDY: F",4.3,cm
+NORMAL_STUDY: F",4.4,cm
 ao_sov_diam,"HAMB_AO_ARCH_NORMAL: F
 CHAMB_AO_ARCH_TEXT: Not clearly imaged however appears normal size.
 HAMB_AO_ASC_NORMAL: F

@@ -176,9 +176,9 @@ Priority: 100
 	
 	( METRIC_MASS_UNITS ):unit
 
-):weight 
+):annot 
 --> 
-:weight
+:annot
 {
 	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
 	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
@@ -203,9 +203,9 @@ Priority: 99
 	
 	( IMPERIAL_WEIGHT ):value
 
-):weight 
+):annot 
 --> 
-:weight
+:annot
 {
 	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
 	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
@@ -230,9 +230,9 @@ Priority: 98
 	
 	{!Units}
 
-):weight 
+):annot 
 --> 
-:weight
+:annot
 {
 	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
 	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output

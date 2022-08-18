@@ -15,11 +15,14 @@ Imports: {
  * of the sentence tagging to ensure the extended annots can be used also. 
  */
 Phase: TagVarSentenceAorta
-Input: Sentence Anatomy
+Input: Sentence Anatomy Split
 Options: control=All negationGrouping=false
 /*
  * Description:
- * Sentence that contains 'aorta' phrases
+ * Sentence that contains 'aorta' phrases. 
+ * We include the Split annotations as this will block additional sentences 
+ * being added if there are multiple return lines between them 
+ * (i.e. Split.kind=='external' is blocked inbetween sentences)
  */
 Rule: var_sentence
 (
@@ -148,6 +151,9 @@ Options: control=All negationGrouping=false
 /*
  * Description:
  * Tag sentences that contain aortic root references. 
+ * We include the Split annotations as this will block additional sentences 
+ * being added if there are multiple return lines between them 
+ * (i.e. Split.kind=='external' is blocked inbetween sentences)
  */
 Rule: var_sentence
 (
@@ -165,6 +171,9 @@ Options: control=All negationGrouping=false
  * Description:
  * Tag sentences that refer to the sinuses of valsalva +/- the sentence after it 
  * as long as it doesn't contain other anatomical words
+ * We include the Split annotations as this will block additional sentences 
+ * being added if there are multiple return lines between them 
+ * (i.e. Split.kind=='external' is blocked inbetween sentences)
  */
 Rule: var_sentence
 (
@@ -182,6 +191,9 @@ Options: control=All negationGrouping=false
  * Description:
  * Tag sentences that refer to the sinotubular junction +/- the sentence after it 
  * as long as it doesn't contain other anatomical words
+ * We include the Split annotations as this will block additional sentences 
+ * being added if there are multiple return lines between them 
+ * (i.e. Split.kind=='external' is blocked inbetween sentences)
  */
 Rule: var_sentence
 (
@@ -198,6 +210,9 @@ Options: control=All negationGrouping=false
 /*
  * Description:
  * Tag sentences that contain ascending aorta references. 
+ * We include the Split annotations as this will block additional sentences 
+ * being added if there are multiple return lines between them 
+ * (i.e. Split.kind=='external' is blocked inbetween sentences)
  */
 Rule: var_sentence
 (

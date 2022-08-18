@@ -7,7 +7,7 @@ HAMB_AO_ASC_NORMAL: F
 HAMB_AO_ASC_TEXT: Proximal ascending aorta 3.4cm. 
 CHAMB_AO_DESC_NORMAL: F
 CHAMB_AO_DESC_TEXT: Flow in descending aorta 0.65m/s.",,
-ao_asc_diam_ht_idx,"Proximal ascending aorta 2.7cm, not dilated indexed to BSA at 1.8cm/m_ and indexed to height at 17.7mm/m.",1.77,cm/m
+ao_asc_diam_ht_idx,"Proximal ascending aorta 2.7cm, not dilated indexed to BSA at 1.8cm/m_ and indexed to height at 17.7mm/m.",,
 ao_asc_diam_ht_idx,"HAMB_AO_ASC_TEXT: Sinus of Valsalva is mildly dilated 35mm (22mm/m) from inner edge to inner edge.
 Sino-tubular junction is borderline dilated = 18mm/m.
 Proximal ascending aorta 28mm. This is not dilated indexed to height at 17mm/m.",1.7,cm/m

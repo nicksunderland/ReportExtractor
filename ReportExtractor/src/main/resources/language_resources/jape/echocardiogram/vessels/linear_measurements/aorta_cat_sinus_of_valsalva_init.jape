@@ -1,0 +1,9 @@
+Imports: {
+	import static gate.Utils.*;
+	import BHI.ReportExtractor.JapeRhsProcessor;
+}
+
+
+
+Phase: AortaSovVisualDiameter
+"sinus_of_valsalva"

@@ -1,7 +1,6 @@
 MultiPhase:	RelationExtractionGrammars
 
-Phases:
-	
+Phases:	
 /* GENERAL PHASES
  * --------------
  * Run the general phases first to tag the numerical data and things that will be common 
@@ -31,18 +30,37 @@ report_sections/report_sections
  */
 
 vessels/linear_measurements/aorta_init
-vessels/linear_measurements/aorta_root
-vessels/linear_measurements/aorta_root_height_indexed
-vessels/linear_measurements/aorta_root_cat
-vessels/linear_measurements/aorta_sinus_of_valsalva
-vessels/linear_measurements/aorta_sinus_of_valsalva_height_indexed
-vessels/linear_measurements/aorta_sinus_of_valsalva_cat
-vessels/linear_measurements/aorta_sinotubular_junction
-vessels/linear_measurements/aorta_sinotubular_junction_height_indexed
-vessels/linear_measurements/aorta_sinotubular_junction_cat
-vessels/linear_measurements/aorta_ascending
-vessels/linear_measurements/aorta_ascending_height_indexed
-vessels/linear_measurements/aorta_ascending_cat
+
+vessels/linear_measurements/aorta_diam_root_init
+vessels/linear_measurements/aorta_diam_root_blockers
+vessels/linear_measurements/aorta_diam_base_grammars
+vessels/linear_measurements/aorta_diam_sinus_of_valsalva_init
+vessels/linear_measurements/aorta_diam_base_grammars
+vessels/linear_measurements/aorta_diam_sinotubular_junction_init
+vessels/linear_measurements/aorta_diam_base_grammars
+vessels/linear_measurements/aorta_diam_ascending_aorta_init
+vessels/linear_measurements/aorta_diam_base_grammars
+
+vessels/linear_measurements/aorta_height_indexed_diam_root_init
+vessels/linear_measurements/aorta_height_indexed_diam_base_grammars
+vessels/linear_measurements/aorta_height_indexed_diam_sinus_of_valsalva_init
+vessels/linear_measurements/aorta_height_indexed_diam_base_grammars
+vessels/linear_measurements/aorta_height_indexed_diam_sinotubular_junction_init
+vessels/linear_measurements/aorta_height_indexed_diam_base_grammars
+vessels/linear_measurements/aorta_height_indexed_diam_ascending_init
+vessels/linear_measurements/aorta_height_indexed_diam_base_grammars
+
+//vessels/linear_measurements/aorta_root_height_indexed
+//vessels/linear_measurements/aorta_root_cat
+//vessels/linear_measurements/aorta_sinus_of_valsalva
+//vessels/linear_measurements/aorta_sinus_of_valsalva_height_indexed
+//vessels/linear_measurements/aorta_sinus_of_valsalva_cat
+//vessels/linear_measurements/aorta_sinotubular_junction
+//vessels/linear_measurements/aorta_sinotubular_junction_height_indexed
+//vessels/linear_measurements/aorta_sinotubular_junction_cat
+//vessels/linear_measurements/aorta_ascending
+//vessels/linear_measurements/aorta_ascending_height_indexed
+//vessels/linear_measurements/aorta_ascending_cat
 
 /* LEFT VENTRICLE
  * ---------------

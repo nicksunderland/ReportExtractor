@@ -181,8 +181,8 @@ public class JapeRhsProcessor {
 			//PrintColour.println("bindings: " + bindings.toString(), PrintColour.GREEN);
 			
 			// Finally, set the type of examination this variable is from; currently, either echocardiogram or MRI
-			outputAS.add(bindings.get(var_name).firstNode(), 
-						 bindings.get(var_name).lastNode(), 
+			outputAS.add(bindings.get("annot").firstNode(), 
+						 bindings.get("annot").lastNode(), 
 						 var_name, 
 						 var_features);	
 			
