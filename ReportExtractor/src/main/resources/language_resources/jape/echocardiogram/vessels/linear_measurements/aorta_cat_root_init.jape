@@ -5,5 +5,19 @@ Imports: {
 
 
 
-Phase: AortaVisualDiameter
-"aortic_root"
+Phase: InitialiseAortaVisualDiameter
+Input: Token
+Options: control=Once negationGrouping=false
+
+Template: variable_name = "ao_root_cat"
+Template: descriptor    = "aortic_root"
+
+/*
+ * Description:
+ * A rule that does nothing, just so this phase fires and sets the appropriate templates
+ */
+Rule: init_ao_root_cat
+(	
+	{Token}
+):init
+--> {}

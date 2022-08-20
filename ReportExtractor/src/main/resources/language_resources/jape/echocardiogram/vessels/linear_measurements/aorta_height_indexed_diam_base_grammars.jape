@@ -12,9 +12,9 @@ Options: control=Appelt negationGrouping=false
 Macro: CONTEXT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.minorType == [descriptor suffix=""]},
-		Anatomy notWithin {Blocked.type == [descriptor suffix="_ao_ht_idx_diam"]},
-		Anatomy.minorType == [descriptor suffix=""],
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy notWithin {Blocked.type == [variable_name]},
+		Anatomy.minorType == [descriptor],
 		Anatomy.minorType != "aortic_root"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
@@ -22,7 +22,7 @@ Macro: CONTEXT
 Macro: CONTEXT_OTHER_AORTA
 (
 	{Anatomy,
-		Anatomy within {VarSentence.minorType == [descriptor suffix=""]},
+		Anatomy within {VarSentence.minorType == [descriptor]},
 		Anatomy.majorType == "aorta", 
 		Anatomy.minorType != "aortic_root"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
@@ -31,8 +31,8 @@ Macro: CONTEXT_OTHER_AORTA
 Macro: CONTEXT_AORTA_ROOT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.minorType == [descriptor suffix=""]},
-		Anatomy notWithin {Blocked.minorType == [descriptor suffix=""]},
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy notWithin {Blocked.minorType == [variable_name]},
 		Anatomy.majorType == "aorta", 
 		Anatomy.minorType == "aortic_root"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
@@ -41,27 +41,27 @@ Macro: CONTEXT_AORTA_ROOT
 Macro: FILTER
 (
 	{Token,
-		!Anatomy.minorType != [descriptor suffix=""],
+		!Anatomy,
 		!Lookup.majorType == "quantity_change",
 		!Lookup.majorType == "body_surface_area",
 		!Units.majorType == "z_score", 
-		Token within {VarSentence.minorType == [descriptor suffix=""]}}
+		Token within {VarSentence.minorType == [descriptor]}}
 )
 
 Macro: VALUE
 (
 	{Numeric, 
-		Numeric within {VarSentence.minorType == [descriptor suffix=""]},
+		Numeric within {VarSentence.minorType == [descriptor]},
 		Numeric.type == "double"} |
 	{Numeric,
-		Numeric within {VarSentence.minorType == [descriptor suffix=""]}, 
+		Numeric within {VarSentence.minorType == [descriptor]}, 
 		Numeric.type == "integer"}
 )
 
 Macro: UNITS
 (
 	{Units,
-		Units within {VarSentence.minorType == [descriptor suffix=""]},
+		Units within {VarSentence.minorType == [descriptor]},
 		Units.majorType == "length/length"}
 )
 
@@ -69,7 +69,7 @@ Macro: UNITS
  * Description:
  * This is the most common form 'the SoV is dilated at 45mm (22mm/m)'
  */
-Rule: ao_sov_diam_ht_idx
+Rule: ao_diam_ht_idx
 Priority: 100
 (
 	(	
@@ -112,13 +112,13 @@ Priority: 100
  * Of the form 'indexed to height the SOV is dilated at 45mm (22mm/m)'
  * The units here are optional as we declared that it was indexed to height at the start
  */
-Rule: ao_sov_diam_ht_idx_2
+Rule: ao_diam_ht_idx_2
 Priority: 98
 (
 	(
 		{Lookup,
 			Lookup.majorType == "indexed",
-			Lookup within {VarSentence.minorType == [descriptor suffix=""]}}
+			Lookup within {VarSentence.minorType == [descriptor]}}
 		({Token})?
 		{Lookup.majorType == "height"}
 		({Token})?
@@ -165,13 +165,13 @@ Priority: 98
  * can infer that they are indexing to height
  * e.g. indexed SoV = 33mm/m
  */
-Rule: ao_sov_diam_ht_idx_3
+Rule: ao_diam_ht_idx_3
 Priority: 97
 (
 	(
 		{Lookup,
 			Lookup.majorType == "indexed",
-			Lookup within {VarSentence.minorType == [descriptor suffix=""]}}
+			Lookup within {VarSentence.minorType == [descriptor]}}
 		
 		( ((CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
 	       ((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |

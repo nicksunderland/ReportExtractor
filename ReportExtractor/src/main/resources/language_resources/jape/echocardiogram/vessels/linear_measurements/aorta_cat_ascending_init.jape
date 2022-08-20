@@ -5,5 +5,19 @@ Imports: {
 
 
 
-Phase: AortaAscVisualDiameter
-ascending_aorta"
+Phase: InitialiseAortaVisualDiameter
+Input: Token
+Options: control=Once negationGrouping=false
+
+Template: variable_name = "ao_asc_cat"
+Template: descriptor    = "ascending_aorta"
+
+/*
+ * Description:
+ * A rule that does nothing, just so this phase fires and sets the appropriate templates
+ */
+Rule: init_ao_asc_cat
+(	
+	{Token}
+):init
+--> {}

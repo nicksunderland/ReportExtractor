@@ -21,8 +21,8 @@ Rule: ao_root_blocker_1
 Priority: 101
 (	
 	( {Anatomy,
-		Anatomy within {VarSentence.minorType == [descriptor suffix=""]},
-		Anatomy.minorType == [descriptor suffix=""]} )
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy.minorType == [descriptor]} )
 	
 	({Categorical})[0,2]
 			
@@ -30,14 +30,14 @@ Priority: 101
 
 	(
 		( {Numeric, 
-			Numeric within {VarSentence.minorType == [descriptor suffix=""]},
+			Numeric within {VarSentence.minorType == [descriptor]},
 			Numeric.type == "double"} |
 		  {Numeric,
-			Numeric within {VarSentence.minorType == [descriptor suffix=""]}, 
+			Numeric within {VarSentence.minorType == [descriptor]}, 
 			Numeric.type == "integer"} )
 		
 		( {Units,
-			Units within {VarSentence.minorType == [descriptor suffix=""]},
+			Units within {VarSentence.minorType == [descriptor]},
 			Units.majorType == "length"} )?
 					
 		( {Lookup.minorType == "preposition"} )?
@@ -50,7 +50,7 @@ Priority: 101
 			
 ):root_blocker
 -->
-:root_blocker.Blocked = {type = [descriptor suffix="_ao_diam"], rule = "ao_root_blocker_1"}
+:root_blocker.Blocked = {type = [variable_name], rule = "ao_root_blocker_1"}
 
 /*
  * Description:
@@ -65,20 +65,20 @@ Rule: ao_root_blocker_2
 Priority: 100
 (	
 	( {Anatomy,
-		Anatomy within {VarSentence.minorType == [descriptor suffix=""]},
-		Anatomy.minorType == [descriptor suffix=""]} )
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy.minorType == [descriptor]} )
 	
 	( {Token} )[0,4]
 
 	( {Numeric, 
-		Numeric within {VarSentence.minorType == [descriptor suffix=""]},
+		Numeric within {VarSentence.minorType == [descriptor]},
 		Numeric.type == "double"} |
 	  {Numeric,
-		Numeric within {VarSentence.minorType == [descriptor suffix=""]}, 
+		Numeric within {VarSentence.minorType == [descriptor]}, 
 		Numeric.type == "integer"} )
 		
 	( {Units,
-		Units within {VarSentence.minorType == [descriptor suffix=""]},
+		Units within {VarSentence.minorType == [descriptor]},
 		Units.majorType == "length"} )?
 	
 	{Token.string ==~ "(?i)at"}
@@ -89,4 +89,4 @@ Priority: 100
 			
 ):root_blocker
 -->
-:root_blocker.Blocked = {type = [descriptor suffix="_ao_diam"], rule = "ao_root_blocker_2"}
+:root_blocker.Blocked = {type = [variable_name], rule = "ao_root_blocker_2"}

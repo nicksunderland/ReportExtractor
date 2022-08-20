@@ -5,5 +5,19 @@ Imports: {
 
 
 
-Phase: AortaStjVisualDiameter
-"sinotubular_junction"
+Phase: InitialiseAortaVisualDiameter
+Input: Token
+Options: control=Once negationGrouping=false
+
+Template: variable_name = "ao_stj_cat"
+Template: descriptor    = "sinotubular_junction"
+
+/*
+ * Description:
+ * A rule that does nothing, just so this phase fires and sets the appropriate templates
+ */
+Rule: init_ao_stj_cat
+(	
+	{Token}
+):init
+--> {}

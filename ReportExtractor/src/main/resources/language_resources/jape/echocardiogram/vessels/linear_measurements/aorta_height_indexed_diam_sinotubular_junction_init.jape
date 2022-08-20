@@ -10,7 +10,7 @@ Input: Token
 Options: control=Once negationGrouping=false
 
 Template: variable_name = "ao_stj_diam_ht_idx"
-Template: descriptor    = "sinotubular_junction${suffix}"
+Template: descriptor    = "sinotubular_junction"
 
 /*
  * Description:

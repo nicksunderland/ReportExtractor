@@ -192,75 +192,75 @@ public class TestEchoExtraction
     	baseTest(var_name, text, expected_value, expected_units);
     }
     
-    @ParameterizedTest(name = "testAorticRootDiameter row: {index}")
+    @ParameterizedTest(name = "testDiameterAorticRoot row: {index}")
     @CsvFileSource(resources = "/echo/vessels/linear_measurements/ao_root_diam.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-    public void testAorticRootDiameter(String var_name, String text, String expected_value, String expected_units) {
+    public void testDiameterAorticRoot(String var_name, String text, String expected_value, String expected_units) {
     	baseTest(var_name, text, expected_value, expected_units);
     }
     
-    @ParameterizedTest(name = "testSinusOfValsalvaDiameter row: {index}")
+    @ParameterizedTest(name = "testDiameterSinusOfValsalva row: {index}")
     @CsvFileSource(resources = "/echo/vessels/linear_measurements/ao_sov_diam.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-    public void testSinusOfValsalvaDiameter(String var_name, String text, String expected_value, String expected_units) {
+    public void testDiameterSinusOfValsalva(String var_name, String text, String expected_value, String expected_units) {
     	baseTest(var_name, text, expected_value, expected_units);
     }
     
-    @ParameterizedTest(name = "testSinotubularJunctionDiameter row: {index}")
+    @ParameterizedTest(name = "testDiameterSinotubularJunction row: {index}")
     @CsvFileSource(resources = "/echo/vessels/linear_measurements/ao_stj_diam.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-    public void testSinotubularJunctionDiameter(String var_name, String text, String expected_value, String expected_units) {
+    public void testDiameterSinotubularJunction(String var_name, String text, String expected_value, String expected_units) {
     	baseTest(var_name, text, expected_value, expected_units);
     }
     
-    @ParameterizedTest(name = "testAscendingAortaDiameter row: {index}")
+    @ParameterizedTest(name = "testDiameterAscendingAorta row: {index}")
     @CsvFileSource(resources = "/echo/vessels/linear_measurements/ao_asc_diam.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-    public void testAscendingAortaDiameter(String var_name, String text, String expected_value, String expected_units) {
+    public void testDiameterAscendingAorta(String var_name, String text, String expected_value, String expected_units) {
     	baseTest(var_name, text, expected_value, expected_units);
     }
     
-    @ParameterizedTest(name = "testAorticRootDiameterHeightIndexed row: {index}")
+    @ParameterizedTest(name = "testHeightIndexedAorticRootDiameter row: {index}")
     @CsvFileSource(resources = "/echo/vessels/linear_measurements/ao_root_diam_ht_idx.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-    public void testAorticRootDiameterHeightIndexed(String var_name, String text, String expected_value, String expected_units) {
+    public void testHeightIndexedAorticRootDiameter(String var_name, String text, String expected_value, String expected_units) {
     	baseTest(var_name, text, expected_value, expected_units);
     }
     
-    @ParameterizedTest(name = "testSinusOfValsalvaDiameterHeightIndexed row: {index}")
+    @ParameterizedTest(name = "testHeightIndexedSinusOfValsalvaDiameter row: {index}")
     @CsvFileSource(resources = "/echo/vessels/linear_measurements/ao_sov_diam_ht_idx.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-    public void testSinusOfValsalvaDiameterHeightIndexed(String var_name, String text, String expected_value, String expected_units) {
+    public void testHeightIndexedSinusOfValsalvaDiameter(String var_name, String text, String expected_value, String expected_units) {
     	baseTest(var_name, text, expected_value, expected_units);
     }
     
-    @ParameterizedTest(name = "testSinotubularJunctionDiameterHeightIndexed row: {index}")
+    @ParameterizedTest(name = "testHeightIndexedSinotubularJunctionDiameter row: {index}")
     @CsvFileSource(resources = "/echo/vessels/linear_measurements/ao_stj_diam_ht_idx.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-    public void testSinotubularJunctionDiameterHeightIndexed(String var_name, String text, String expected_value, String expected_units) {
+    public void testHeightIndexedSinotubularJunctionDiameter(String var_name, String text, String expected_value, String expected_units) {
     	baseTest(var_name, text, expected_value, expected_units);
     }
     
-    @ParameterizedTest(name = "testAscendingAortaDiameterHeightIndexed row: {index}")
+    @ParameterizedTest(name = "testHeightIndexedAscendingAortaDiameter row: {index}")
     @CsvFileSource(resources = "/echo/vessels/linear_measurements/ao_asc_diam_ht_idx.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-    public void testAscendingAortaDiameterHeightIndexed(String var_name, String text, String expected_value, String expected_units) {
+    public void testHeightIndexedAscendingAortaDiameter(String var_name, String text, String expected_value, String expected_units) {
     	baseTest(var_name, text, expected_value, expected_units);
     }
     
-    @ParameterizedTest(name = "testSinusOfValsalvaDiameterCategorical row: {index}")
+    @ParameterizedTest(name = "testCategoricalSinusOfValsalvaDiameter row: {index}")
     @CsvFileSource(resources = "/echo/vessels/categorical_size/ao_sov_cat.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-    public void testSinusOfValsalvaDiameterCategorical(String var_name, String text, String expected_value, String expected_units) {
+    public void testCategoricalSinusOfValsalvaDiameter(String var_name, String text, String expected_value, String expected_units) {
     	baseTest(var_name, text, expected_value, expected_units);
     }
     
-    @ParameterizedTest(name = "testSinotubularJunctionDiameterCategorical row: {index}")
+    @ParameterizedTest(name = "testCategoricalSinotubularJunctionDiameter row: {index}")
     @CsvFileSource(resources = "/echo/vessels/categorical_size/ao_stj_cat.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-    public void testSinotubularJunctionDiameterCategorical(String var_name, String text, String expected_value, String expected_units) {
+    public void testCategoricalSinotubularJunctionDiameter(String var_name, String text, String expected_value, String expected_units) {
     	baseTest(var_name, text, expected_value, expected_units);
     }
     
-    @ParameterizedTest(name = "testAscendingAortaDiameterCategorical row: {index}")
+    @ParameterizedTest(name = "testCategoricalAscendingAortaDiameter row: {index}")
     @CsvFileSource(resources = "/echo/vessels/categorical_size/ao_asc_cat.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-    public void testAscendingAortaDiameterCategorical(String var_name, String text, String expected_value, String expected_units) {
+    public void testCategoricalAscendingAortaDiameter(String var_name, String text, String expected_value, String expected_units) {
     	baseTest(var_name, text, expected_value, expected_units);
     }
     
-    @ParameterizedTest(name = "testAortaRootDiameterCategorical row: {index}")
+    @ParameterizedTest(name = "testCategoricalAortaRootDiameter row: {index}")
     @CsvFileSource(resources = "/echo/vessels/categorical_size/ao_root_cat.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-    public void testAortaRootDiameterCategorical(String var_name, String text, String expected_value, String expected_units) {
+    public void testCategoricalAortaRootDiameter(String var_name, String text, String expected_value, String expected_units) {
     	baseTest(var_name, text, expected_value, expected_units);
     }
     

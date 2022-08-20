@@ -10,7 +10,7 @@ Input: Token
 Options: control=Once negationGrouping=false
 
 Template: variable_name = "ao_sov_diam_ht_idx"
-Template: descriptor    = "sinus_of_valsalva${suffix}"
+Template: descriptor    = "sinus_of_valsalva"
 
 /*
  * Description:

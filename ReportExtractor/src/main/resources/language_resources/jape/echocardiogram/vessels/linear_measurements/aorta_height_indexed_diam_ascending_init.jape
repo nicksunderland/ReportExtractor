@@ -10,7 +10,7 @@ Input: Token
 Options: control=Once negationGrouping=false
 
 Template: variable_name = "ao_asc_diam_ht_idx"
-Template: descriptor    = "ascending_aorta${suffix}"
+Template: descriptor    = "ascending_aorta"
 
 /*
  * Description:

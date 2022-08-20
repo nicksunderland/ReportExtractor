@@ -5,5 +5,19 @@ Imports: {
 
 
 
-Phase: AortaSovVisualDiameter
-"sinus_of_valsalva"
+Phase: InitialiseAortaVisualDiameter
+Input: Token
+Options: control=Once negationGrouping=false
+
+Template: variable_name = "ao_sov_cat"
+Template: descriptor    = "sinus_of_valsalva"
+
+/*
+ * Description:
+ * A rule that does nothing, just so this phase fires and sets the appropriate templates
+ */
+Rule: init_ao_sov_cat
+(	
+	{Token}
+):init
+--> {}

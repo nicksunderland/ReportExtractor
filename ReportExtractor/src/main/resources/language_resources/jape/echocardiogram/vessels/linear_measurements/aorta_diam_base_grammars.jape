@@ -12,9 +12,9 @@ Options: control=Appelt negationGrouping=false
 Macro: CONTEXT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.minorType == [descriptor suffix=""]},
-		Anatomy notWithin {Blocked.type == [descriptor suffix="_ao_diam"]},
-		Anatomy.minorType == [descriptor suffix=""],
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy notWithin {Blocked.type == [variable_name]},
+		Anatomy.minorType == [descriptor],
 		Anatomy.minorType != "aortic_root"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
 )
@@ -22,7 +22,7 @@ Macro: CONTEXT
 Macro: CONTEXT_OTHER_AORTA
 (
 	{Anatomy,
-		Anatomy within {VarSentence.minorType == [descriptor suffix=""]},
+		Anatomy within {VarSentence.minorType == [descriptor]},
 		Anatomy.majorType == "aorta", 
 		Anatomy.minorType != "aortic_root"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
@@ -31,8 +31,8 @@ Macro: CONTEXT_OTHER_AORTA
 Macro: CONTEXT_AORTA_ROOT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.minorType == [descriptor suffix=""]},
-		Anatomy notWithin {Blocked.type == [descriptor suffix="_ao_diam"]},
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy notWithin {Blocked.type == [variable_name]},
 		Anatomy.majorType == "aorta", 
 		Anatomy.minorType == "aortic_root"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
@@ -41,29 +41,29 @@ Macro: CONTEXT_AORTA_ROOT
 Macro: FILTER
 (
 	{Token,
-		!Anatomy.minorType != [descriptor suffix=""],
+		!Anatomy,
 		!Units.majorType == "length",
 		!Lookup.majorType == "quantity_change",
 		!Lookup.majorType == "height",
 		!Lookup.majorType == "body_surface_area",
 		!Units.majorType == "z_score", 
-		Token within {VarSentence.minorType == [descriptor suffix=""]}}
+		Token within {VarSentence.minorType == [descriptor]}}
 )
 
 Macro: VALUE
 (
 	{Numeric, 
-		Numeric within {VarSentence.minorType == [descriptor suffix=""]},
+		Numeric within {VarSentence.minorType == [descriptor]},
 		Numeric.type == "double"} |
 	{Numeric,
-		Numeric within {VarSentence.minorType == [descriptor suffix=""]}, 
+		Numeric within {VarSentence.minorType == [descriptor]}, 
 		Numeric.type == "integer"}
 )
 
 Macro: UNITS
 (
 	{Units,
-		Units within {VarSentence.minorType == [descriptor suffix=""]},
+		Units within {VarSentence.minorType == [descriptor]},
 		Units.majorType == "length"}
 )
 
@@ -75,12 +75,12 @@ Rule: ao_idx_diam_blocker_1
 Priority: 100
 (	
 	{Lookup.majorType == "indexed", 
-		Lookup within {VarSentence.minorType == [descriptor suffix=""]}}
+		Lookup within {VarSentence.minorType == [descriptor]}}
 	( CONTEXT )
 	
 ):indexed_diam_blocker
 -->
-:indexed_diam_blocker.Blocked = {type = [descriptor suffix="_ao_diam"], rule = "ao_idx_diam_blocker_1"}
+:indexed_diam_blocker.Blocked = {type = [variable_name], rule = "ao_idx_diam_blocker_1"}
 
 /*
  * Description:
@@ -249,10 +249,10 @@ Priority: 97
 	( CONTEXT ):context
 	
 	( {Token,
-		!Anatomy.minorType != [descriptor suffix=""],
+		!Anatomy.minorType != [descriptor],
 		!Units.majorType == "length",
 		!Lookup.majorType == "quantity_change",
-		Token within {VarSentence.minorType == [descriptor suffix=""]}} )[0,10]
+		Token within {VarSentence.minorType == [descriptor]}} )[0,10]
 	
 	( VALUE ):value
 			

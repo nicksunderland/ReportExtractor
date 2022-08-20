@@ -16,7 +16,7 @@ ao_asc_cat,"**this is a test block AS AR MS MR TS TR PS PR this is a test block*
 
 Great Vessels
 
-Non dilated proximal aorta. Arch and abdominal aorta appear normal in dimension. Normal descending aortic flow velocity. ",nondilated,
+Non dilated proximal aorta. Arch and abdominal aorta appear normal in dimension. Normal descending aortic flow velocity. ",,
 ao_asc_cat,HAMB_AO_ASC_TEXT: Normal aortic root size.,,
 ao_asc_cat,aortic root at valve level measures within normal limits however the proximal ascending aorta and the arch could not be accurately assessed,,
 ao_asc_cat,HAMB_AO_ASC_TEXT: Dilated aortic root.,,
@@ -24,12 +24,12 @@ ao_asc_cat,"Mildly dilated aortic root with mild to moderate aortic stenosis.
 Great Vessels
 Mildly dilated proximal aorta (3.9cm at sinus level extending through to the arch) with loss of ST geometry.",,
 ao_asc_cat,"Great Vessels
-Non dilated proximal aorta. The aortic arch appears mildly dilated (3.8cm). ",nondilated,
+Non dilated proximal aorta. The aortic arch appears mildly dilated (3.8cm). ",,
 ao_asc_cat,"Great Vessels
 Non dilated proximal aorta. Poor arch views.
 
 
-",nondilated,
+",,
 ao_asc_cat,"Great Vessels
 The aortic root is normal size. The aortic arch was not well seen on this scan. 
 
@@ -61,7 +61,7 @@ The aortic root is normal size. The aortic arch was not well seen on this scan.
 
 ",,
 ao_asc_cat,"Great Vessels
-Non dilated proximal aorta by dimension (3.4cm) but visually appears mildly dilated. The root appears mildly calcified at sinus level. Normal arch views and descending aortic flow velocity. ",nondilated,
+Non dilated proximal aorta by dimension (3.4cm) but visually appears mildly dilated. The root appears mildly calcified at sinus level. Normal arch views and descending aortic flow velocity. ",,
 ao_asc_cat,"Great Vessels
 Non dilated proximal aorta to sinus level. Unable to visualise beyond this point on parasternal views. The arch views are suboptimal and the arch itself is not clearly seen but the impression is that it is dilated (~3.9cm) at the level of the innominate artery. The descending limb of the aorta is not dilated and flow is normal. 
 
@@ -69,13 +69,13 @@ Non dilated proximal aorta to sinus level. Unable to visualise beyond this point
 ",,
 ao_asc_cat,"Great Vessels
 Non dilated proximal aorta. The arch appears mildly dilated at 3.4cm. Abdominal aorta appears non dilated and pulsatile. 
-",nondilated,
+",,
 ao_asc_cat,"Great Vessels
 Non dilated by dimension but appears mildly dilated. The proximal aorta appears very mildly calcified.The abdominal aorta does not appear dilated but regions of calcification can be seen on subcostal views.",,
 ao_asc_cat,"Great Vessels
-Non dilated proximal aorta. Arch views appear normal with normal descending aortic flow velocity.",nondilated,
+Non dilated proximal aorta. Arch views appear normal with normal descending aortic flow velocity.",,
 ao_asc_cat,"Great Vessels
-As far as can be seen, the proximal aorta does not appear dilated. Arch views are suboptimal. ",nondilated,
+As far as can be seen, the proximal aorta does not appear dilated. Arch views are suboptimal. ",,
 ao_asc_cat,"Great Vessels
 Could not be visualised. No arch views available. ",,
 ao_asc_cat,"Great Vessels
