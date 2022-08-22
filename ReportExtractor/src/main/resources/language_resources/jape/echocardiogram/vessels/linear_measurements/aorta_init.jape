@@ -15,7 +15,7 @@ Imports: {
  * of the sentence tagging to ensure the extended annots can be used also. 
  */
 Phase: TagVarSentenceAorta
-Input: Sentence Anatomy Split
+Input: Sentence Anatomy Split SectionHeader
 Options: control=All negationGrouping=false
 /*
  * Description:
@@ -26,8 +26,13 @@ Options: control=All negationGrouping=false
  */
 Rule: var_sentence
 (
-	{Sentence contains {Anatomy.majorType == "aorta"}}
-	({Sentence notContains {Anatomy.majorType != "aorta"}})?
+	{Sentence,
+		Sentence contains {Anatomy.majorType == "aorta"}, 
+		Sentence notContains {SectionHeader.minorType != "aorta"}}
+	({Split.kind=="external"})[0,1]
+	({Sentence, 
+		Sentence notContains {Anatomy.majorType != "aorta"},
+		Sentence notContains {SectionHeader.minorType != "aorta"}})?
 	
 ):var_sentence
 -->
@@ -146,7 +151,7 @@ Rule: ext_anat_annots_4
 
 
 Phase: TagVarSentenceAorticRoot
-Input: Sentence Anatomy
+Input: Sentence Anatomy Split SectionHeader
 Options: control=All negationGrouping=false
 /*
  * Description:
@@ -157,15 +162,20 @@ Options: control=All negationGrouping=false
  */
 Rule: var_sentence
 (
-	{Sentence contains {Anatomy.minorType == "aortic_root"}}
-	({Sentence notContains {Anatomy.minorType != "aortic_root"}})?
+	{Sentence,
+		Sentence contains {Anatomy.minorType == "aortic_root"}, 
+		Sentence notContains {SectionHeader.minorType != "aorta"}}
+	({Split.kind=="external"})[0,1] //sometimes 'Aortic Root: \n" is used as the section header
+	({Sentence, 
+		Sentence notContains {Anatomy.minorType != "aortic_root"},
+		Sentence notContains {SectionHeader.minorType != "aorta"}})?
 					
 ):var_sentence
 -->
 :var_sentence.VarSentence = {majorType = "aorta", minorType = "aortic_root"}
 
 Phase: TagVarSentenceAortaSoV
-Input: Sentence Anatomy
+Input: Sentence Anatomy Split SectionHeader
 Options: control=All negationGrouping=false
 /*
  * Description:
@@ -176,16 +186,20 @@ Options: control=All negationGrouping=false
  * (i.e. Split.kind=='external' is blocked inbetween sentences)
  */
 Rule: var_sentence
-(
-	{Sentence contains {Anatomy.minorType == "sinus_of_valsalva"}}
-	({Sentence notContains {Anatomy.minorType != "sinus_of_valsalva"}})?
+(		
+	{Sentence,
+		Sentence contains {Anatomy.minorType == "sinus_of_valsalva"}, 
+		Sentence notContains {SectionHeader.minorType != "aorta"}}
+	({Sentence, 
+		Sentence notContains {Anatomy.minorType != "sinus_of_valsalva"},
+		Sentence notContains {SectionHeader.minorType != "aorta"}})?
 					
 ):var_sentence
 -->
 :var_sentence.VarSentence = {majorType = "aorta", minorType = "sinus_of_valsalva"}
 
 Phase: TagVarSentenceAortaStJ
-Input: Sentence Anatomy
+Input: Sentence Anatomy Split SectionHeader
 Options: control=All negationGrouping=false
 /*
  * Description:
@@ -197,15 +211,19 @@ Options: control=All negationGrouping=false
  */
 Rule: var_sentence
 (
-	{Sentence contains {Anatomy.minorType == "sinotubular_junction"}}
-	({Sentence notContains {Anatomy.minorType != "sinotubular_junction"}})?
+	{Sentence,
+		Sentence contains {Anatomy.minorType == "sinotubular_junction"}, 
+		Sentence notContains {SectionHeader.minorType != "aorta"}}
+	({Sentence, 
+		Sentence notContains {Anatomy.minorType != "sinotubular_junction"},
+		Sentence notContains {SectionHeader.minorType != "aorta"}})?	
 					
 ):var_sentence
 -->
 :var_sentence.VarSentence = {majorType = "aorta", minorType = "sinotubular_junction"}
 
 Phase: TagVarSentenceAortaAscending
-Input: Sentence Anatomy
+Input: Sentence Anatomy Split SectionHeader
 Options: control=All negationGrouping=false
 /*
  * Description:
@@ -216,8 +234,12 @@ Options: control=All negationGrouping=false
  */
 Rule: var_sentence
 (
-	{Sentence contains {Anatomy.minorType == "ascending_aorta"}}
-	({Sentence notContains {Anatomy.minorType != "ascending_aorta"}})?
+	{Sentence,
+		Sentence contains {Anatomy.minorType == "ascending_aorta"}, 
+		Sentence notContains {SectionHeader.minorType != "aorta"}}
+	({Sentence, 
+		Sentence notContains {Anatomy.minorType != "ascending_aorta"},
+		Sentence notContains {SectionHeader.minorType != "aorta"}})?	
 					
 ):var_sentence
 -->

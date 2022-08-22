@@ -1,4 +1,5 @@
 var_name,text,expected_value,expected_units
+ao_sov_cat,"Normal calibre to proximal aortic root, sinus of Valsalva 3.5cm, ascending aorta 3.5cm",nondilated,
 ao_sov_cat,Sov - Asc Ao is nondilated,nondilated,
 ao_sov_cat,Non dilated proximal aorta (3.2cm sinus level).,nondilated,
 ao_sov_cat,Non dilated proximal aorta (3.0cm at sinus level),nondilated,
@@ -47,3 +48,4 @@ ao_sov_cat,Dilated aortic root at SoV and ascending aorta. ,dilated,
 ao_sov_cat,The SoV and ascending aorta are non-dilated. Test. ,nondilated,
 ao_sov_cat,Sinus of Valsalva measures 4.3cm this is not dilated when corrected to BSA (Z2 1.34).,nondilated,
 ao_sov_cat,SoV/proximal ascending aorta normal in size.,nondilated,
+ao_sov_cat,"Aortic root not dilated 4,2cm at the level of the sinuses",nondilated,

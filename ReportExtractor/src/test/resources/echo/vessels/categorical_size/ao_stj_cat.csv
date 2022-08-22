@@ -1,4 +1,7 @@
 var_name,text,expected_value,expected_units
+ao_stj_cat, Sinus Valsalva measured 3 cm sino tube junction 3.1 cm and ascending aorta 3 cm.  This is nondilated.,nondilated,
+ao_stj_cat,"Sinus of Valsalva 39 cm, sinotubular junction 31 cm, ascending aorta 31 cm (internal dimensions), These measurements are likely to be normal for patient's height of 2000 cm. ",nondilated,
+ao_stj_cat,"Non dilated proximal aortic root, Sinus of Valsalva = 3.7cm, sinotubular junction = 3cm.",nondilated,
 ao_stj_cat,Non dilated proximal aorta (3.1cm at the level of the STJ).,nondilated,
 ao_stj_cat,STJ not well imaged measures approx 3.9cm - not dilated indexed to BSA,nondilated,
 ao_stj_cat,No evidence of significant dilatation of the STJ.,nondilated,

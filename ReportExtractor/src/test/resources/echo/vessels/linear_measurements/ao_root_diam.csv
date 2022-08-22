@@ -1,4 +1,7 @@
 var_name,text,expected_value,expected_units
+ao_root_diam,"Non dilated proximal aorta (3.2cm at the STJ, 3.1cm at the SOV, 3.3cm at the Asc Ao level)",,
+ao_root_diam,"Non dilated proximal aortic root, Sinus of Valsalva = 3cm",,
+ao_root_diam,"The aorta appeared mildly dilated at root, sinus Valsalva of 43 mm. ",,
 ao_root_diam," Normal calibre proximal aortic root, sinus of Valsalva 3.3cm.",,
 ao_root_diam,Sinus of valslava / root replacement 4.8cm,,
 ao_root_diam,Aortic root dimensions consistent with previous scan (March 2020).,,
@@ -98,3 +101,6 @@ CHAMB_AO_DESC_NORMAL: F",,
 ao_root_diam,MM_AO_ROOT: 3.2. MM_AORTIC_ANNULUS: 0.,3.2,cm
 ao_root_diam,HAMB_AO_ASC_TEXT: Aortic root normal in size. See above for dimensions.. . Proximal ascending aorta 2.3cm. MM_AO_ROOT: 2.5. MM_AORTIC_ANNULUS: 1.9. ,2.5,cm
 ao_root_diam,Dilated aortic root at sinus of Valsalva level (corrected to BSA) - measures 4.3cm.,,
+ao_root_diam,"HAMB_AO_ASC_TEXT: measures approx. 3.1cm.
+Some more text here, arota, MV, testing. ",3.1,cm
+ao_root_diam,The proximal aorta is dilated at 4.7cm (sinus level) ,,

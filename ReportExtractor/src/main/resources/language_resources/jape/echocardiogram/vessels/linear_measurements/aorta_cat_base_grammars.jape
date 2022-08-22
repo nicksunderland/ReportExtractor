@@ -6,16 +6,15 @@ Imports: {
 
 
 Phase: AortaVisualDiameter
-Input: Token Anatomy Numeric Units Lookup VarSentence Split Categorical Blocked
+Input: Token Anatomy Numeric Units Lookup VarSentence Split Categorical BlockedContext
 Options: control=Appelt negationGrouping=false
 
 Macro: CONTEXT
 (
 	{Anatomy,
 		Anatomy within {VarSentence.minorType == [descriptor]},
-		Anatomy notWithin {Blocked.type == [variable_name]},
-		Anatomy.minorType == [descriptor],
-		Anatomy.minorType != "aortic_root"}
+		Anatomy notWithin {BlockedContext.type == [variable_name]},
+		Anatomy.minorType == [descriptor]}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} | {Token.string=="-"})?
 )
 
@@ -23,8 +22,7 @@ Macro: CONTEXT_OTHER_AORTA
 (
 	{Anatomy,
 		Anatomy within {VarSentence.minorType == [descriptor]},
-		Anatomy.majorType == "aorta", 
-		Anatomy.minorType != "aortic_root"}
+		Anatomy.majorType == "aorta"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} | {Token.string=="-"})?
 )
 
@@ -89,6 +87,8 @@ Macro: VALUE
  * e.g. 'Sov, Stj, Asc ao are not dilated'
  * e.g. 'Stj and SOV are not dilated'
  * e.g. 'Stj and SOV, neither are dilated'
+ * e.g. 'the aortic root there does not appear to be any significant dilatation'
+ * e.g. 'Aortic root:\nNon-dilated.
  * e.g. 'Sinus of Valsalva is not well seen but doesn't appear dilated for height' (n.b. note the x2 'not'
  * in this sentence, the first is allowed in the filter, but the second is captured as the VALUE_MODIFIER
  * as it is in close proximity of the VALUE 'dilated'
@@ -97,17 +97,18 @@ Rule: ao_cat_1
 Priority: 100
 (
 	(	
-		((CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
+		  (CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
 		 ((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
-		 ((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])) | 
-		(CONTEXT_AORTA_ROOT)
-	):context	
+		 ((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
+	):context
+	
+	({Token.string==~"[:-]"}{Split.kind=="external"})[0,1]
 	
 	( FILTER_ALLOW_NEG_MODIFIER )[0,20]
 			
 	( (VALUE_MODIFIER)? ):modifier
 	
-	( FILTER )[0,2]
+	( FILTER )[0,5]
 
 	( VALUE ):value
 	
@@ -145,8 +146,7 @@ Priority: 101
 	(	
 		((CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
 		 ((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
-		 ((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])) | 
-		(CONTEXT_AORTA_ROOT)
+		 ((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1]))
 	):context	
 				
 	( FILTER_ALLOW_NEG_AND_SIZE_CAT )[0,30]
@@ -196,6 +196,7 @@ Priority: 101
  * Description:
  * Of the forms...
  * e.g. 'Non-dilated Sov'
+ * e.g. 'Non-dilated Sov, Stj and Asc Ao'
  * e.g. 'No evidence of significant dilation of the SoV'
  * e.g. 'Not dilated at the Sov'
  * e.g. 'Aorta non dilated at the level of the Sov'
@@ -209,7 +210,11 @@ Priority: 99
 
 	( VALUE ):value
 	
-	( FILTER )[0,5]
+	( {Token,
+		!Anatomy,
+		!Categorical,
+		!Lookup.minorType == "conjunction",
+		Token within {VarSentence.minorType == [descriptor]}} )[0,5]
 			
 	(
 		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
@@ -248,6 +253,7 @@ Priority: 99
  * e.g. 'Non-dilated aortic root at the Sov and Stj'
  * e.g. 'no significant dilatation of the aortic root at sinus level'
  * e.g. 'Non dilated proximal aorta (3.1cm at the level of the SOV).'
+ * e.g. 'Non dilated proximal aortic root, Sinus of Valsalva = 3.7cm, sinotubular junction = 3cm, asc ao 3cm.'
  */
 Rule: ao_cat_4
 Priority: 99
@@ -267,7 +273,63 @@ Priority: 99
 		
 	( FILTER )[0,5]
 				
-	{Lookup.minorType == "preposition"}
+	( {Lookup.minorType == "preposition"} | {Token.string == ","} )
+	
+	( FILTER )[0,5]
+	
+	(
+			CONTEXT (FILTER)[0,6]                   (CONTEXT_OTHER_AORTA (FILTER)[0,6])[0,2] |
+		  ((CONTEXT_OTHER_AORTA (FILTER)[0,6])[0,2]  CONTEXT (FILTER)[0,6]) |
+		  ((CONTEXT_OTHER_AORTA (FILTER)[0,6])[0,1]  CONTEXT (FILTER)[0,6]  (CONTEXT_OTHER_AORTA (FILTER)[0,6])[0,1])
+	):context	
+	
+):annot
+--> 
+:annot.varName = {var_name = [variable_name]}, 
+:annot{
+	
+	/* Templated strings can only be used with the standard Gate annotation form, not with plain blocks of java code. 
+	 * Therefore we have to annotate using the standard form and then extract the templated string from the annotation's 
+	 * feature map.	
+	 */
+	AnnotationSet thisAnnot      = bindings.get("annot");
+	AnnotationSet tmpVarNameAnns = inputAS.get("varName", thisAnnot.firstNode().getOffset(), thisAnnot.lastNode().getOffset());
+	String var_name              = (String) tmpVarNameAnns.iterator().next().getFeatures().get("var_name");
+	inputAS.removeAll(tmpVarNameAnns);
+	
+	/* Creation of the processor object does an 'in-place' processing of the annotations found using the above rules.
+	 * Using the bindings, strings are extracted from the doc, processed/parsed, then inserted into the outputAS (output
+	 * annotation set).	
+	 */
+	JapeRhsProcessor processor = new JapeRhsProcessor("echocardiogram", var_name, doc, bindings, outputAS);
+}
+
+/*
+ * Description:
+ * Of the forms...
+ * e.g. 'Aortic root not dilated 4,2cm at the level of the sinuses'
+ * e.g. 'Proximal aorta is not significantly dilated at the level of the sinuses'
+ * e.g. 'Aortic root looks to be significantly dilated 4,2cm at the level of the sinuses'
+ */
+Rule: ao_cat_4b
+Priority: 99
+(
+	( CONTEXT_AORTA_ROOT | 
+	  {Anatomy,
+			Anatomy within {VarSentence.minorType == [descriptor]},
+			Anatomy.minorType == "ascending_aorta"}	)
+	
+	( FILTER )[0,4]
+	
+	( (VALUE_MODIFIER)? ):modifier
+	
+	( FILTER )[0,3]
+
+	( VALUE ):value
+	
+	( FILTER )[0,4]
+			
+	( {Lookup.minorType == "preposition"} | {Token.string == ","} )
 	
 	( FILTER )[0,5]
 			
@@ -317,17 +379,13 @@ Priority: 98
 	
 	( CONTEXT_AORTA_ROOT )
 	
-	{Token.kind == "punctuation", Token.position == "startpunct"}
+	( {Token.kind == "punctuation", Token.position == "startpunct"} | {Token.string == ","} )
 	
 	(
 		(FILTER)[0,6] CONTEXT                   ((FILTER)[0,6] CONTEXT_OTHER_AORTA)[0,2] |
 	  (((FILTER)[0,6] CONTEXT_OTHER_AORTA)[0,2]  (FILTER)[0,6] CONTEXT ) |
       (((FILTER)[0,6] CONTEXT_OTHER_AORTA)[0,1]  (FILTER)[0,6] CONTEXT  ((FILTER)[0,6] CONTEXT_OTHER_AORTA)[0,1])
 	):context	
-	
-	( FILTER )[0,1]		
-	
-	{Token.kind == "punctuation", Token.position == "endpunct"}
 	
 ):annot
 --> 
@@ -375,14 +433,16 @@ Priority: 97
 		Token within {VarSentence.majorType == "aorta"}} )[0,20]
 
 	( {Lookup.minorType == "distributive_determiner"} |
+	  {Lookup.minorType == "demonstrative_determiner"} |
 	  ({Lookup.minorType == "distributive_determiner",
 	  		Categorical.minorType == "negative_modifier",
-	  		Categorical within {VarSentence.majorType == "aorta"}}):modifier )
+	  		Categorical within {VarSentence.majorType == "aorta"}} |
+	   {Categorical.minorType == "negative_modifier"}):modifier )
 	
 	( {Token,
 		!Anatomy,
 		!Categorical.minorType != "negative_modifier",
-		Token within {VarSentence.majorType == "aorta"}} )[0,2]
+		Token within {VarSentence.majorType == "aorta"}} )[0,5]
 				
 	( ({Categorical, 
 		Categorical.minorType == "dilated", 

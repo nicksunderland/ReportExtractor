@@ -6,14 +6,14 @@ Imports: {
 
 
 Phase: AortaHeightIndexedDiameter
-Input: Token Anatomy Numeric Units Lookup VarSentence Split Categorical Blocked
+Input: Token Anatomy Numeric Units Lookup VarSentence Split Categorical BlockedContext
 Options: control=Appelt negationGrouping=false
 
 Macro: CONTEXT
 (
 	{Anatomy,
 		Anatomy within {VarSentence.minorType == [descriptor]},
-		Anatomy notWithin {Blocked.type == [variable_name]},
+		Anatomy notWithin {BlockedContext.type == [variable_name]},
 		Anatomy.minorType == [descriptor],
 		Anatomy.minorType != "aortic_root"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?
@@ -32,7 +32,6 @@ Macro: CONTEXT_AORTA_ROOT
 (
 	{Anatomy,
 		Anatomy within {VarSentence.minorType == [descriptor]},
-		Anatomy notWithin {Blocked.minorType == [variable_name]},
 		Anatomy.majorType == "aorta", 
 		Anatomy.minorType == "aortic_root"}
 	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","})?

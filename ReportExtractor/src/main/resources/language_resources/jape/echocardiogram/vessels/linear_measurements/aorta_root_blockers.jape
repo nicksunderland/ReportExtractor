@@ -1,0 +1,258 @@
+Imports: {
+	import static gate.Utils.*;
+	import BHI.ReportExtractor.JapeRhsProcessor;
+}
+
+
+
+Phase: BlockingAorticRootDiameter
+Input: Token Anatomy Numeric Units Lookup VarSentence Split Categorical SectionHeader
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * Specific blockers go here, generic blockers can go in the base grammar file.
+ * Run this phase before either an 'aortic_root' phase, or an 'ascending_aorta'
+ * phase, as both of these descriptors commonly get used to refer to the aortic
+ * root in general. 
+ * Block general references to the proximal aorta followed by a more 
+ * specific reference to part of the proximal aorta BUT the value-context 
+ * is reversed such that the normal rules do not block it.
+ * e.g. 'aortic root non-dilated (33mm at Sov level)'
+ * e.g. 'non-dilated aortic root (33mm Sov level)'
+ * e.g. 'Mildly dilated proximal aorta (3.9cm at sinus level...'
+ */
+Rule: ao_root_blocker_1
+Priority: 101
+(	
+	(
+		({Categorical})[0,2]
+		({Token})[0,2]
+	)[0,2]
+		
+	( {Anatomy,
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy.minorType == "aortic_root"} ):context
+	
+	({Token})[0,1]
+	
+	({Categorical})[0,2]
+			
+	{Token.kind == "punctuation", Token.position == "startpunct"}
+
+	( {Numeric, 
+			Numeric within {VarSentence.minorType == [descriptor]},
+			Numeric.type == "double"} |
+	  {Numeric,
+			Numeric within {VarSentence.minorType == [descriptor]}, 
+			Numeric.type == "integer"} )
+		
+	( {Units,
+			Units within {VarSentence.minorType == [descriptor]},
+			Units.majorType == "length"} )?
+					
+	( {Lookup.minorType == "preposition"} )?
+	( {Token} )[0,4]
+	( {Anatomy,
+			Anatomy within {VarSentence.minorType == [descriptor]},
+			Anatomy.minorType == "sinus_of_valsalva"} |
+	  {Anatomy,
+			Anatomy within {VarSentence.minorType == [descriptor]},
+			Anatomy.minorType == "sinotubular_junction"} )
+			
+):root_blocker
+-->
+:root_blocker.BlockedPhrase = {type = [variable_name], rule = "ao_root_blocker_1"},
+:context.BlockedContext = {type = [variable_name], rule = "ao_root_blocker_1"}
+
+/*
+ * Description:
+ * Specific blockers go here, generic blockers can go in the base grammar file.
+ * Run this phase before either an 'aortic_root' phase, or an 'ascending_aorta'
+ * phase, as both of these descriptors commonly get used to refer to the aortic
+ * root in general. 
+ * Block general references to the proximal aorta followed by a more 
+ * specific reference to part of the proximal aorta BUT the value-context 
+ * is reversed such that the normal rules do not block it.
+ * e.g. 'The proximal aorta is dilated at 4.7cm (sinus level)'
+ */
+Rule: ao_root_blocker_2
+Priority: 101
+(	
+	(
+		({Categorical})[0,2]
+		({Token})[0,2]
+	)[0,2]
+		
+	( {Anatomy,
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy.minorType == "aortic_root"}):context
+	
+	({Token})[0,2]
+	
+	({Categorical})[0,2]
+			
+	({Token})[0,5]
+			
+	{Token.kind == "punctuation", Token.position == "startpunct"}
+
+	({Token})[0,5]
+			
+	( {Anatomy,
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy.minorType == "sinus_of_valsalva"} |
+	  {Anatomy,
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy.minorType == "sinotubular_junction"} )
+			
+):root_blocker
+-->
+:root_blocker.BlockedPhrase = {type = [variable_name], rule = "ao_root_blocker_2"},
+:context.BlockedContext = {type = [variable_name], rule = "ao_root_blocker_2"}
+
+/*
+ * Description:
+ * Specific blockers go here, generic blockers can go in the base grammar file.
+ * Block general references to the proximal aorta followed by a more 
+ * specific reference to part of the proximal aorta.
+ * e.g. 'Aortic root 4.2cm at sinus of valsalva'
+ * e.g. 'Aortic root not dilated 4,2cm at the level of the sinuses'
+ * e.g. 'Aortic root measures 4,2cm at the level of the sinuses'
+ * e.g. 'Non dilated proximal aorta to sinus level.'
+ * e.g. 'Non-dilated aortic root at the Sov and Stj'
+ * e.g. 'no significant dilatation of the aortic root at sinus level'
+ * e.g. 'Normal aortic root with a dilated asc ao (4.1cm).'
+ */
+Rule: ao_root_blocker_3
+Priority: 100
+(	
+	(
+		({Categorical})[0,2]
+		({Token})[0,2]
+	)[0,2]
+			
+	( {Anatomy,
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy.minorType == "aortic_root"} ):context
+	
+	( {Token,
+		!Anatomy.minorType != "aortic_root",
+		!Categorical,
+		Token within {VarSentence.minorType == [descriptor]}} )[0,10]
+			
+	{Lookup.minorType == "preposition"}
+	
+	( {Token} )[0,4]
+	
+	( {Anatomy,
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy.minorType == "sinus_of_valsalva"} |
+	  {Anatomy,
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy.minorType == "sinotubular_junction"} )
+			
+):root_blocker
+-->
+:root_blocker.BlockedPhrase = {type = [variable_name], rule = "ao_root_blocker_3"},
+:context.BlockedContext = {type = [variable_name], rule = "ao_root_blocker_3"}
+
+/*
+ * Description:
+ * Specific blockers go here, generic blockers can go in the base grammar file.
+ * Block general references to the proximal aorta followed by a more 
+ * specific reference to part of the proximal aorta.
+ * e.g. 'Normal calibre proximal aortic root, sinus of Valsalva = 2.9cm. '
+ */
+Rule: ao_root_blocker_4
+Priority: 100
+(	
+	(
+		({Categorical})[0,2]
+		({Token})[0,2]
+	)[0,2]
+			
+	( {Anatomy,
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy.minorType == "aortic_root"} ):context
+	
+	( {Token,
+		!Anatomy.minorType != [descriptor],
+		!Categorical,
+		Token within {VarSentence.minorType == [descriptor]}} )[0,10]
+	
+	( {Token} )[0,4]
+	
+	( {Anatomy,
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy.minorType == "sinus_of_valsalva"} |
+	  {Anatomy,
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy.minorType == "sinotubular_junction"} )
+	
+	( {Token} )[0,1]
+	
+	( {Numeric, 
+		Numeric within {VarSentence.minorType == [descriptor]},
+		Numeric.type == "double"} |
+	  {Numeric,
+		Numeric within {VarSentence.minorType == [descriptor]}, 
+		Numeric.type == "integer"} )
+	
+	( {Units,
+		Units within {VarSentence.minorType == [descriptor]},
+		Units.majorType == "length"} )?
+			
+):root_blocker
+-->
+:root_blocker.BlockedPhrase = {type = [variable_name], rule = "ao_root_blocker_4"},
+:context.BlockedContext = {type = [variable_name], rule = "ao_root_blocker_4"}
+
+/*
+ * Description:
+ * Specific blockers go here, generic blockers can go in the base grammar file.
+ * Block general references to the proximal aorta followed by a more 
+ * specific reference to part of the proximal aorta. We don't allow ascending aorta to 
+ * escape this block as the root reference is just a section header. 
+ * e.g. 'HAMB_AO_ASC_TEXT: Proximal ascending aorta 55cm. This is not dilated indexed to BSA. 
+ * Aortic root at SoV measures 44cm, this is dilated.'
+ */
+Rule: ao_root_blocker_5
+Priority: 100
+(	
+	(
+		({Categorical})[0,2]
+		({Token})[0,2]
+	)[0,2]
+			
+	( {Anatomy,
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy within {SectionHeader.minorType == "aorta"},
+		Anatomy.minorType == "aortic_root"} ):context
+	
+	( {Token,
+		!Anatomy.minorType != [descriptor],
+		!Categorical,
+		Token within {VarSentence.minorType == [descriptor]}} )[0,10]
+	
+	( {Token} )[0,4]
+	
+	( {Anatomy,
+		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy.majorType == "aorta"} )
+	
+	( {Token} )[0,1]
+	
+	( {Numeric, 
+		Numeric within {VarSentence.minorType == [descriptor]},
+		Numeric.type == "double"} |
+	  {Numeric,
+		Numeric within {VarSentence.minorType == [descriptor]}, 
+		Numeric.type == "integer"} )
+	
+	( {Units,
+		Units within {VarSentence.minorType == [descriptor]},
+		Units.majorType == "length"} )?
+			
+):root_blocker
+-->
+:root_blocker.BlockedPhrase = {type = [variable_name], rule = "ao_root_blocker_5"},
+:context.BlockedContext = {type = [variable_name], rule = "ao_root_blocker_5"}

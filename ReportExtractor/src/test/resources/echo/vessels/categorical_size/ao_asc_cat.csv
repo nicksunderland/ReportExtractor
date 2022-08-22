@@ -1,4 +1,5 @@
 var_name,text,expected_value,expected_units
+ao_asc_cat,"Normal calibre to proximal aortic root, sinus of Valsalva 3.5cm, ascending aorta 3.5cm",,
 ao_asc_cat,Non dilated aortic root (3.1cm at the level of the ascending aorta),nondilated,
 ao_asc_cat,Non dilated proximal aorta (3.1cm sinus level),,
 ao_asc_cat,Dilated proximal aorta at the SoV,,
@@ -101,7 +102,7 @@ ao_asc_cat,"AORTA:
 ao_asc_cat," Aorta:
  Normal aortic root, proximal ascending aorta and aortic arch dimensions. ",nondilated,
 ao_asc_cat,"Mild aortic sclerosis with at least eccentric mild AR. Dilated asc ao., SOV 4.8cm.",dilated,
-ao_asc_cat,HAMB_AO_ASC_TEXT: Non-dilated. CHAMB_AO_DESC_NORMAL: F,nondilated,
+ao_asc_cat,HAMB_AO_ASC_TEXT: Non-dilated. CHAMB_AO_DESC_NORMAL: F,,
 ao_asc_cat,The ascending aorta is normal in size.,nondilated,
 ao_asc_cat,The ascending aorta is mildly dilated.,dilated,
 ao_asc_cat,"the asc. aorta is normal for height. 

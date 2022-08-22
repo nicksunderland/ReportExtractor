@@ -47,6 +47,7 @@ measurement_types/tissue_doppler.lst:doppler:tissue_doppler:en:Measurement
 ../general/conjunction_words.lst:grammar:conjunction:en
 ../general/preposition_words.lst:grammar:preposition:en
 ../general/distributive_determiner_words.lst:grammar:distributive_determiner:en
+../general/demonstrative_determiner_words.lst:grammar:demonstrative_determiner:en
 ../general/measure_verb.lst:measure_verb:measure_verb:en
 ../general/body_surface_area.lst:body_surface_area:body_surface_area:en
 ../general/patient.lst:patient:patient:en
@@ -61,4 +62,6 @@ measurement_types/tissue_doppler.lst:doppler:tissue_doppler:en:Measurement
 ../general/image_frame.lst:image_frame:image_frame:en
 ../general/dilated.lst:size_category:dilated:en:Categorical
 ../general/nondilated.lst:size_category:nondilated:en:Categorical
+../general/calcified.lst:calcification:noncalcified:en:Categorical
+../general/calcified.lst:calcification:calcified:en:Categorical
 ../general/adverbs_negative.lst:modifier:negative_modifier:en:Categorical
