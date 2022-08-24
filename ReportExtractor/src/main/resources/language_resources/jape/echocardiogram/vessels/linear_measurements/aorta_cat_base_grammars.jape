@@ -285,10 +285,15 @@ Priority: 99
 		Anatomy within {VarSentence.minorType == "ascending_aorta"},
 		Anatomy.minorType == "ascending_aorta"}	)
 		
-	( {Token,
-		!Anatomy,
-		!Categorical,
-		Token within {VarSentence.majorType == "aorta"}} )[0,5]
+	(	({Token,
+			!Anatomy,
+			!Categorical,
+			Token within {VarSentence.minorType == "aortic_root"}} )[0,5] |
+		({Token,
+			!Anatomy,
+			!Numeric, //dont allow Numeric with ascending aorta mentions as probably a specific prox. asc. ao.
+			!Categorical,
+			Token within {VarSentence.minorType == "ascending_aorta"}} )[0,5]  )
 		
 	( {Lookup.minorType == "preposition"} | {Token.string == ","} | {Token.string == "."})
 	
@@ -357,10 +362,16 @@ Priority: 99
 		  Categorical.minorType == "nondilated",
 		  Categorical within {VarSentence.majorType == "aorta"}}) ):value
 	
-	( {Token,
-		!Anatomy,
-		!Categorical,
-		Token within {VarSentence.majorType == "aorta"}} )[0,4]
+	(	({Token,
+			!Anatomy,
+			!Categorical,
+			Token within {VarSentence.minorType == "aortic_root"}} )[0,4] |
+		({Token,
+			!Anatomy,
+			!Numeric, //dont allow Numeric with ascending aorta mentions as probably a specific prox. asc. ao.
+			!Categorical,
+			Token within {VarSentence.minorType == "ascending_aorta"}} )[0,4]  )
+			
 			
 	( {Lookup.minorType == "preposition"} | {Token.string == ","} | {Token.string == "."} )
 	
