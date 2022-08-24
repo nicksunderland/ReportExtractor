@@ -43,8 +43,10 @@ Macro: FILTER
 		!Anatomy,
 		!Lookup.majorType == "quantity_change",
 		!Lookup.majorType == "body_surface_area",
-		!Units.majorType == "z_score", 
+		!Lookup.majorType == "normal_range",
+		!Units.majorType == "z_score",
 		Token within {VarSentence.minorType == [descriptor]}}
+	| {Split}
 )
 
 Macro: VALUE

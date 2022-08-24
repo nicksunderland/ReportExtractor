@@ -1,4 +1,6 @@
 var_name,text,expected_value,expected_units
+ao_sov_cat,The aortic root is not dilated.  Sinus of Valsalva = 2.7 cm.,nondilated,
+ao_sov_cat,"Sinus of Valsalva= 3.8 cm, Sino tubular Junction = 2.8  cm, ascending aorta = 3.1  cm. The SoV is outside normal limits.",dilated,
 ao_sov_cat,"Normal calibre to proximal aortic root, sinus of Valsalva 3.5cm, ascending aorta 3.5cm",nondilated,
 ao_sov_cat,Sov - Asc Ao is nondilated,nondilated,
 ao_sov_cat,Non dilated proximal aorta (3.2cm sinus level).,nondilated,

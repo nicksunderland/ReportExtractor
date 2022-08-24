@@ -16,7 +16,7 @@ ao_root_cat,AORTA: Dilated aortic root from Sinus fo Valsalva to proximal ascend
 ao_root_cat,Aorta No evidence of significant dilatation of the aortic root.  ,nondilated,
 ao_root_cat,Dilated aortic root at SoV. ,,
 ao_root_cat,HAMB_AO_ASC_TEXT: Normal aortic root size.,nondilated,
-ao_root_cat,Normal calibre to aortic root.  Sinus of Valsalva = 3.3cm.  Ascending aorta 3cm. ,nondilated,
+ao_root_cat,Normal calibre to aortic root.  Sinus of Valsalva = 3.3cm.  Ascending aorta 3cm. ,,
 ao_root_cat,"Great Vessels
 Non dilated proximal aorta. Arch and abdominal aorta appear normal in dimension. Normal descending aortic flow velocity. ",nondilated,
 ao_root_cat,Aorta Visually no significant dilatation of the aortic root at sinus level.  ,,
@@ -158,7 +158,7 @@ From what can be seen of the aortic root there does not appear to be any signifi
 ",nondilated,
 ao_root_cat,"AORTA:
  Normal dimension of the aortic root. Sinuses 2.8cm
- Ascending aorta and arch if not well imaged",nondilated,
+ Ascending aorta and arch if not well imaged",,
 ao_root_cat," Aorta:
  Aortic root and proximal ascending aorta not visualised. 
  Aortic arch is of normal dimensions. No abnormal flow detected in the descending aorta. 

@@ -56,6 +56,7 @@ measurement_types/tissue_doppler.lst:doppler:tissue_doppler:en:Measurement
 ../general/age.lst:age:age:en
 ../general/months.lst:month:month:en
 ../general/indexed.lst:indexed:indexed:en
+../general/normal_range.lst:normal_range:normal_range:en
 ../general/increase.lst:quantity_change:increase:en
 ../general/decrease.lst:quantity_change:decrease:en
 ../general/flow.lst:flow:flow:en

@@ -1,4 +1,16 @@
 var_name,text,expected_value,expected_units
+ao_sov_diam,"Aorta:
+Sinus of Valsalva is really big. 
+It measures 34mm.",3.4,cm
+ao_sov_diam,"Aorta:
+Not dilated. (measurements made on 2D using leading ege to leading edge, at end diastole as per departmental protocol). 
+Sinus of Valsalva = 29.8mm, indexed to height = 17.1mm/m.
+(Normal range for males = 14.8 - 23.2mm/m) (Normal range for females = 14.1 - 22.1mm/m)
+Sinotubular Junction = 27.5, indexed to height = 15.8mm/m.
+(Normal range for males = 12.6 - 19.8.2mm/m) (Normal range for females = 12.2 - 19.4mm/m)
+Ascending aorta = 28.8, indexed to height = 15.8mm/m.
+(Normal range for males = 12.6 - 21.4mm/m) (Normal range for females = 12.3 - 22.1mm/m)
+No coarctation.",2.98,cm
 ao_sov_diam,"Non dilated proximal aorta (3.2cm at the STJ, 3.1cm at the SOV, 3.3cm at the Asc Ao level)",3.1,cm
 ao_sov_diam,"Sinus of Valsalva is dilated 41mm (22.4mm/m) from inner edge to inner edge.
 MM_SINUS_OF_VALSALVA: 3.3.",4.1,cm

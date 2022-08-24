@@ -236,7 +236,8 @@ public class Data {
 			FeatureMap gazetteer_common_units_config = gate.Utils.featureMap("listsURL",      this.getClass().getClassLoader().getResource("language_resources/gazetteers/measurement_units/measurement_units_lists.def"), 
                                                                              "caseSensitive", "False");
 			FeatureMap gazetteer_main_config         = gate.Utils.featureMap("listsURL",      this.getClass().getClassLoader().getResource("language_resources/gazetteers/" + this.examination_type + "/" + this.examination_type + "_lists.def"), 
-																			 "caseSensitive", "True");
+																			 "caseSensitive", "True", 
+																			 "longestMatchOnly", "False");
 			FeatureMap jape_config                   = gate.Utils.featureMap("grammarURL",    this.getClass().getClassLoader().getResource("language_resources/jape/" + this.examination_type + "/main_" + this.examination_type + ".jape"));
 			
 			this.createNonSplitPatterns(); //this directly alters the text file at the nonSplitListURL (the result can be found in the "target" folder once you've build the project)

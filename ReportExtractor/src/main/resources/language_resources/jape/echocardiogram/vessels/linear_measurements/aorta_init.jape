@@ -21,7 +21,7 @@ Options: control=All negationGrouping=false
  * Description:
  * Sentence that contains 'aorta' phrases. 
  * We include the Split annotations as this will block additional sentences 
- * being added if there are multiple return lines between them 
+ * being added if there are multiple return lines between them.
  * (i.e. Split.kind=='external' is blocked inbetween sentences)
  */
 Rule: var_sentence
@@ -167,7 +167,7 @@ Rule: var_sentence
 		Sentence notContains {SectionHeader.minorType != "aorta"}}
 	({Split.kind=="external"})[0,1] //sometimes 'Aortic Root: \n" is used as the section header
 	({Sentence, 
-		Sentence notContains {Anatomy.minorType != "aortic_root"},
+		Sentence notContains {Anatomy.majorType != "aorta"},
 		Sentence notContains {SectionHeader.minorType != "aorta"}})?
 					
 ):var_sentence
@@ -190,6 +190,7 @@ Rule: var_sentence
 	{Sentence,
 		Sentence contains {Anatomy.minorType == "sinus_of_valsalva"}, 
 		Sentence notContains {SectionHeader.minorType != "aorta"}}
+	({Split.kind=="external"})[0,1]
 	({Sentence, 
 		Sentence notContains {Anatomy.minorType != "sinus_of_valsalva"},
 		Sentence notContains {SectionHeader.minorType != "aorta"}})?
@@ -214,6 +215,7 @@ Rule: var_sentence
 	{Sentence,
 		Sentence contains {Anatomy.minorType == "sinotubular_junction"}, 
 		Sentence notContains {SectionHeader.minorType != "aorta"}}
+	({Split.kind=="external"})[0,1]
 	({Sentence, 
 		Sentence notContains {Anatomy.minorType != "sinotubular_junction"},
 		Sentence notContains {SectionHeader.minorType != "aorta"}})?	
@@ -237,6 +239,7 @@ Rule: var_sentence
 	{Sentence,
 		Sentence contains {Anatomy.minorType == "ascending_aorta"}, 
 		Sentence notContains {SectionHeader.minorType != "aorta"}}
+	({Split.kind=="external"})[0,1]
 	({Sentence, 
 		Sentence notContains {Anatomy.minorType != "ascending_aorta"},
 		Sentence notContains {SectionHeader.minorType != "aorta"}})?	

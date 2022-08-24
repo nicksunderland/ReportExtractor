@@ -15,25 +15,25 @@ Macro: CONTEXT
 		Anatomy within {VarSentence.minorType == [descriptor]},
 		Anatomy notWithin {BlockedContext.type == [variable_name]},
 		Anatomy.minorType == [descriptor]}
-	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} | {Token.string=="-"})?
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string==~"[/,-]"})?
 )
 
 Macro: CONTEXT_OTHER_AORTA
 (
 	{Anatomy,
-		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy within {VarSentence.majorType == "aorta"},
 		Anatomy.majorType == "aorta"}
-	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} | {Token.string=="-"})?
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string==~"[/,-]"})?
 )
 
 Macro: CONTEXT_AORTA_ROOT
 (
 	{Anatomy,
-		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy within {VarSentence.minorType == "aortic_root"},
 		Anatomy notWithin {Blocked.type == [variable_name]},
 		Anatomy.majorType == "aorta", 
 		Anatomy.minorType == "aortic_root"}
-	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string=="/"} | {Token.string==","} | {Token.string=="-"})?
+	({Lookup.minorType == "conjunction"} | {Lookup.minorType == "preposition"} | {Token.string==~"[/,-]"})?
 )
 
 Macro: FILTER
@@ -60,7 +60,7 @@ Macro: FILTER_ALLOW_NEG_AND_SIZE_CAT
 		Token within {VarSentence.minorType == [descriptor]}} |
 	{Categorical, 
 		Categorical.majorType == "size_category", 
-		Categorical within {VarSentence.minorType == [descriptor]}}
+		Categorical within {VarSentence.minorType == [descriptor]}} 
 )
 
 Macro: VALUE_MODIFIER
@@ -254,26 +254,43 @@ Priority: 99
  * e.g. 'no significant dilatation of the aortic root at sinus level'
  * e.g. 'Non dilated proximal aorta (3.1cm at the level of the SOV).'
  * e.g. 'Non dilated proximal aortic root, Sinus of Valsalva = 3.7cm, sinotubular junction = 3cm, asc ao 3cm.'
+ * e.g. 'Normal dimension of the aortic root. Sinuses 2.8cm'
  */
 Rule: ao_cat_4
 Priority: 99
 (
-	( (VALUE_MODIFIER)? ):modifier
+	( ({Categorical, 
+			Categorical.minorType == "negative_modifier",
+			Categorical within {VarSentence.majorType == "aorta"}})? ):modifier
 	
-	( FILTER )[0,3]
+	( {Token,
+		!Anatomy,
+		!Categorical,
+		Token within {VarSentence.majorType == "aorta"}} )[0,3]
 
-	( VALUE ):value
-	
-	( FILTER )[0,2]
+	( ({Categorical, 
+			Categorical.minorType == "dilated", 
+			Categorical within {VarSentence.majorType == "aorta"}}) |
+	  ({Categorical, 
+		  Categorical.minorType == "nondilated",
+		  Categorical within {VarSentence.majorType == "aorta"}}) ):value
+		
+	( {Token,
+		!Anatomy,
+		!Categorical,
+		Token within {VarSentence.majorType == "aorta"}} )[0,3]
 			
 	( CONTEXT_AORTA_ROOT | 
 	  {Anatomy,
-		Anatomy within {VarSentence.minorType == [descriptor]},
+		Anatomy within {VarSentence.minorType == "ascending_aorta"},
 		Anatomy.minorType == "ascending_aorta"}	)
 		
-	( FILTER )[0,5]
-				
-	( {Lookup.minorType == "preposition"} | {Token.string == ","} )
+	( {Token,
+		!Anatomy,
+		!Categorical,
+		Token within {VarSentence.majorType == "aorta"}} )[0,5]
+		
+	( {Lookup.minorType == "preposition"} | {Token.string == ","} | {Token.string == "."})
 	
 	( FILTER )[0,5]
 	
@@ -315,28 +332,44 @@ Rule: ao_cat_4b
 Priority: 99
 (
 	( CONTEXT_AORTA_ROOT | 
-	  {Anatomy,
-			Anatomy within {VarSentence.minorType == [descriptor]},
-			Anatomy.minorType == "ascending_aorta"}	)
+			  {Anatomy,
+				Anatomy within {VarSentence.minorType == "ascending_aorta"},
+				Anatomy.minorType == "ascending_aorta"}	)
 	
-	( FILTER )[0,4]
+	( {Token,
+		!Anatomy,
+		!Categorical,
+		Token within {VarSentence.majorType == "aorta"}} )[0,4]
 	
-	( (VALUE_MODIFIER)? ):modifier
+	( ({Categorical, 
+		Categorical.minorType == "negative_modifier",
+		Categorical within {VarSentence.majorType == "aorta"}})? ):modifier
 	
-	( FILTER )[0,3]
+	( {Token,
+		!Anatomy,
+		!Categorical,
+		Token within {VarSentence.majorType == "aorta"}} )[0,3]
 
-	( VALUE ):value
+	( ({Categorical, 
+			Categorical.minorType == "dilated", 
+			Categorical within {VarSentence.majorType == "aorta"}}) |
+	  ({Categorical, 
+		  Categorical.minorType == "nondilated",
+		  Categorical within {VarSentence.majorType == "aorta"}}) ):value
 	
-	( FILTER )[0,4]
+	( {Token,
+		!Anatomy,
+		!Categorical,
+		Token within {VarSentence.majorType == "aorta"}} )[0,4]
 			
-	( {Lookup.minorType == "preposition"} | {Token.string == ","} )
+	( {Lookup.minorType == "preposition"} | {Token.string == ","} | {Token.string == "."} )
 	
 	( FILTER )[0,5]
 			
 	(
-		(CONTEXT (CONTEXT_OTHER_AORTA)[0,2]) |
-		((CONTEXT_OTHER_AORTA)[0,2] CONTEXT) |
-		((CONTEXT_OTHER_AORTA)[0,1] CONTEXT (CONTEXT_OTHER_AORTA)[0,1])
+			CONTEXT (FILTER)[0,6]                   (CONTEXT_OTHER_AORTA (FILTER)[0,6])[0,2] |
+		  ((CONTEXT_OTHER_AORTA (FILTER)[0,6])[0,2]  CONTEXT (FILTER)[0,6]) |
+		  ((CONTEXT_OTHER_AORTA (FILTER)[0,6])[0,1]  CONTEXT (FILTER)[0,6]  (CONTEXT_OTHER_AORTA (FILTER)[0,6])[0,1])
 	):context	
 	
 ):annot
@@ -420,15 +453,15 @@ Priority: 98
  */
 Rule: ao_cat_6
 Priority: 97
-(
-		
+(		
 	(
-		CONTEXT (FILTER)[0,4]                   (CONTEXT_OTHER_AORTA (FILTER)[0,4])[0,2] |
-	  ((CONTEXT_OTHER_AORTA (FILTER)[0,4])[0,2]  CONTEXT (FILTER)[0,4]) |
-	  ((CONTEXT_OTHER_AORTA (FILTER)[0,4])[0,1]  CONTEXT (FILTER)[0,4]  (CONTEXT_OTHER_AORTA (FILTER)[0,4])[0,1])
+		CONTEXT (FILTER)[0,6]                   (CONTEXT_OTHER_AORTA (FILTER)[0,6])[0,2] |
+	  ((CONTEXT_OTHER_AORTA (FILTER)[0,6])[0,2]  CONTEXT (FILTER)[0,6]) |
+	  ((CONTEXT_OTHER_AORTA (FILTER)[0,6])[0,1]  CONTEXT (FILTER)[0,6]  (CONTEXT_OTHER_AORTA (FILTER)[0,6])[0,1])
 	):context	
 	
 	( {Token,
+		!Anatomy,
 		!Categorical,
 		Token within {VarSentence.majorType == "aorta"}} )[0,20]
 

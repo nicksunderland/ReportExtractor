@@ -1,4 +1,22 @@
 var_name,text,expected_value,expected_units
+ao_sov_diam_ht_idx,"Aorta:
+Not dilated. (measurements made on 2D using leading ege to leading edge, at end diastole as per departmental protocol). 
+Sinus of Valsalva = 29.8mm, indexed to height = [test missing value here] mm/m.
+(Normal range for males = 14.8 - 23.2mm/m) (Normal range for females = 14.1 - 22.1mm/m)
+Sinotubular Junction = 27.5, indexed to height = 15.8mm/m.
+(Normal range for males = 12.6 - 19.8.2mm/m) (Normal range for females = 12.2 - 19.4mm/m)
+Ascending aorta = 28.8, indexed to height = 15.8mm/m.
+(Normal range for males = 12.6 - 21.4mm/m) (Normal range for females = 12.3 - 22.1mm/m)
+No coarctation.",,
+ao_sov_diam_ht_idx,"Aorta:
+Not dilated. (measurements made on 2D using leading ege to leading edge, at end diastole as per departmental protocol). 
+Sinus of Valsalva = 29.8mm, indexed to height = 17.1mm/m.
+(Normal range for males = 14.8 - 23.2mm/m) (Normal range for females = 14.1 - 22.1mm/m)
+Sinotubular Junction = 27.5, indexed to height = 15.8mm/m.
+(Normal range for males = 12.6 - 19.8.2mm/m) (Normal range for females = 12.2 - 19.4mm/m)
+Ascending aorta = 28.8, indexed to height = 15.8mm/m.
+(Normal range for males = 12.6 - 21.4mm/m) (Normal range for females = 12.3 - 22.1mm/m)
+No coarctation.",1.71,cm/m
 ao_sov_diam_ht_idx,"AORTA:
 sinuses = 33mm (18mm/m) from inner edge to inner edge.",1.8,cm/m
 ao_sov_diam_ht_idx,Sinus of Valsalva 33mm (18mm/m) from inner edge to inner edge.,1.8,cm/m
