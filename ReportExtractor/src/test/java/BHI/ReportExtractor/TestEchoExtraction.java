@@ -156,30 +156,7 @@ public class TestEchoExtraction
  
         assertTrue(expected_result.equals(actual_result), message);		
 	}
-		    
-//    @ParameterizedTest(name = "testLvInternalDiameterDiastole row: {index}")
-//    @CsvFileSource(resources = "/echo/left_ventricle/linear_measurements/internal_diameter_diastole.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-//    public void testLvInternalDiameterDiastole(String var_name, String text, String expected_value, String expected_units) {
-//    	baseTest(var_name, text, expected_value, expected_units);
-//    }
-//    
-//    @ParameterizedTest(name = "testLvInternalDiameterSystole row: {index}")
-//    @CsvFileSource(resources = "/echo/left_ventricle/linear_measurements/internal_diameter_systole.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-//    public void testLvInternalDiameterSystole(String var_name, String text, String expected_value, String expected_units) {
-//    	baseTest(var_name, text, expected_value, expected_units);
-//    }
-//    
-//    @ParameterizedTest(name = "testLvInterventricularSeptalDiameter row: {index}")
-//    @CsvFileSource(resources = "/echo/left_ventricle/linear_measurements/interventricular_septal_diameter.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-//    public void testLvInterventricularSeptalDiameter(String var_name, String text, String expected_value, String expected_units) {
-//    	baseTest(var_name, text, expected_value, expected_units);
-//    }
-//    
-//    @ParameterizedTest(name = "testLvPosteriorWallDiameter row: {index}")
-//    @CsvFileSource(resources = "/echo/left_ventricle/linear_measurements/posterior_wall_diameter.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
-//    public void testLvPosteriorWallDiameter(String var_name, String text, String expected_value, String expected_units) {
-//    	baseTest(var_name, text, expected_value, expected_units);
-//    }
+	
     @ParameterizedTest(name = "testHeight row: {index}")
     @CsvFileSource(resources = "/general/height.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
     public void testHeight(String var_name, String text, String expected_value, String expected_units) {
@@ -264,10 +241,58 @@ public class TestEchoExtraction
     	baseTest(var_name, text, expected_value, expected_units);
     }
     
-//    @ParameterizedTest(name = "testLvEjectionFraction row: {index}")
-//    @CsvFileSource(resources = "/echo/left_ventricle/systolic_function/ejection_fraction.csv", numLinesToSkip = 1)
-//    public void testLvEjectionFraction(String var_name, String text, String expected_value, String expected_units) {
-//    	baseTest(var_name, text, expected_value, expected_units);
-//    }
+    @ParameterizedTest(name = "testLvEjectionFractionVisual row: {index}")
+    @CsvFileSource(resources = "/echo/left_ventricle/function/lv_ef_visual.csv", numLinesToSkip = 1)
+    public void testLvEjectionFractionVisual(String var_name, String text, String expected_value, String expected_units) {
+    	baseTest(var_name, text, expected_value, expected_units);
+    }
+    
+    @ParameterizedTest(name = "testLvEjectionFractionSimpsons row: {index}")
+    @CsvFileSource(resources = "/echo/left_ventricle/function/lv_ef_simpsons.csv", numLinesToSkip = 1)
+    public void testLvEjectionFractionSimpsons(String var_name, String text, String expected_value, String expected_units) {
+    	baseTest(var_name, text, expected_value, expected_units);
+    }
+    
+    @ParameterizedTest(name = "testLvEjectionFractionAuto row: {index}")
+    @CsvFileSource(resources = "/echo/left_ventricle/function/lv_ef_auto.csv", numLinesToSkip = 1)
+    public void testLvEjectionFractionAuto(String var_name, String text, String expected_value, String expected_units) {
+    	baseTest(var_name, text, expected_value, expected_units);
+    }
+    
+    @ParameterizedTest(name = "testLvEjectionFractionTeicholz row: {index}")
+    @CsvFileSource(resources = "/echo/left_ventricle/function/lv_ef_teicholz.csv", numLinesToSkip = 1)
+    public void testLvEjectionFractionTeicholz(String var_name, String text, String expected_value, String expected_units) {
+    	baseTest(var_name, text, expected_value, expected_units);
+    }
+    
+    @ParameterizedTest(name = "testLvEjectionFractionCategorical row: {index}")
+    @CsvFileSource(resources = "/echo/left_ventricle/function/lv_sysfunc_cat.csv", numLinesToSkip = 1)
+    public void testLvEjectionFractionCategorical(String var_name, String text, String expected_value, String expected_units) {
+    	baseTest(var_name, text, expected_value, expected_units);
+    }
+    
+//  @ParameterizedTest(name = "testLvInternalDiameterDiastole row: {index}")
+//  @CsvFileSource(resources = "/echo/left_ventricle/linear_measurements/internal_diameter_diastole.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
+//  public void testLvInternalDiameterDiastole(String var_name, String text, String expected_value, String expected_units) {
+//  	baseTest(var_name, text, expected_value, expected_units);
+//  }
+//  
+//  @ParameterizedTest(name = "testLvInternalDiameterSystole row: {index}")
+//  @CsvFileSource(resources = "/echo/left_ventricle/linear_measurements/internal_diameter_systole.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
+//  public void testLvInternalDiameterSystole(String var_name, String text, String expected_value, String expected_units) {
+//  	baseTest(var_name, text, expected_value, expected_units);
+//  }
+//  
+//  @ParameterizedTest(name = "testLvInterventricularSeptalDiameter row: {index}")
+//  @CsvFileSource(resources = "/echo/left_ventricle/linear_measurements/interventricular_septal_diameter.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
+//  public void testLvInterventricularSeptalDiameter(String var_name, String text, String expected_value, String expected_units) {
+//  	baseTest(var_name, text, expected_value, expected_units);
+//  }
+//  
+//  @ParameterizedTest(name = "testLvPosteriorWallDiameter row: {index}")
+//  @CsvFileSource(resources = "/echo/left_ventricle/linear_measurements/posterior_wall_diameter.csv", numLinesToSkip = 1, maxCharsPerColumn=10000)
+//  public void testLvPosteriorWallDiameter(String var_name, String text, String expected_value, String expected_units) {
+//  	baseTest(var_name, text, expected_value, expected_units);
+//  }
 
 }

@@ -23,7 +23,8 @@ echocardiogram,lv_fs,percentage,%,0.1,100,FALSE
 echocardiogram,lv_ef_simpsons,percentage,%,0.1,100,FALSE
 echocardiogram,lv_ef_auto,percentage,%,0.1,100,FALSE
 echocardiogram,lv_ef_visual,percentage,%,0.1,100,FALSE
-echocardiogram,lv_function_cat,categorical,"normal,low_normal,impaired,mild,mild_moderate,moderate,moderate_severe,severe",NA,NA,FALSE
+echocardiogram,lv_ef_teicholz,percentage,%,0.1,100,FALSE
+echocardiogram,lv_sysfunc_cat,categorical,"normal,low_normal,impaired,mild,mild_moderate,moderate,moderate_severe,severe",NA,NA,FALSE
 echocardiogram,lvot_diam,length,cm,0.1,100,FALSE
 echocardiogram,lvot_peak_vel,velocity,m/s,0.1,100,FALSE
 echocardiogram,lvot_mean_vel,velocity,m/s,0.1,100,FALSE

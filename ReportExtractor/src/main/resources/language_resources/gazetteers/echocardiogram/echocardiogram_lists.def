@@ -38,12 +38,17 @@ mitral_valve/anterior_mv_leaflet.lst:mitral_valve:anterior_mv_leaflet:en:Anatomy
 mitral_valve/mitral_valve.lst:mitral_valve:mitral_valve:en:Anatomy
 mitral_valve/mitral_stenosis.lst:mitral_valve:mitral_stenosis:en:Anatomy
 left_atrium/left_atrium.lst:atrium:left_atrium:en:Anatomy
+left_ventricle/left_ventricle.lst:left_ventricle:left_ventricle:en:Anatomy
 right_atrium/right_atrium.lst:atrium:right_atrium:en:Anatomy
 right_ventricle/right_ventricle_diameter_1.lst:right_ventricle:right_ventricle_diameter_1:en:Anatomy
 right_ventricle/right_ventricle.lst:right_ventricle:right_ventricle:en:Anatomy
 miscellaneous/sinus_venosus.lst:congenital:sinus_venosus:en:Anatomy
 miscellaneous/misc_echo_descriptors.lst:misc_echo_descriptor::en:Anatomy
 measurement_types/tissue_doppler.lst:doppler:tissue_doppler:en:Measurement
+measurement_types/ejection_fraction.lst:ejection_fraction:ejection_fraction:en:Measurement
+measurement_types/auto_ef.lst:ejection_fraction:auto_ef:en:Measurement
+measurement_types/simpsons_ef.lst:ejection_fraction:simpsons_ef:en:Measurement
+measurement_types/teicholz_ef.lst:ejection_fraction:teicholz_ef:en:Measurement
 ../general/conjunction_words.lst:grammar:conjunction:en
 ../general/preposition_words.lst:grammar:preposition:en
 ../general/distributive_determiner_words.lst:grammar:distributive_determiner:en
@@ -59,6 +64,7 @@ measurement_types/tissue_doppler.lst:doppler:tissue_doppler:en:Measurement
 ../general/normal_range.lst:normal_range:normal_range:en
 ../general/increase.lst:quantity_change:increase:en
 ../general/decrease.lst:quantity_change:decrease:en
+../general/visual_estimate.lst:visual_estimate:visual_estimate:en
 ../general/flow.lst:flow:flow:en
 ../general/image_frame.lst:image_frame:image_frame:en
 ../general/dilated.lst:size_category:dilated:en:Categorical

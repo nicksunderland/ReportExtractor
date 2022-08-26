@@ -19,6 +19,7 @@ Rule: aorta_section
 -->
 :aorta_section.ReportSection = {type = "aorta"}
 
+
 Phase: TagAorticValveReportSection
 Input: Sentence SectionHeader
 Options: control=Appelt
@@ -31,3 +32,17 @@ Rule: aortic_valve_section
 ):aortic_valve_section
 -->
 :aortic_valve_section.ReportSection = {type = "aortic_valve"}
+
+
+Phase: TagLeftVentricleReportSection
+Input: Sentence SectionHeader
+Options: control=Appelt
+
+Rule: left_ventricle_section
+(
+	{Sentence contains SectionHeader.minorType == "left_ventricle"}
+	({Sentence notContains SectionHeader.minorType != "left_ventricle"})[0,20]  // allow up to 20 more sentences as long as they don't contain other headers
+	
+):left_ventricle_section
+-->
+:left_ventricle_section.ReportSection = {type = "left_ventricle"}
