@@ -1,0 +1,22 @@
+var_name,text,expected_value,expected_units
+lv_ef_simpsons,LVEF estimated by Simpsons Biplane 51%.,51,%
+lv_ef_simpsons,Simpsons EF 56%,56,%
+lv_ef_simpsons,LVEF estimated visually at 50-55%,,
+lv_ef_simpsons,LVEF estimated visually at >55%,,
+lv_ef_simpsons,"Simpson's Biplane derived EF: 57%
+Visually estimated EF: 55-60%
+GLS: -19%",57,%
+lv_ef_simpsons,Simpsons Biplane not possible estimated EF 55-60%,,
+lv_ef_simpsons,"Simpsons EF 
+GLS -12%",,
+lv_ef_simpsons,Simpsons EF  66%  2d teich 58%,66,%
+lv_ef_simpsons,LVEF EF~~ 57% by simpson's biplane,57,%
+lv_ef_simpsons,"Simpson's Biplane EF 41%
+GLS -10%",41,%
+lv_ef_simpsons,"Teicholz EF 66%.
+EF(Teich): 66.0 %",,
+lv_ef_simpsons,Estimated EF by Simpsons Biplane 43%.,43,%
+lv_ef_simpsons,Estimated EF by Simpsons Biplane is 22%,22,%
+lv_ef_simpsons,Overall systolic function is moderately impaired. Teicholz EF 40%.,,
+lv_ef_simpsons,"Left Ventricle
+Overall systolic function appears severely impaired, visual EF estimate 30-35% range.",,

@@ -1,0 +1,20 @@
+var_name,text,expected_value,expected_units
+lv_ef_visual,LVEF estimated by Simpsons Biplane 51%.,,
+lv_ef_visual,Simpsons EF 56%,,
+lv_ef_visual,LVEF estimated visually at 50-55%,52.5,%
+lv_ef_visual,LVEF estimated visually at >55%,55.001,%
+lv_ef_visual,"Simpson's Biplane derived EF: 57%
+Visually estimated EF: 55-60%
+GLS: -19%",57.5,%
+lv_ef_visual,estimated EF 60%,60,%
+lv_ef_visual,Simpsons Biplane not possible estimated EF 55-60%,57.5,%
+lv_ef_visual,"Simpsons EF 
+GLS -12%",,
+lv_ef_visual,Simpsons EF  66%  2d teich 58%,,
+lv_ef_visual,visual EF >55%.,55.001,%
+lv_ef_visual,Estimated EF by Simpsons Biplane 43%.,,
+lv_ef_visual,"Systolic function appears good, visual estimate EF >55%.
+",55.001,%
+lv_ef_visual,Estimated EF by Simpsons Biplane is 22%,,
+lv_ef_visual,"Left Ventricle
+Overall systolic function appears severely impaired, visual EF estimate 30-35% range.",32.5,%

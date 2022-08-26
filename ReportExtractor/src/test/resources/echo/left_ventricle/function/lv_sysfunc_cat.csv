@@ -1,0 +1,86 @@
+var_name,text,expected_value,expected_units
+ao_stj_diam,"Non dilated proximal aorta (3.2cm at the STJ, 3.1cm at the SOV, 3.3cm at the Asc Ao level)",3.2,cm
+ao_stj_diam,the STJ and SOV are both 3.1cm,3.1,cm
+ao_stj_diam,"AORTA:
+ Normal dimension of the aortic root. Sinuses 2.8cm
+ Ascending aorta and arch if not well imaged",,
+ao_stj_diam,"Aorta:
+ Aortic root and proximal ascending aorta not visualised. 
+ Aortic arch is of normal dimensions. No abnormal flow detected in the descending aorta. 
+ Aortic Arch: 3.6cm.",,
+ao_stj_diam,"Aorta:
+ Dilated ascending aorta. Ascending aorta = 4.6cm (LE-LE as per departmental protocol)
+ Could not clearly visualise aortic arch.",,
+ao_stj_diam,"AORTA:
+ Normal dimension of the aortic root
+ Sinuses 3.5cm, Ascending aorta 3.3cm, LVOT 2.2cm
+ Aortic arch is not well imaged",,
+ao_stj_diam,region of sinotubular junction anteriorly measuring approx. 1.3cm X 2.5cm ?aetiology.,,
+ao_stj_diam,"AORTA:
+ Normal dimension of the aortic root
+ Sinuses 2.8cm, ST junction 2.4cm, Ascending aorta 3.0cm
+ Normal appearance of the aortic arch with no obvious evidence of co-arctation",2.4,cm
+ao_stj_diam,"Aorta:
+ Sinus of Valsalva=  3.5cm (inner-inner, end diastole)
+ No coarctation",,
+ao_stj_diam,"Aorta:
+ Normal aortic root, proximal ascending aorta and aortic arch dimensions. 
+ No abnormal flow detected in the descending aorta. 
+ Sinus of Valsalva: 2.8cm.  Sinotubular Junction: 2.4cm. Proximal ascending aorta = 2.6cm.  Aortic Arch: 2.5cm.
+ (All aortic measurements are Leading edge to leading edge in accordance with departmental protocol).",2.4,cm
+ao_stj_diam,"Aorta:
+ Severely dilated with a loss of geometry
+ Sinus of Valsalva= 2.9 cm,  ascending aorta = 6.3  cm (LE-LE)
+ No coarctation",,
+ao_stj_diam," Aorta:
+ Sinus of Valsalva= 3.8 cm, Sino tubular Junction = 2.8  cm, ascending aorta = 3.1  cm. The SoV is outside normal limits (2.5-3.4cm for gender and age range)
+ No coarctation",2.8,cm
+ao_stj_diam,"AORTA:
+ Aortic root dimensions; upper limits of normal.
+ Sinuses 3.9cm, ST junction 3.3cm, Ascending aorta 3.8cm
+ No suprasternal views.",3.3,cm
+ao_stj_diam,"Aorta:
+ Normal - Sinus of Valsalva=  2.4 cm, Sino tubular Junction = 2.1 cm, ascending aorta = 2.2 cm, LE to LE, end diastole
+ No coarctation",2.1,cm
+ao_stj_diam," Aorta:root dilated
+ Sinus of Valsalva=  4cm, Sino tubular Junction =   3.3cm, ascending aorta =   4.1cm
+ No coarctation (previous coarctation repair at 115 years old)",3.3,cm
+ao_stj_diam," Aorta:
+ M-mode 2.9cm normal size
+ No coarctation",,
+ao_stj_diam,"AORTA:
+ Aortic root dimensions; normal 
+ Sinuses 3.0cm, ST junction 2.2cm,
+ No suprasternal views.",2.2,cm
+ao_stj_diam,"  Aortic root not dilated indexed to BSA.
+ Leading edge- leading edge 2D measurements end diastole: -
+ Sinus of Valsalva : 38  mm, sino tubular junction :25   mm, ascending aorta:25  mm (max mid -systole), aortic arch: 22 mm, abdominal aorta: 19mm. 
+ No coarctation.",2.5,cm
+ao_stj_diam,"AORTA:
+ Upper normal dimension of the aortic root
+ Sinuses 3.9 cm, Ascending aorta 3.7 cm
+ Normal appearance of the aortic arch with no obvious evidence of co-arctation",,
+ao_stj_diam,"this is a test report LV simpsons EF = 50%, IVS 3.4cm, PW 9mm; stj= 2.6cm (26mm/m)",2.6,cm
+ao_stj_diam,Aortic root dimensions are within normal limits. No coarctation.,,
+ao_stj_diam,"Aortic root not dilated. Sinus of Valsalva 3.2cm, sinotubular junction 2.8cm, ascending aorta 2.2cm. No coarctation. ",2.8,cm
+ao_stj_diam,"AORTA: Normal dimension of the aortic root Sinuses 3.0cm, ST junction 2.8cm, Ascending aorta 3.0cm Normal appearance of the aortic arch with no obvious evidence of co-arctation ",2.8,cm
+ao_stj_diam,AORTA: Only the proximal part of the root was demonstrated. Mild dilatation. Sinus of Valsalva = 43 mm. No suprasternal window therefore unable to assess the arch and proximal descending aorta. ,,
+ao_stj_diam, The aortic root is not dilated. Sinus of Valsalva = 3.2 cm. STJ:32mm There is no evidence of coarctation. ,3.2,cm
+ao_stj_diam," Aorta: Normal aortic root, proximal ascending aorta and aortic arch dimensions. No abnormal flow detected in the descending aorta. Sinus of Valsalva: 2.8cm. Sinotubular Junction: 2.4cm. Proximal ascending aorta = 2.6cm. Aortic Arch: 2.5cm. (All aortic measurements are Leading edge to leading edge in accordance with departmental protocol). ",2.4,cm
+ao_stj_diam,"AORTA: Aortic root dimensions; normal Sinuses 3.0cm, ST junction 2.2cm, No suprasternal views. ",2.2,cm
+ao_stj_diam,"Aorta: Dilated. Sinus of Valsalva= 4.2 cm, Sino tubular Junction = 4.3 cm, ascending aorta = 5.2 cm (leading edge to leading edge, end diastole). Poor suprasternal images to measure the aortic arch. Normal flow in the descending aorta.",4.3,cm
+ao_stj_diam," Aorta: Sinus of Valsalva=2.9 cm, Sino tubular Junction =2.8 cm, ascending aorta = 2.7 cm No coarctation ",2.8,cm
+ao_stj_diam,"AORTA: Normal dimension of the aortic root Sinuses 3.5cm, ST junction 2.8cm, Ascending aorta 3.3cm, LVOT 2.3cm Normal appearance of the aortic arch with no obvious evidence of co-arctation ",2.8,cm
+ao_stj_diam,Normal aortic root. Aortic arch not well seen. Sinus of valsalva 3.5cm. STJ 3.2cm. Asc Ao. 3.4cm. ,3.2,cm
+ao_stj_diam," Aortic root not dilated. Sinus of Valsalva 3.1 cm, sinotubular junction 2.8 cm, ascending aorta 3.3 cm. No coarctation.",2.8,cm
+ao_stj_diam,The ascending aorta was not dilated. No coarctation. ,,
+ao_stj_diam,"Sinus Valsalva measured 3.4 cm, sino tube junction 2.5 cm and ascending aorta 3.1 cm. This is nondilated. ",2.5,cm
+ao_stj_diam,"AORTA: Normal dimension of the aortic root Sinuses 3.4cm, ST junction 3.1cm, Ascending aorta 4.0cm Normal appearance of the aortic arch with no obvious evidence of co-arctation ",3.1,cm
+ao_stj_diam,"Aortic root not dilated. Leading edge- leading edge 2D measurements end diastole: - Sinus of Valsalva : 33 mm, sino tubular junction : 28 mm, ascending aorta: 30 mm, aortic arch: 24 mm No coarctation. ",2.8,cm
+ao_stj_diam,"The ascending aorta was not dilated. Sinus Valsalva measured 3.7 cm, sino tube junction 3.3 cm and ascending aorta 3.1 cm. No coarctation. ",3.3,cm
+ao_stj_diam,"AORTA: Normal calibre root, no arch trace. SOV 32mm, ST Junction 30mm, Proximal ascending aorta 36mm - internal measurements end diastole. ",3,cm
+ao_stj_diam,"referral_details OVERALL_IMPRESSION: Sub-optimal images Global LVH, particular towards the apex with sigmoidal septum. LV systolic function appears hyperdynamic. Sinus of valsalva measures 4cm - AV morphology not clearly defined - Trace AR. HAMB_AO_ASC_TEXT: Sinus of valsalva 4cm Sino-tubular junction 2.9cm CHAMB_AO_DESC_NORMAL: F",2.9,cm
+ao_stj_diam,"HAMB_AO_ASC_NORMAL: F HAMB_AO_ASC_TEXT: Sinus of Valsalva 3.7cm (not dilated when corrected to BSA, dilated normalised to height, Z3 = 2.74). Sino-tubular junction 2.7cm. Proximal ascending aorta 3.2cm (not dilated when corrected to BSA). MM_SINOTUBULAR_JUNCTION: 0 MM_SINUS_OF_VALSALVA: 0 ",2.7,cm
+ao_stj_diam,Mildly dilated aortic root Estimated PA pressure~45mmHg inc RA pressure HAMB_AO_ARCH_NORMAL: F CHAMB_AO_ARCH_TEXT HAMB_AO_ASC_NORMAL: F HAMB_AO_ASC_TEXT: Sinus of Valsalva is mildly dilated 35mm (22mm/m) from inner edge to inner edge. Sino-tubular junction is borderline dilated = 18mm/m. Proximal ascending aorta 28mm. This is not dilated indexed to height at 17mm/m. MM_SINOTUBULAR_JUNCTION: 0 MM_SINUS_OF_VALSALVA: 0 ,,
+ao_stj_diam,"HAMB_AO_ASC_TEXT: Aortic root at SoV measures 3.9cm, this is dilated for both patient height and BSA. Proximal ascending aorta 4.2cm. This is dilated indexed to BSA at 2.5cm/m_. CHAMB_AO_DESC_NORMAL: F MM_SINOTUBULAR_JUNCTION: 3 MM_SINUS_OF_VALSALVA: 3.9",3,cm
+ao_stj_diam, MM_SINOTUBULAR_JUNCTION: 2.5 MM_SINUS_OF_VALSALVA: 3 ,2.5,cm

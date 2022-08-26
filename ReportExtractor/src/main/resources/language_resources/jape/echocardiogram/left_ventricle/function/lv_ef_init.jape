@@ -1,0 +1,249 @@
+Imports: {
+	import static gate.Utils.*;
+	import BHI.ReportExtractor.JapeRhsProcessor;
+}
+
+/* The aorta section of the report needs to be tagged first.
+ * Ensure ReportSection phases run first (report_sections.jape)
+ */
+
+/* These phases tag sentences that contain specific aorta references. If the 
+ * sentence following the sentence containing the reference doesn't contain
+ * another Anatomy annotation then this is also captured as it often can 
+ * contain useful information e.g. 'The SoV is 3.2cm. This is not dilated.'
+ * We first tag aorta sentences, then extend the annotations, then run the rest
+ * of the sentence tagging to ensure the extended annots can be used also. 
+ */
+Phase: TagVarSentenceAorta
+Input: Sentence Anatomy Split SectionHeader
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * Sentence that contains 'aorta' phrases. 
+ * We include the Split annotations as this will block additional sentences 
+ * being added if there are multiple return lines between them.
+ * (i.e. Split.kind=='external' is blocked inbetween sentences)
+ */
+Rule: var_sentence
+(
+	{Sentence,
+		Sentence contains {Anatomy.majorType == "aorta"}, 
+		Sentence notContains {SectionHeader.minorType != "aorta"}}
+	({Split.kind=="external"})[0,1]
+	({Sentence, 
+		Sentence notContains {Anatomy.majorType != "aorta"},
+		Sentence notContains {SectionHeader.minorType != "aorta"}})?
+	
+):var_sentence
+-->
+:var_sentence.VarSentence = {majorType = "aorta", minorType = "aorta"}
+
+
+
+/* This phase extends the Anatomy annotations based of things found within
+ * the Aorta Report Section. e.g. "sinuses" could have a number of meanings if 
+ * found elsewhere within a report, however if "sinuses" are found within the
+ * "AORTA:" report section or a sentence talking about an aorta then it is 
+ * highly likely that it is referring to the sinuses of Valsalva.
+ */
+Phase: ExtendAnatomyAnnotations
+Input: Token ReportSection VarSentence Lookup Anatomy
+Options: control=first negationGrouping=false
+/*
+ * Description:
+ * Tag 'root', 'sinus', and 'valsalva' as relating to the aorta if it appears in a
+ * sentence or report sections about aortas
+ */
+Rule: ext_anat_annots_1
+(
+	{Token.string ==~ "(?i)sinus(es)?", 
+		Token within {ReportSection.type == "aorta"}, 
+		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"},
+		Token notWithin {Anatomy.minorType == "coronary_sinus"},
+		Token notWithin {Anatomy.minorType == "sinus_venosus"},
+		Token notWithin {Lookup.majorType == "cardiac_rhythm"}} |
+	{Token.string ==~ "(?i)sinus(es)?", 
+		Token within {ReportSection.type == "aortic_valve"}, 
+		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"},
+		Token notWithin {Anatomy.minorType == "coronary_sinus"},
+		Token notWithin {Anatomy.minorType == "sinus_venosus"},
+		Token notWithin {Lookup.majorType == "cardiac_rhythm"}} |
+	{Token.string ==~ "(?i)sinus(es)?", 
+		Token within {VarSentence.majorType == "aorta"},
+		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"},
+		Token notWithin {Anatomy.minorType == "coronary_sinus"},
+		Token notWithin {Anatomy.minorType == "sinus_venosus"},
+		Token notWithin {Lookup.majorType == "cardiac_rhythm"}} |
+	{Token.string ==~ "(?i)valsalva", 
+		Token within {VarSentence.majorType == "aorta"},
+		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"}} |
+	{Token.string ==~ "(?i)valsalva", 
+		Token within {ReportSection.type == "aorta"}, 
+		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"}} |
+	{Token.string ==~ "(?i)valsalva", 
+		Token within {ReportSection.type == "aortic_valve"}, 
+		Token notWithin {Anatomy.minorType == "sinus_of_valsalva"}}
+		
+
+):ext_anat_annots
+-->
+:ext_anat_annots.Anatomy = {language = "en", majorType = "aorta", minorType = "sinus_of_valsalva"}
+
+/*
+ * Description:
+ * Tag 'root' and 'sinus' as relating to the aorta if it appears in a
+ * sentence or report sections about aortas
+ */
+Rule: ext_anat_annots_2
+(
+	{Token.string ==~ "(?i)root",
+		Token notWithin {Anatomy.minorType == "aortic_root"},
+		Token notWithin {Anatomy.minorType == "aortic_graft"},
+		Token within {ReportSection.type == "aorta"}} |
+	{Token.string ==~ "(?i)root",
+		Token notWithin {Anatomy.minorType == "aortic_root"},
+		Token notWithin {Anatomy.minorType == "aortic_graft"},
+		Token within {ReportSection.type == "aortic_valve"}} |
+	{Token.string ==~ "(?i)root",
+		Token notWithin {Anatomy.minorType == "aortic_root"},
+		Token notWithin {Anatomy.minorType == "aortic_graft"},
+		Token within {VarSentence.majorType == "aorta"}}
+
+):ext_anat_annots
+-->
+:ext_anat_annots.Anatomy = {language = "en", majorType = "aorta", minorType = "aortic_root"}
+
+/*
+ * Description:
+ * Tag 'arch' as relating to the aorta if it appears in a
+ * sentence or report sections about aortas
+ */
+Rule: ext_anat_annots_3
+(
+	{Token.string ==~ "(?i)arch",
+		Token notWithin {Anatomy.minorType == "aortic_arch"},
+		Token within {ReportSection.type == "aorta"}} |
+	{Token.string ==~ "(?i)arch",
+		Token notWithin {Anatomy.minorType == "aortic_arch"},
+		Token within {VarSentence.majorType == "aorta"}}
+
+):ext_anat_annots
+-->
+:ext_anat_annots.Anatomy = {language = "en", majorType = "aorta", minorType = "aortic_arch"}
+
+/*
+ * Description:
+ * Tag 'descending' as relating to the aorta if it appears in a
+ * sentence or report sections about aortas
+ */
+Rule: ext_anat_annots_4
+(
+	{Token.string ==~ "(?i)descending",
+		Token notWithin {Anatomy.minorType == "descending_aorta"},
+		Token within {ReportSection.type == "aorta"}} |
+	{Token.string ==~ "(?i)descending",
+		Token notWithin {Anatomy.minorType == "descending_aorta"},
+		Token within {VarSentence.majorType == "aorta"}}
+
+):ext_anat_annots
+-->
+:ext_anat_annots.Anatomy = {language = "en", majorType = "aorta", minorType = "descending_aorta"}
+
+
+Phase: TagVarSentenceAorticRoot
+Input: Sentence Anatomy Split SectionHeader
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * Tag sentences that contain aortic root references. 
+ * We include the Split annotations as this will block additional sentences 
+ * being added if there are multiple return lines between them 
+ * (i.e. Split.kind=='external' is blocked inbetween sentences)
+ */
+Rule: var_sentence
+(
+	{Sentence,
+		Sentence contains {Anatomy.minorType == "aortic_root"}, 
+		Sentence notContains {SectionHeader.minorType != "aorta"}}
+	({Split.kind=="external"})[0,1] //sometimes 'Aortic Root: \n" is used as the section header
+	({Sentence, 
+		Sentence notContains {Anatomy.majorType != "aorta"},
+		Sentence notContains {SectionHeader.minorType != "aorta"}})?
+					
+):var_sentence
+-->
+:var_sentence.VarSentence = {majorType = "aorta", minorType = "aortic_root"}
+
+Phase: TagVarSentenceAortaSoV
+Input: Sentence Anatomy Split SectionHeader
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * Tag sentences that refer to the sinuses of valsalva +/- the sentence after it 
+ * as long as it doesn't contain other anatomical words
+ * We include the Split annotations as this will block additional sentences 
+ * being added if there are multiple return lines between them 
+ * (i.e. Split.kind=='external' is blocked inbetween sentences)
+ */
+Rule: var_sentence
+(		
+	{Sentence,
+		Sentence contains {Anatomy.minorType == "sinus_of_valsalva"}, 
+		Sentence notContains {SectionHeader.minorType != "aorta"}}
+	({Split.kind=="external"})[0,1]
+	({Sentence, 
+		Sentence notContains {Anatomy.minorType != "sinus_of_valsalva"},
+		Sentence notContains {SectionHeader.minorType != "aorta"}})?
+					
+):var_sentence
+-->
+:var_sentence.VarSentence = {majorType = "aorta", minorType = "sinus_of_valsalva"}
+
+Phase: TagVarSentenceAortaStJ
+Input: Sentence Anatomy Split SectionHeader
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * Tag sentences that refer to the sinotubular junction +/- the sentence after it 
+ * as long as it doesn't contain other anatomical words
+ * We include the Split annotations as this will block additional sentences 
+ * being added if there are multiple return lines between them 
+ * (i.e. Split.kind=='external' is blocked inbetween sentences)
+ */
+Rule: var_sentence
+(
+	{Sentence,
+		Sentence contains {Anatomy.minorType == "sinotubular_junction"}, 
+		Sentence notContains {SectionHeader.minorType != "aorta"}}
+	({Split.kind=="external"})[0,1]
+	({Sentence, 
+		Sentence notContains {Anatomy.minorType != "sinotubular_junction"},
+		Sentence notContains {SectionHeader.minorType != "aorta"}})?	
+					
+):var_sentence
+-->
+:var_sentence.VarSentence = {majorType = "aorta", minorType = "sinotubular_junction"}
+
+Phase: TagVarSentenceAortaAscending
+Input: Sentence Anatomy Split SectionHeader
+Options: control=All negationGrouping=false
+/*
+ * Description:
+ * Tag sentences that contain ascending aorta references. 
+ * We include the Split annotations as this will block additional sentences 
+ * being added if there are multiple return lines between them 
+ * (i.e. Split.kind=='external' is blocked inbetween sentences)
+ */
+Rule: var_sentence
+(
+	{Sentence,
+		Sentence contains {Anatomy.minorType == "ascending_aorta"}, 
+		Sentence notContains {SectionHeader.minorType != "aorta"}}
+	({Split.kind=="external"})[0,1]
+	({Sentence, 
+		Sentence notContains {Anatomy.minorType != "ascending_aorta"},
+		Sentence notContains {SectionHeader.minorType != "aorta"}})?	
+					
+):var_sentence
+-->
+:var_sentence.VarSentence = {majorType = "aorta", minorType = "ascending_aorta"}

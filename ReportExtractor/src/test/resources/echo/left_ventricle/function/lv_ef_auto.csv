@@ -1,0 +1,23 @@
+var_name,text,expected_value,expected_units
+lv_ef_auto,LVEF estimated by EF-auto 51%.,51,%
+lv_ef_auto,auto EF 56%,56,%
+lv_ef_auto,LVEF estimated visually at 50-55%,,
+lv_ef_auto,LVEF estimated visually at >55%,,
+lv_ef_auto,"auto-EF derived EF: 57%
+Visually estimated EF: 55-60%
+GLS: -19%",57.5,%
+lv_ef_auto,estimated autoEF 60%,60,%
+lv_ef_auto,auto EF not possible estimated EF 55-60%,57.5,%
+lv_ef_auto,"auto EF 
+GLS -12%",,
+lv_ef_auto,autoEF  66%  2d teich 58%,66,%
+lv_ef_auto,LVEF EF~~ 57% by simpson's biplane,,
+lv_ef_auto,"Simpson's Biplane EF 41%
+GLS -10%",,
+lv_ef_auto,visual EF >55%.,,
+lv_ef_auto,"Teicholz EF 41%.
+",41,%
+lv_ef_auto,Estimated EF by autoEF is 22%,22,%
+lv_ef_auto,Overall systolic function is moderately impaired. AUTO EF 40%.,40,%
+lv_ef_auto,"Left Ventricle
+Overall systolic function appears severely impaired, visual EF estimate 30-35% range.",,
